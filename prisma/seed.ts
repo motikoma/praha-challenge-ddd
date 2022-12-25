@@ -1,6 +1,6 @@
-import { PrismaClient, Prisma } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const userData: Prisma.UserCreateInput[] = [
   {
@@ -46,25 +46,48 @@ const userData: Prisma.UserCreateInput[] = [
       ],
     },
   },
-]
+];
+
+const enrollmentStatusData: Prisma.EnrollmentStatusCreateInput[] = [
+  {
+    id: '1',
+    status: '在籍中',
+  },
+  {
+    id: '2',
+    status: '休会中',
+  },
+  {
+    id: '3',
+    status: '退会済み',
+  },
+];
 
 async function main() {
-  console.log(`Start seeding ...`)
+  console.log(`Start seeding ...`);
   for (const u of userData) {
     const user = await prisma.user.create({
       data: u,
-    })
-    console.log(`Created user with id: ${user.id}`)
+    });
+    console.log(`Created user with id: ${user.id}`);
   }
-  console.log(`Seeding finished.`)
+
+  for (const d of enrollmentStatusData) {
+    const data = await prisma.enrollmentStatus.create({
+      data: d,
+    });
+    console.log(`Created user with id: ${data.id}`);
+  }
+
+  console.log(`Seeding finished.`);
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

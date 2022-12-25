@@ -7,6 +7,7 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+// sample data start
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
@@ -24,4 +25,35 @@ model Post {
   viewCount Int      @default(0)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  Int?
+}
+
+// sample data end
+
+model Participant {
+  id                            String                          @id
+  lastName                      String
+  firstName                     String
+  ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
+  ParticipantMailAddress        ParticipantMailAddress[]
+}
+
+model EnrollmentStatus {
+  id                            String                          @id
+  status                        String
+  ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
+}
+
+model ParticipantOnEnrollmentStatus {
+  participantId      String
+  enrollmentStatusId String
+  participant        Participant      @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  enrollmentStatus   EnrollmentStatus @relation(fields: [enrollmentStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([participantId, enrollmentStatusId])
+}
+
+model ParticipantMailAddress {
+  participantId String      @id
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  mailAddress   String
 }
