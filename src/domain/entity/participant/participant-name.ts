@@ -1,5 +1,5 @@
-import { ValueObject } from '../shared/valueObject';
-import { DomainException } from '../shared/domain-exception';
+import { ValueObject } from '../../shared/valueObject';
+import { DomainException } from '../../shared/domain-exception';
 
 type Props = {
   lastName: string;

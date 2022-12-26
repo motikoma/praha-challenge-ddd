@@ -1,6 +1,6 @@
 import { UniqueID } from 'src/domain/shared/uniqueId';
-import { DomainException } from '../shared/domain-exception';
-import { Entity } from '../shared/entity';
+import { DomainException } from '../../shared/domain-exception';
+import { Entity } from '../../shared/entity';
 import { TaskName } from './task-name';
 
 export const TASK_STATUS = {

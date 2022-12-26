@@ -1,17 +1,10 @@
 import { ParticipantName } from './participant-name';
-import { Entity } from '../shared/entity';
+import { Entity } from '../../shared/entity';
 import { MailAddress } from './mail-address';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from './enrollment-status';
-
-// const ENROLLMENT_STATUS = {
-//   ENROLLED: '1',
-//   ABSENT: '2',
-//   SECEDER: '3',
-// } as const;
-
-// type EnrollmentStatus =
-//   typeof ENROLLMENT_STATUS[keyof typeof ENROLLMENT_STATUS];
+import { Err, Ok, Result } from 'src/util/result';
+import { DomainException } from 'src/domain/shared/domain-exception';
 
 type Props = {
   id?: UniqueID;
@@ -53,15 +46,19 @@ export class Participant extends Entity<ReadonlyProps> {
     return new Participant(props);
   }
 
-  getAllProperties(): ReadonlyProps {
-    return {
-      id: this._id,
-      values: this._values,
-    };
+  canBeAssignedPairOrTeam(): boolean {
+    if (!(this._values.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED))
+      return false;
+    return true;
   }
 
   get id() {
+    if (!this._id) throw new DomainException('id is undefined');
     return this._id;
+  }
+
+  get values() {
+    return this._values;
   }
 
   get name() {

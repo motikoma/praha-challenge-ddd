@@ -1,4 +1,4 @@
-import { DomainException } from '../../shared/domain-exception';
+import { DomainException } from '../../../shared/domain-exception';
 import { TaskName } from '../task-name';
 import { Task, TaskStatus, TASK_STATUS } from '../task';
 import { UniqueID } from 'src/domain/shared/uniqueId';

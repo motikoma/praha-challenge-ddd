@@ -1,8 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { CreateParticipantUseCase } from 'src/application/create-participant-usecase';
-import { ParticipantRepository } from 'src/infrastructure/repository/participant-repository-impl';
+import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 import { RequestBody } from './request-body';
+import { ResponseBody } from './response-body';
 
 @Controller({
   path: '/participants',
@@ -25,30 +26,4 @@ export class ParticipantController {
 
     return response;
   }
-}
-
-class ResponseBody {
-  constructor(
-    private readonly id: string,
-    private readonly lastName: string,
-    private readonly firstName: string,
-    private readonly mailAddress: string,
-    private readonly enrollmentStatus: string,
-  ) {
-    this.id = id;
-    this.lastName = lastName;
-    this.firstName = firstName;
-    this.mailAddress = mailAddress;
-    this.enrollmentStatus = enrollmentStatus;
-  }
-
-  // public getAllProperties() {
-  //   return {
-  //     id: this.id,
-  //     lastName: this.lastName,
-  //     firstName: this.firstName,
-  //     mailAddress: this.mailAddress,
-  //     enrollmentStatus: this.enrollmentStatus,
-  //   };
-  // }
 }

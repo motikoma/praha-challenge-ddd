@@ -1,4 +1,4 @@
-import { DomainException } from '../../shared/domain-exception';
+import { DomainException } from '../../../shared/domain-exception';
 import { TaskName } from '../task-name';
 
 describe('TaskName', () => {

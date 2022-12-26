@@ -55,5 +55,5 @@ model ParticipantOnEnrollmentStatus {
 model ParticipantMailAddress {
   participantId String      @id
   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  mailAddress   String
+  mailAddress   String      @unique
 }
