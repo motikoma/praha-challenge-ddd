@@ -33,6 +33,46 @@ export class CreateParticipantUseCase {
       mailAddress: mailAddress,
     });
 
-    return this.repository.create(participant);
+    const createdParticipant = await this.repository.create(participant);
+
+    const createParticipantDto = new CreateParticipantDto(
+      createdParticipant.id.id,
+      createdParticipant.name.lastName,
+      createdParticipant.name.firstName,
+      createdParticipant.mailAddress.mailAddress,
+      createdParticipant.enrollmentStatus.value,
+    );
+
+    return createParticipantDto;
+  }
+}
+
+class CreateParticipantDto {
+  constructor(
+    private readonly _id: string,
+    private readonly _lastName: string,
+    private readonly _firstName: string,
+    private readonly _mailAddress: string,
+    private readonly _enrollmentStatus: string,
+  ) {}
+
+  get id() {
+    return this._id;
+  }
+
+  get lastName() {
+    return this._lastName;
+  }
+
+  get firstName() {
+    return this._firstName;
+  }
+
+  get mailAddress() {
+    return this._mailAddress;
+  }
+
+  get enrollmentStatus() {
+    return this._enrollmentStatus;
   }
 }
