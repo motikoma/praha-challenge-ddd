@@ -29,22 +29,6 @@ describe('EnrollmentStatus', () => {
   });
 
   describe('reconstructに不正な値を渡した場合', () => {
-    it('[準正常系]: reconstructにundefinedを渡した場合、エラーになる', () => {
-      try {
-        EnrollmentStatus.reconstruct({ value: undefined }).value;
-      } catch (e) {
-        expect(DomainException);
-      }
-    });
-
-    it('[準正常系]: reconstructにnullを渡した場合、エラーになる', () => {
-      try {
-        EnrollmentStatus.reconstruct({ value: null }).value;
-      } catch (e) {
-        expect(DomainException);
-      }
-    });
-
     it('[準正常系]: reconstructに不正な文字列を渡した場合、エラーになる', () => {
       try {
         EnrollmentStatus.reconstruct({ value: '4' }).value;

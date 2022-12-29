@@ -5,6 +5,7 @@ import { Participant } from 'src/domain/entity/participant/participant';
 import { ParticipantName } from 'src/domain/entity/participant/participant-name';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { UniqueID } from 'src/domain/shared/uniqueID';
+import { buffer } from 'stream/consumers';
 export class ParticipantRepository implements IParticipantRepository {
   constructor(private readonly prismaClient: PrismaClient) {
     this.prismaClient = prismaClient;
@@ -16,7 +17,7 @@ export class ParticipantRepository implements IParticipantRepository {
 
     const createdParticipant = await this.prismaClient.participant.create({
       data: {
-        id: id, // TODO: ここでエラーが出るかを確認しておく
+        id: id,
         lastName: name.lastName,
         firstName: name.firstName,
         ParticipantOnEnrollmentStatus: {

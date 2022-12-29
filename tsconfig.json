@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "strict": true,
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -11,6 +12,6 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "types": ["@types/jest", "@quramy/jest-prisma"]
+    "types": ["@types/jest"]
   }
 }

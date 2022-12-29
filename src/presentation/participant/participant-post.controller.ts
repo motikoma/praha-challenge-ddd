@@ -7,16 +7,16 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 class RequestBody {
   @IsNotEmpty()
   @IsString()
-  readonly lastName: string;
+  readonly lastName!: string;
 
   @IsNotEmpty()
   @IsString()
-  readonly firstName: string;
+  readonly firstName!: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  readonly mailAddress: string;
+  readonly mailAddress!: string;
 }
 
 class ResponseBody {

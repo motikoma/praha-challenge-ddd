@@ -7,7 +7,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 class RequestBody {
   @IsNotEmpty()
   @IsString()
-  readonly enrollmentStatus: string;
+  readonly enrollmentStatus!: string;
 }
 
 class ResponseBody {

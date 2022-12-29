@@ -7,18 +7,18 @@ import {
   Put,
   Delete,
   Query,
-} from '@nestjs/common'
-import { PrismaService } from './prisma.service'
-import { User as UserModel, Post as PostModel, Prisma } from '@prisma/client'
+} from '@nestjs/common';
+import { PrismaService } from './prisma.service';
+import { User as UserModel, Post as PostModel, Prisma } from '@prisma/client';
 
 @Controller()
 export class AppController {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Get('post/:id')
-  async getPostById(@Param('id') id: string): Promise<PostModel> {
-    return this.prismaService.post.findUnique({ where: { id: Number(id) } })
-  }
+  // @Get('post/:id')
+  // async getPostById(@Param('id') id: string): Promise<PostModel> {
+  //   return this.prismaService.post.findUnique({ where: { id: Number(id) } });
+  // }
 
   @Get('feed')
   async getFilteredPosts(
@@ -34,7 +34,7 @@ export class AppController {
             { content: { contains: searchString } },
           ],
         }
-      : {}
+      : {};
 
     return this.prismaService.post.findMany({
       where: {
@@ -47,32 +47,32 @@ export class AppController {
       orderBy: {
         updatedAt: orderBy,
       },
-    })
+    });
   }
 
   @Get('users')
   async getAllUsers(): Promise<UserModel[]> {
-    return this.prismaService.user.findMany()
+    return this.prismaService.user.findMany();
   }
 
-  @Get('user/:id/drafts')
-  async getDraftsByUser(@Param('id') id: string): Promise<PostModel[]> {
-    return this.prismaService.user
-      .findUnique({
-        where: { id: Number(id) },
-      })
-      .posts({
-        where: {
-          published: false,
-        },
-      })
-  }
+  // @Get('user/:id/drafts')
+  // async getDraftsByUser(@Param('id') id: string): Promise<PostModel[]> {
+  //   return this.prismaService.user
+  //     .findUnique({
+  //       where: { id: Number(id) },
+  //     })
+  //     .posts({
+  //       where: {
+  //         published: false,
+  //       },
+  //     })
+  // }
 
   @Post('post')
   async createDraft(
     @Body() postData: { title: string; content?: string; authorEmail: string },
   ): Promise<PostModel> {
-    const { title, content, authorEmail } = postData
+    const { title, content, authorEmail } = postData;
     return this.prismaService.post.create({
       data: {
         title,
@@ -81,21 +81,21 @@ export class AppController {
           connect: { email: authorEmail },
         },
       },
-    })
+    });
   }
 
   @Post('signup')
   async signupUser(
     @Body()
     userData: {
-      name?: string
-      email: string
-      posts?: Prisma.PostCreateInput[]
+      name?: string;
+      email: string;
+      posts?: Prisma.PostCreateInput[];
     },
   ): Promise<UserModel> {
     const postData = userData.posts?.map((post) => {
-      return { title: post?.title, content: post?.content }
-    })
+      return { title: post?.title, content: post?.content };
+    });
     return this.prismaService.user.create({
       data: {
         name: userData?.name,
@@ -104,7 +104,7 @@ export class AppController {
           create: postData,
         },
       },
-    })
+    });
   }
 
   @Put('publish/:id')
@@ -114,17 +114,17 @@ export class AppController {
       select: {
         published: true,
       },
-    })
+    });
 
     return this.prismaService.post.update({
       where: { id: Number(id) || undefined },
       data: { published: !postData?.published },
-    })
+    });
   }
 
   @Delete('post/:id')
   async deletePost(@Param('id') id: string): Promise<PostModel> {
-    return this.prismaService.post.delete({ where: { id: Number(id) } })
+    return this.prismaService.post.delete({ where: { id: Number(id) } });
   }
 
   @Put('/post/:id/views')
@@ -136,6 +136,6 @@ export class AppController {
           increment: 1,
         },
       },
-    })
+    });
   }
 }

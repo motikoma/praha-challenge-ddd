@@ -10,26 +10,6 @@ describe('MailAddress', () => {
     expect(actual).toBe(expected);
   });
 
-  it('[準正常系]: nullの場合はエラー', () => {
-    try {
-      MailAddress.create({
-        mailAddress: null,
-      });
-    } catch (e) {
-      expect(DomainException);
-    }
-  });
-
-  it('[準正常系]: undefinedの場合はエラー', () => {
-    try {
-      MailAddress.create({
-        mailAddress: undefined,
-      });
-    } catch (e) {
-      expect(DomainException);
-    }
-  });
-
   it('[準正常系]: 空文字の場合はエラー', () => {
     try {
       MailAddress.create({

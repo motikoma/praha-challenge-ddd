@@ -6,7 +6,7 @@ import { Participant } from './participant';
 export type IParticipantRepository = {
   create(participant: Participant): Promise<Participant>;
   list(): Promise<Participant[]>;
-  getWithMailAddress(mailAddress: MailAddress): Promise<Participant>;
-  getWithId(id: UniqueID): Promise<Participant>;
+  getWithMailAddress(mailAddress: MailAddress): Promise<Participant | null>;
+  getWithId(id: UniqueID): Promise<Participant | null>;
   update(participant: Participant): Promise<Participant>;
 };
