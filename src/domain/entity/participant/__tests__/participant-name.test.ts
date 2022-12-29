@@ -11,7 +11,73 @@ describe('ParticipantName', () => {
     expect(actual).toBe(expected);
   });
 
-  it('[準正常系]: 名字,名前が空文字の場合はエラー', () => {
+  it('[準正常系]: 名字,名前がnullの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: null,
+        firstName: null,
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名字がnullの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: null,
+        firstName: '太郎',
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名前がnullの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: '佐藤',
+        firstName: null,
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名字,名前がundefinedの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: undefined,
+        firstName: undefined,
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名字がundefinedの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: undefined,
+        firstName: '太郎',
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名前がundefinedの場合はエラー', () => {
+    try {
+      ParticipantName.create({
+        lastName: '佐藤',
+        firstName: undefined,
+      }).fullName;
+    } catch (error) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: 名字または名前が空文字の場合はエラー', () => {
     try {
       ParticipantName.create({
         lastName: '',

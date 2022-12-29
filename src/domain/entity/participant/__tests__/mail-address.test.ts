@@ -10,16 +10,36 @@ describe('MailAddress', () => {
     expect(actual).toBe(expected);
   });
 
+  it('[準正常系]: nullの場合はエラー', () => {
+    try {
+      MailAddress.create({
+        mailAddress: null,
+      });
+    } catch (e) {
+      expect(DomainException);
+    }
+  });
+
+  it('[準正常系]: undefinedの場合はエラー', () => {
+    try {
+      MailAddress.create({
+        mailAddress: undefined,
+      });
+    } catch (e) {
+      expect(DomainException);
+    }
+  });
+
   it('[準正常系]: 空文字の場合はエラー', () => {
     try {
       MailAddress.create({
         mailAddress: '',
       });
-    } catch (error) {
+    } catch (e) {
       expect(DomainException);
     }
 
-    // TODO: 下記のように書くとエラーを検知できない
+    // MEMO: 下記のように書くとエラーを検知できない
     // expect(() =>
     //   MailAddress.create({
     //     mailAddress: 'hoge@gmail.com',

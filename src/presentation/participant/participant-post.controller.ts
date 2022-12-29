@@ -3,17 +3,20 @@ import { PrismaClient } from '@prisma/client';
 import { CreateParticipantUseCase } from 'src/application/create-participant.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 class RequestBody {
   @IsNotEmpty()
-  readonly lastName!: string;
+  @IsString()
+  readonly lastName: string;
 
   @IsNotEmpty()
-  readonly firstName!: string;
+  @IsString()
+  readonly firstName: string;
 
   @IsNotEmpty()
+  @IsString()
   @IsEmail()
-  readonly mailAddress!: string;
+  readonly mailAddress: string;
 }
 
 class ResponseBody {
@@ -29,7 +32,7 @@ class ResponseBody {
 @Controller({
   path: '/participants',
 })
-export class ParticipantController {
+export class ParticipantPostController {
   @Post()
   async createParticipant(@Body() req: RequestBody): Promise<ResponseBody> {
     const prisma = new PrismaClient();

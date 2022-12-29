@@ -4,28 +4,28 @@ import { ParticipantName } from 'src/domain/entity/participant/participant-name'
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { DomainException } from 'src/domain/shared/domain-exception';
 
-type RequestParam = {
+type Param = {
   readonly lastName: string;
   readonly firstName: string;
   readonly mailAddress: string;
 };
-type ReadonlyRequestParam = Readonly<RequestParam>;
+type ReadonlyParam = Readonly<Param>;
 
 export class CreateParticipantUseCase {
   constructor(private readonly repository: IParticipantRepository) {}
 
-  async do(request: ReadonlyRequestParam) {
+  async do(param: ReadonlyParam) {
     const mailAddress = MailAddress.create({
-      mailAddress: request.mailAddress,
+      mailAddress: param.mailAddress,
     });
 
-    const isExist = await this.repository.get(mailAddress);
+    const isExist = await this.repository.getWithMailAddress(mailAddress);
     if (isExist)
-      throw new DomainException("Participant's mail address is exist");
+      throw new DomainException('参加者のメールアドレスがすでに存在します');
 
     const participantName = ParticipantName.create({
-      lastName: request.lastName,
-      firstName: request.firstName,
+      lastName: param.lastName,
+      firstName: param.firstName,
     });
 
     const participant = Participant.create({
@@ -35,7 +35,7 @@ export class CreateParticipantUseCase {
 
     const createdParticipant = await this.repository.create(participant);
 
-    const createParticipantDto = new CreateParticipantDto(
+    const createdParticipantDto = new CreateParticipantDto(
       createdParticipant.id.id,
       createdParticipant.name.lastName,
       createdParticipant.name.firstName,
@@ -43,7 +43,7 @@ export class CreateParticipantUseCase {
       createdParticipant.enrollmentStatus.value,
     );
 
-    return createParticipantDto;
+    return createdParticipantDto;
   }
 }
 

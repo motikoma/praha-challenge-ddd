@@ -3,7 +3,7 @@ import { Entity } from '../../shared/entity';
 import { MailAddress } from './mail-address';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from './enrollment-status';
-import { Err, Ok, Result } from 'src/util/result';
+import { Result } from 'src/util/result';
 import { DomainException } from 'src/domain/shared/domain-exception';
 
 type Props = {
@@ -50,6 +50,13 @@ export class Participant extends Entity<ReadonlyProps> {
     if (!(this._values.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED))
       return false;
     return true;
+  }
+
+  changeEnrollmentStatus(enrollmentStatus: EnrollmentStatus) {
+    return new Participant({
+      id: this.id,
+      values: { ...this.values, enrollmentStatus },
+    });
   }
 
   get id() {

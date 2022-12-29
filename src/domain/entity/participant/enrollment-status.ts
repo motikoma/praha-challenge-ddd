@@ -2,9 +2,9 @@ import { DomainException } from '../../shared/domain-exception';
 import { ValueObject } from '../../shared/valueObject';
 
 export const ENROLLMENT_STATUS = {
-  ENROLLED: '1',
-  ABSENT: '2',
-  SECEDER: '3',
+  ENROLLED: '1', // 在籍中
+  ABSENT: '2', // 休会中
+  SECEDER: '3', // 退会済
 } as const;
 
 type Props = {
@@ -22,8 +22,7 @@ export class EnrollmentStatus extends ValueObject<ReadonlyProps> {
   }
 
   static create(): EnrollmentStatus {
-    const status = ENROLLMENT_STATUS.ENROLLED;
-    return new EnrollmentStatus({ value: status });
+    return new EnrollmentStatus({ value: ENROLLMENT_STATUS.ENROLLED });
   }
 
   static reconstruct(props: ReadonlyProps): EnrollmentStatus {
