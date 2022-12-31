@@ -2,6 +2,9 @@ import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// https://github.com/Quramy/prisma-fabbrica
+// initialize({ prisma });
+
 const userData: Prisma.UserCreateInput[] = [
   {
     name: 'Alice',

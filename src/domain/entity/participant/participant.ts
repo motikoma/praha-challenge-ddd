@@ -3,7 +3,6 @@ import { Entity } from '../../shared/entity';
 import { MailAddress } from './mail-address';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from './enrollment-status';
-import { Result } from 'src/util/result';
 import { DomainException } from 'src/domain/shared/domain-exception';
 
 type Props = {
