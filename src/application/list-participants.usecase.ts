@@ -26,7 +26,7 @@ class ParticipantDto {
     private readonly _lastName: string,
     private readonly _firstName: string,
     private readonly _mailAddress: string,
-    private readonly _enrollmentStatus: string,
+    private readonly _enrollmentStatus: number,
   ) {}
 
   get id() {

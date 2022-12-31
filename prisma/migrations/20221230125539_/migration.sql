@@ -27,16 +27,14 @@ CREATE TABLE "Participant" (
 
 -- CreateTable
 CREATE TABLE "EnrollmentStatus" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "status" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "ParticipantOnEnrollmentStatus" (
-    "participantId" TEXT NOT NULL,
-    "enrollmentStatusId" TEXT NOT NULL,
-
-    PRIMARY KEY ("participantId", "enrollmentStatusId"),
+    "participantId" TEXT NOT NULL PRIMARY KEY,
+    "enrollmentStatusId" INTEGER NOT NULL,
     CONSTRAINT "ParticipantOnEnrollmentStatus_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT "ParticipantOnEnrollmentStatus_enrollmentStatusId_fkey" FOREIGN KEY ("enrollmentStatusId") REFERENCES "EnrollmentStatus" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
 );
@@ -50,3 +48,6 @@ CREATE TABLE "ParticipantMailAddress" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ParticipantMailAddress_mailAddress_key" ON "ParticipantMailAddress"("mailAddress");

@@ -2,18 +2,18 @@ import { DomainException } from '../../shared/domain-exception';
 import { ValueObject } from '../../shared/valueObject';
 
 export const ENROLLMENT_STATUS = {
-  ENROLLED: '1', // 在籍中
-  ABSENT: '2', // 休会中
-  SECEDER: '3', // 退会済
+  ENROLLED: 1, // 在籍中
+  ABSENT: 2, // 休会中
+  SECEDER: 3, // 退会済
 } as const;
 
 type Props = {
-  value: string;
+  value: number;
 };
 type ReadonlyProps = Readonly<Props>;
 
 export class EnrollmentStatus extends ValueObject<ReadonlyProps> {
-  get value(): string {
+  get value(): number {
     return this._value.value;
   }
 
@@ -30,13 +30,13 @@ export class EnrollmentStatus extends ValueObject<ReadonlyProps> {
     return new EnrollmentStatus({ value: status });
   }
 
-  private static toEnrollmentStatus(status: string) {
+  private static toEnrollmentStatus(status: number) {
     switch (status) {
-      case '1':
+      case 1:
         return ENROLLMENT_STATUS.ENROLLED;
-      case '2':
+      case 2:
         return ENROLLMENT_STATUS.ABSENT;
-      case '3':
+      case 3:
         return ENROLLMENT_STATUS.SECEDER;
       default:
         throw new DomainException('invalid value');

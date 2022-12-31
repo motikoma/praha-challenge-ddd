@@ -7,7 +7,7 @@ import { DomainException } from 'src/domain/shared/domain-exception';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 
 type Param = {
-  readonly enrollmentStatus: string;
+  readonly enrollmentStatus: number;
 };
 type ReadonlyParam = Readonly<Param>;
 
@@ -46,7 +46,7 @@ class UpdateParticipantDto {
     private readonly _lastName: string,
     private readonly _firstName: string,
     private readonly _mailAddress: string,
-    private readonly _enrollmentStatus: string,
+    private readonly _enrollmentStatus: number,
   ) {}
 
   get id() {

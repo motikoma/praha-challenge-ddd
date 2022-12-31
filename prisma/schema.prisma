@@ -38,14 +38,14 @@ model Participant {
 }
 
 model EnrollmentStatus {
-  id                            String                          @id
+  id                            Int                             @id
   status                        String
   ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
 }
 
 model ParticipantOnEnrollmentStatus {
   participantId      String           @id
-  enrollmentStatusId String
+  enrollmentStatusId Int
   participant        Participant      @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   enrollmentStatus   EnrollmentStatus @relation(fields: [enrollmentStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 }

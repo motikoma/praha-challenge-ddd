@@ -50,15 +50,15 @@ const userData: Prisma.UserCreateInput[] = [
 
 const enrollmentStatusData: Prisma.EnrollmentStatusCreateInput[] = [
   {
-    id: '1',
+    id: 1,
     status: '在籍中',
   },
   {
-    id: '2',
+    id: 2,
     status: '休会中',
   },
   {
-    id: '3',
+    id: 3,
     status: '退会済み',
   },
 ];

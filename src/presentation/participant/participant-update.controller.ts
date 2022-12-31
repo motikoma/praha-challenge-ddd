@@ -3,11 +3,11 @@ import { PrismaClient } from '@prisma/client';
 import { UpdateParticipantUseCase } from 'src/application/update-participant.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 class RequestBody {
   @IsNotEmpty()
-  @IsString()
-  readonly enrollmentStatus!: string;
+  @IsNumber()
+  readonly enrollmentStatus!: number;
 }
 
 class ResponseBody {
@@ -16,7 +16,7 @@ class ResponseBody {
     private readonly lastName: string,
     private readonly firstName: string,
     private readonly mailAddress: string,
-    private readonly enrollmentStatus: string,
+    private readonly enrollmentStatus: number,
   ) {}
 }
 
