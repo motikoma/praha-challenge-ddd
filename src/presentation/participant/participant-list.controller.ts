@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ListParticipantsUseCase } from 'src/application/list-participants.usecase';
+import { ListParticipantsUseCase } from 'src/application/participant/list-participants.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 class ResponseBody {

@@ -46,6 +46,30 @@ CREATE TABLE "ParticipantMailAddress" (
     CONSTRAINT "ParticipantMailAddress_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
+-- CreateTable
+CREATE TABLE "Task" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "taskName" TEXT NOT NULL,
+    "taskStatusId" INTEGER NOT NULL,
+    CONSTRAINT "Task_taskStatusId_fkey" FOREIGN KEY ("taskStatusId") REFERENCES "TaskStatus" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- CreateTable
+CREATE TABLE "TaskStatus" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "status" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "ParticipantOnTask" (
+    "participantId" TEXT NOT NULL,
+    "taskId" TEXT NOT NULL,
+
+    PRIMARY KEY ("participantId", "taskId"),
+    CONSTRAINT "ParticipantOnTask_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "ParticipantOnTask_taskId_fkey" FOREIGN KEY ("taskId") REFERENCES "Task" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 

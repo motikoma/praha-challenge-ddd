@@ -39,6 +39,7 @@ model Participant {
   firstName                     String
   ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
   ParticipantMailAddress        ParticipantMailAddress[]
+  ParticipantOnTask             ParticipantOnTask[]
 }
 
 model EnrollmentStatus {
@@ -58,4 +59,27 @@ model ParticipantMailAddress {
   participantId String      @id
   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   mailAddress   String      @unique
+}
+
+model Task {
+  id                String              @id
+  taskName          String
+  taskStatusId      Int
+  taskStatus        TaskStatus          @relation(fields: [taskStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  ParticipantOnTask ParticipantOnTask[]
+}
+
+model TaskStatus {
+  id     Int    @id
+  status String
+  Task   Task[]
+}
+
+model ParticipantOnTask {
+  participantId String
+  taskId        String
+  Participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Task          Task        @relation(fields: [taskId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([participantId, taskId])
 }

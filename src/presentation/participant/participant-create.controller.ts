@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateParticipantUseCase } from 'src/application/create-participant.usecase';
+import { CreateParticipantUseCase } from 'src/application/participant/create-participant.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
@@ -32,7 +32,7 @@ class ResponseBody {
 @Controller({
   path: '/participants',
 })
-export class ParticipantPostController {
+export class ParticipantCreateController {
   @Post()
   async createParticipant(@Body() req: RequestBody): Promise<ResponseBody> {
     const prisma = new PrismaClient();

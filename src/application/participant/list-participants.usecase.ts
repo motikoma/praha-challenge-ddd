@@ -6,13 +6,13 @@ export class ListParticipantsUseCase {
   async do() {
     const participants = await this.repository.list();
 
-    const participantDtos = participants.map((listedParticipant) => {
+    const participantDtos = participants.map((participant) => {
       return new ParticipantDto(
-        listedParticipant.id.id,
-        listedParticipant.name.lastName,
-        listedParticipant.name.firstName,
-        listedParticipant.mailAddress.mailAddress,
-        listedParticipant.enrollmentStatus.value,
+        participant.id.id,
+        participant.name.lastName,
+        participant.name.firstName,
+        participant.mailAddress.mailAddress,
+        participant.enrollmentStatus.value,
       );
     });
 

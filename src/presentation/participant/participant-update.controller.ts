@@ -1,6 +1,6 @@
 import { Body, Controller, Param, Patch, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { UpdateParticipantUseCase } from 'src/application/update-participant.usecase';
+import { UpdateParticipantUseCase } from 'src/application/participant/update-participant.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';

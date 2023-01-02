@@ -9,8 +9,6 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { PrismaService } from 'src/prisma.service';
 import { ParticipantRepository } from '../participant-repository-impl';
 
-// トランザクションに関するテストを書くべきか？
-
 describe('participant-repository-impl', () => {
   const prisma = new PrismaService();
 
@@ -28,11 +26,11 @@ describe('participant-repository-impl', () => {
   });
 
   afterAll(async () => {
-    const deleteParticipantEnrollmentStatus =
-      await prisma.participantOnEnrollmentStatus.deleteMany();
-    const deleteParticipantMailAddress =
-      await prisma.participantMailAddress.deleteMany();
-    const deleteParticipant = await prisma.participant.deleteMany();
+    // const deleteParticipantEnrollmentStatus =
+    //   await prisma.participantOnEnrollmentStatus.deleteMany();
+    // const deleteParticipantMailAddress =
+    //   await prisma.participantMailAddress.deleteMany();
+    // const deleteParticipant = await prisma.participant.deleteMany();
 
     // TODO: 公式ドキュメントには、$transactionをまとめて扱う方法が記載されているが型エラーになる
     // https://www.prisma.io/docs/guides/testing/integration-testing
@@ -154,7 +152,7 @@ describe('participant-repository-impl', () => {
       mailAddress: 'hoge@gmail.com',
     });
     const enrollmentStatus = EnrollmentStatus.create();
-    const actual = Participant.reconstruct({
+    const participant = Participant.reconstruct({
       id,
       values: {
         name,
@@ -162,6 +160,7 @@ describe('participant-repository-impl', () => {
         enrollmentStatus,
       },
     });
+    await repository.create(participant);
 
     const newName = ParticipantName.create({
       lastName: '佐藤',
@@ -173,7 +172,7 @@ describe('participant-repository-impl', () => {
     const newEnrollmentStatus = EnrollmentStatus.reconstruct({
       value: ENROLLMENT_STATUS.ABSENT,
     });
-    const newActual = Participant.reconstruct({
+    const newParticipant = Participant.reconstruct({
       id,
       values: {
         name: newName,
@@ -181,14 +180,12 @@ describe('participant-repository-impl', () => {
         enrollmentStatus: newEnrollmentStatus,
       },
     });
+    const actual = await repository.update(newParticipant);
 
-    await repository.create(actual);
-    await repository.update(newActual);
-    const participant = await repository.getWithId(actual.id);
-    expect(participant).toBeInstanceOf(Participant);
-    expect(participant?.mailAddress).toEqual(newActual.mailAddress);
-    expect(participant?.name).toEqual(newActual.name);
-    expect(participant?.enrollmentStatus).toEqual(newActual.enrollmentStatus);
+    expect(actual).toBeInstanceOf(Participant);
+    expect(actual?.mailAddress).toEqual(newParticipant.mailAddress);
+    expect(actual?.name).toEqual(newParticipant.name);
+    expect(actual?.enrollmentStatus).toEqual(newParticipant.enrollmentStatus);
   });
 
   // TODO: fabbricaを使ったテストについてメモリがヒープアウトするので調べる

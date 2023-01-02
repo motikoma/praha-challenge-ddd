@@ -2,13 +2,7 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { DomainException } from '../../shared/domain-exception';
 import { Entity } from '../../shared/entity';
 import { TaskName } from './task-name';
-
-export const TASK_STATUS = {
-  TODO: '未着手',
-  DOING: 'レビュー待ち',
-  DONE: '完了',
-} as const;
-export type TaskStatus = typeof TASK_STATUS[keyof typeof TASK_STATUS];
+import { TaskStatus, TASK_STATUS } from './task-status';
 
 type Props = {
   id?: UniqueID;
@@ -17,9 +11,9 @@ type Props = {
 type ReadonlyProps = Readonly<Props>;
 
 type Values = {
+  ownerId: UniqueID;
   taskName: TaskName;
   taskStatus: TaskStatus;
-  ownerId: UniqueID;
 };
 type ReadonlyValues = Readonly<Values>;
 export class Task extends Entity<ReadonlyProps> {
@@ -39,14 +33,10 @@ export class Task extends Entity<ReadonlyProps> {
     return new Task(props);
   }
 
-  get taskStatus() {
-    return this._values.taskStatus;
-  }
-
-  changeTaskStatus(userId: UniqueID, newTaskStatus: TaskStatus): Task {
-    if (!userId.equals(this._values.ownerId))
+  changeTaskStatus(participantId: UniqueID, newTaskStatus: TaskStatus): Task {
+    if (!participantId.equals(this._values.ownerId))
       throw new DomainException('課題のオーナー以外は状態を変更できません');
-    if (this._values.taskStatus === TASK_STATUS.DONE)
+    if (this._values.taskStatus.value === TASK_STATUS.DONE)
       throw new DomainException('完了した課題のステータスは変更できません');
     return new Task({
       id: this._id,
@@ -56,5 +46,24 @@ export class Task extends Entity<ReadonlyProps> {
         ownerId: this._values.ownerId,
       },
     });
+  }
+  get id() {
+    return this._id;
+  }
+
+  get values() {
+    return this._values;
+  }
+
+  get ownerId() {
+    return this._values.ownerId;
+  }
+
+  get taskName() {
+    return this._values.taskName;
+  }
+
+  get taskStatus() {
+    return this._values.taskStatus;
   }
 }

@@ -1,24 +1,34 @@
 import { DomainException } from '../../../shared/domain-exception';
 import { TaskName } from '../task-name';
-import { Task, TaskStatus, TASK_STATUS } from '../task';
+import { Task } from '../task';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { TaskStatus, TASK_STATUS } from '../task-status';
 
 describe('changeTaskStatus', () => {
   describe('課題の所有者に関するテスト', () => {
     it('[正常系]: 課題を所有するユーザーだけが課題ステータスを変更できる', () => {
-      const task = createEntity(TASK_STATUS.TODO);
+      const taskStatus = TaskStatus.create();
+      const task = createEntity(taskStatus);
       const userId = UniqueID.reconstruct('1');
-      const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DOING);
 
-      const expected = 'レビュー待ち';
-      expect(changedTask.taskStatus).toBe(expected);
+      const newTaskStatus = TaskStatus.reconstruct({
+        value: TASK_STATUS.READY_FOR_REVIEW,
+      });
+      const changedTask = task.changeTaskStatus(userId, newTaskStatus);
+
+      expect(changedTask.taskStatus.value).toBe(TASK_STATUS.READY_FOR_REVIEW);
     });
 
     it('[準正常系]: 課題を所有していないユーザーは課題ステータスを変更できない', () => {
       try {
-        const task = createEntity(TASK_STATUS.TODO);
+        const taskStatus = TaskStatus.create();
+        const task = createEntity(taskStatus);
         const userId = UniqueID.reconstruct('1');
-        const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DOING);
+
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.READY_FOR_REVIEW,
+        });
+        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
       } catch (error) {
         expect(DomainException);
       }
@@ -28,57 +38,95 @@ describe('changeTaskStatus', () => {
   describe('課題のステータスに関するテスト', () => {
     describe('正常系に関するテスト', () => {
       it('[正常系]: 「未着手」から「レビュー待ち」に変更できる', () => {
-        const task = createEntity(TASK_STATUS.TODO);
+        const taskStatus = TaskStatus.create();
+        const task = createEntity(taskStatus);
         const userId = UniqueID.reconstruct('1');
-        const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DOING);
 
-        const expected = TASK_STATUS.DOING;
-        expect(changedTask.taskStatus).toBe(expected);
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.READY_FOR_REVIEW,
+        });
+        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
+
+        const expected = TASK_STATUS.READY_FOR_REVIEW;
+        expect(changedTask.taskStatus.value).toBe(expected);
       });
 
       it('[正常系]: 「未着手」から「完了」に変更できる', () => {
-        const task = createEntity(TASK_STATUS.TODO);
+        const taskStatus = TaskStatus.create();
+        const task = createEntity(taskStatus);
         const userId = UniqueID.reconstruct('1');
-        const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DONE);
+
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.DONE,
+        });
+        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
 
         const expected = TASK_STATUS.DONE;
-        expect(changedTask.taskStatus).toBe(expected);
+        expect(changedTask.taskStatus.value).toBe(expected);
       });
 
       it('[正常系]: 「レビュー待ち」から「未着手」に変更できる', () => {
-        const task = createEntity(TASK_STATUS.DOING);
+        const taskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.READY_FOR_REVIEW,
+        });
+        const task = createEntity(taskStatus);
         const userId = UniqueID.reconstruct('1');
-        const changedTask = task.changeTaskStatus(userId, TASK_STATUS.TODO);
+
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.TODO,
+        });
+        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
 
         const expected = TASK_STATUS.TODO;
-        expect(changedTask.taskStatus).toBe(expected);
+        expect(changedTask.taskStatus.value).toBe(expected);
       });
 
       it('[正常系]: 「レビュー待ち」から「完了」に変更できる', () => {
-        const task = createEntity(TASK_STATUS.DOING);
+        const taskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.READY_FOR_REVIEW,
+        });
+        const task = createEntity(taskStatus);
         const userId = UniqueID.reconstruct('1');
-        const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DONE);
+
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.DONE,
+        });
+        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
 
         const expected = TASK_STATUS.DONE;
-        expect(changedTask.taskStatus).toBe(expected);
+        expect(changedTask.taskStatus.value).toBe(expected);
       });
     });
 
     describe('準正常系に関するテスト', () => {
       it('[準正常系]: 「完了」から「未着手」に変更できない', () => {
         try {
-          const task = createEntity(TASK_STATUS.DONE);
+          const taskStatus = TaskStatus.reconstruct({
+            value: TASK_STATUS.DONE,
+          });
+          const task = createEntity(taskStatus);
           const userId = UniqueID.reconstruct('1');
-          const changedTask = task.changeTaskStatus(userId, TASK_STATUS.TODO);
+
+          const newTaskStatus = TaskStatus.reconstruct({
+            value: TASK_STATUS.TODO,
+          });
+          const changedTask = task.changeTaskStatus(userId, newTaskStatus);
         } catch (error) {
           expect(DomainException);
         }
       });
       it('[準正常系]: 「完了」から「レビュー待ち」に変更できない', () => {
         try {
-          const task = createEntity(TASK_STATUS.DONE);
+          const taskStatus = TaskStatus.reconstruct({
+            value: TASK_STATUS.DONE,
+          });
+          const task = createEntity(taskStatus);
           const userId = UniqueID.reconstruct('1');
-          const changedTask = task.changeTaskStatus(userId, TASK_STATUS.DOING);
+
+          const newTaskStatus = TaskStatus.reconstruct({
+            value: TASK_STATUS.READY_FOR_REVIEW,
+          });
+          const changedTask = task.changeTaskStatus(userId, newTaskStatus);
         } catch (error) {
           expect(DomainException);
         }

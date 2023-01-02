@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.definePostFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
+exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.definePostFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
 const internal_1 = require("@quramy/prisma-fabbrica/lib/internal");
 var internal_2 = require("@quramy/prisma-fabbrica/lib/internal");
 Object.defineProperty(exports, "initialize", { enumerable: true, get: function () { return internal_2.initialize; } });
@@ -31,6 +31,10 @@ const modelFieldDefinitions = [{
                 name: "ParticipantMailAddress",
                 type: "ParticipantMailAddress",
                 relationName: "ParticipantToParticipantMailAddress"
+            }, {
+                name: "ParticipantOnTask",
+                type: "ParticipantOnTask",
+                relationName: "ParticipantToParticipantOnTask"
             }]
     }, {
         name: "EnrollmentStatus",
@@ -57,6 +61,35 @@ const modelFieldDefinitions = [{
                 type: "Participant",
                 relationName: "ParticipantToParticipantMailAddress"
             }]
+    }, {
+        name: "Task",
+        fields: [{
+                name: "taskStatus",
+                type: "TaskStatus",
+                relationName: "TaskToTaskStatus"
+            }, {
+                name: "ParticipantOnTask",
+                type: "ParticipantOnTask",
+                relationName: "ParticipantOnTaskToTask"
+            }]
+    }, {
+        name: "TaskStatus",
+        fields: [{
+                name: "Task",
+                type: "Task",
+                relationName: "TaskToTaskStatus"
+            }]
+    }, {
+        name: "ParticipantOnTask",
+        fields: [{
+                name: "Participant",
+                type: "Participant",
+                relationName: "ParticipantToParticipantOnTask"
+            }, {
+                name: "Task",
+                type: "Task",
+                relationName: "ParticipantOnTaskToTask"
+            }]
     }];
 function autoGenerateUserScalarsOrEnums({ seq }) {
     return {
@@ -70,10 +103,10 @@ function defineUserFactoryInternal({ defaultData: defaultDataResolver }) {
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGenerateUserScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {};
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -102,7 +135,7 @@ function defineUserFactory(options = {}) {
 }
 exports.defineUserFactory = defineUserFactory;
 function isPostauthorFactory(x) {
-    return (x === null || x === void 0 ? void 0 : x._factoryFor) === "User";
+    return x?._factoryFor === "User";
 }
 function autoGeneratePostScalarsOrEnums({ seq }) {
     return {
@@ -116,14 +149,14 @@ function definePostFactoryInternal({ defaultData: defaultDataResolver }) {
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGeneratePostScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {
             author: isPostauthorFactory(defaultData.author) ? {
                 create: await defaultData.author.build()
             } : defaultData.author
         };
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -165,10 +198,10 @@ function defineParticipantFactoryInternal({ defaultData: defaultDataResolver }) 
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGenerateParticipantScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {};
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -209,10 +242,10 @@ function defineEnrollmentStatusFactoryInternal({ defaultData: defaultDataResolve
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGenerateEnrollmentStatusScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {};
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -241,10 +274,10 @@ function defineEnrollmentStatusFactory(options = {}) {
 }
 exports.defineEnrollmentStatusFactory = defineEnrollmentStatusFactory;
 function isParticipantOnEnrollmentStatusparticipantFactory(x) {
-    return (x === null || x === void 0 ? void 0 : x._factoryFor) === "Participant";
+    return x?._factoryFor === "Participant";
 }
 function isParticipantOnEnrollmentStatusenrollmentStatusFactory(x) {
-    return (x === null || x === void 0 ? void 0 : x._factoryFor) === "EnrollmentStatus";
+    return x?._factoryFor === "EnrollmentStatus";
 }
 function autoGenerateParticipantOnEnrollmentStatusScalarsOrEnums({ seq }) {
     return {};
@@ -256,7 +289,7 @@ function defineParticipantOnEnrollmentStatusFactoryInternal({ defaultData: defau
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGenerateParticipantOnEnrollmentStatusScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {
             participant: isParticipantOnEnrollmentStatusparticipantFactory(defaultData.participant) ? {
@@ -266,7 +299,7 @@ function defineParticipantOnEnrollmentStatusFactoryInternal({ defaultData: defau
                 create: await defaultData.enrollmentStatus.build()
             } : defaultData.enrollmentStatus
         };
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -295,7 +328,7 @@ function defineParticipantOnEnrollmentStatusFactory(options) {
 }
 exports.defineParticipantOnEnrollmentStatusFactory = defineParticipantOnEnrollmentStatusFactory;
 function isParticipantMailAddressparticipantFactory(x) {
-    return (x === null || x === void 0 ? void 0 : x._factoryFor) === "Participant";
+    return x?._factoryFor === "Participant";
 }
 function autoGenerateParticipantMailAddressScalarsOrEnums({ seq }) {
     return {
@@ -309,14 +342,14 @@ function defineParticipantMailAddressFactoryInternal({ defaultData: defaultDataR
     const build = async (inputData = {}) => {
         const seq = getSeq();
         const requiredScalarData = autoGenerateParticipantMailAddressScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver !== null && defaultDataResolver !== void 0 ? defaultDataResolver : {});
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
         const defaultAssociations = {
             participant: isParticipantMailAddressparticipantFactory(defaultData.participant) ? {
                 create: await defaultData.participant.build()
             } : defaultData.participant
         };
-        const data = Object.assign(Object.assign(Object.assign(Object.assign({}, requiredScalarData), defaultData), defaultAssociations), inputData);
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
@@ -344,3 +377,153 @@ function defineParticipantMailAddressFactory(options) {
     return defineParticipantMailAddressFactoryInternal(options);
 }
 exports.defineParticipantMailAddressFactory = defineParticipantMailAddressFactory;
+function isTasktaskStatusFactory(x) {
+    return x?._factoryFor === "TaskStatus";
+}
+function autoGenerateTaskScalarsOrEnums({ seq }) {
+    return {
+        id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Task", fieldName: "id", isId: true, isUnique: false, seq }),
+        taskName: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Task", fieldName: "taskName", isId: false, isUnique: false, seq })
+    };
+}
+function defineTaskFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("Task", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateTaskScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            taskStatus: isTasktaskStatusFactory(defaultData.taskStatus) ? {
+                create: await defaultData.taskStatus.build()
+            } : defaultData.taskStatus
+        };
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().task.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "Task",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineTaskFactory(options) {
+    return defineTaskFactoryInternal(options);
+}
+exports.defineTaskFactory = defineTaskFactory;
+function autoGenerateTaskStatusScalarsOrEnums({ seq }) {
+    return {
+        id: (0, internal_1.getScalarFieldValueGenerator)().Int({ modelName: "TaskStatus", fieldName: "id", isId: true, isUnique: false, seq }),
+        status: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "TaskStatus", fieldName: "status", isId: false, isUnique: false, seq })
+    };
+}
+function defineTaskStatusFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("TaskStatus", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateTaskStatusScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {};
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().taskStatus.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "TaskStatus",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineTaskStatusFactory(options = {}) {
+    return defineTaskStatusFactoryInternal(options);
+}
+exports.defineTaskStatusFactory = defineTaskStatusFactory;
+function isParticipantOnTaskParticipantFactory(x) {
+    return x?._factoryFor === "Participant";
+}
+function isParticipantOnTaskTaskFactory(x) {
+    return x?._factoryFor === "Task";
+}
+function autoGenerateParticipantOnTaskScalarsOrEnums({ seq }) {
+    return {};
+}
+function defineParticipantOnTaskFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("ParticipantOnTask", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateParticipantOnTaskScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            Participant: isParticipantOnTaskParticipantFactory(defaultData.Participant) ? {
+                create: await defaultData.Participant.build()
+            } : defaultData.Participant,
+            Task: isParticipantOnTaskTaskFactory(defaultData.Task) ? {
+                create: await defaultData.Task.build()
+            } : defaultData.Task
+        };
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        participantId: inputData.participantId,
+        taskId: inputData.taskId
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().participantOnTask.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "ParticipantOnTask",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineParticipantOnTaskFactory(options) {
+    return defineParticipantOnTaskFactoryInternal(options);
+}
+exports.defineParticipantOnTaskFactory = defineParticipantOnTaskFactory;

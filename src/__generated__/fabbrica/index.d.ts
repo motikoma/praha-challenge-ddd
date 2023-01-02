@@ -4,6 +4,9 @@ import type { Participant } from "@prisma/client";
 import type { EnrollmentStatus } from "@prisma/client";
 import type { ParticipantOnEnrollmentStatus } from "@prisma/client";
 import type { ParticipantMailAddress } from "@prisma/client";
+import type { Task } from "@prisma/client";
+import type { TaskStatus } from "@prisma/client";
+import type { ParticipantOnTask } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Resolver } from "@quramy/prisma-fabbrica/lib/internal";
 export { initialize, resetSequence, registerScalarFieldValueGenerator, resetScalarFieldValueGenerator } from "@quramy/prisma-fabbrica/lib/internal";
@@ -62,6 +65,7 @@ type ParticipantFactoryDefineInput = {
     firstName?: string;
     ParticipantOnEnrollmentStatus?: Prisma.ParticipantOnEnrollmentStatusCreateNestedManyWithoutParticipantInput;
     ParticipantMailAddress?: Prisma.ParticipantMailAddressCreateNestedManyWithoutParticipantInput;
+    ParticipantOnTask?: Prisma.ParticipantOnTaskCreateNestedManyWithoutParticipantInput;
 };
 type ParticipantFactoryDefineOptions = {
     defaultData?: Resolver<ParticipantFactoryDefineInput, BuildDataOptions>;
@@ -144,3 +148,72 @@ interface ParticipantMailAddressFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.ParticipantMailAddressCreateInput>): PromiseLike<Pick<ParticipantMailAddress, "participantId">>;
 }
 export declare function defineParticipantMailAddressFactory(options: ParticipantMailAddressFactoryDefineOptions): ParticipantMailAddressFactoryInterface;
+type TasktaskStatusFactory = {
+    _factoryFor: "TaskStatus";
+    build: () => PromiseLike<Prisma.TaskStatusCreateNestedOneWithoutTaskInput["create"]>;
+};
+type TaskFactoryDefineInput = {
+    id?: string;
+    taskName?: string;
+    taskStatus: TasktaskStatusFactory | Prisma.TaskStatusCreateNestedOneWithoutTaskInput;
+    ParticipantOnTask?: Prisma.ParticipantOnTaskCreateNestedManyWithoutTaskInput;
+};
+type TaskFactoryDefineOptions = {
+    defaultData: Resolver<TaskFactoryDefineInput, BuildDataOptions>;
+};
+interface TaskFactoryInterface {
+    readonly _factoryFor: "Task";
+    build(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Prisma.TaskCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Prisma.TaskCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.TaskCreateInput>[]): PromiseLike<Prisma.TaskCreateInput[]>;
+    pickForConnect(inputData: Task): Pick<Task, "id">;
+    create(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Task>;
+    createList(inputData: number | readonly Partial<Prisma.TaskCreateInput>[]): PromiseLike<Task[]>;
+    createForConnect(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Pick<Task, "id">>;
+}
+export declare function defineTaskFactory(options: TaskFactoryDefineOptions): TaskFactoryInterface;
+type TaskStatusFactoryDefineInput = {
+    id?: number;
+    status?: string;
+    Task?: Prisma.TaskCreateNestedManyWithoutTaskStatusInput;
+};
+type TaskStatusFactoryDefineOptions = {
+    defaultData?: Resolver<TaskStatusFactoryDefineInput, BuildDataOptions>;
+};
+interface TaskStatusFactoryInterface {
+    readonly _factoryFor: "TaskStatus";
+    build(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<Prisma.TaskStatusCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<Prisma.TaskStatusCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.TaskStatusCreateInput>[]): PromiseLike<Prisma.TaskStatusCreateInput[]>;
+    pickForConnect(inputData: TaskStatus): Pick<TaskStatus, "id">;
+    create(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<TaskStatus>;
+    createList(inputData: number | readonly Partial<Prisma.TaskStatusCreateInput>[]): PromiseLike<TaskStatus[]>;
+    createForConnect(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<Pick<TaskStatus, "id">>;
+}
+export declare function defineTaskStatusFactory(options?: TaskStatusFactoryDefineOptions): TaskStatusFactoryInterface;
+type ParticipantOnTaskParticipantFactory = {
+    _factoryFor: "Participant";
+    build: () => PromiseLike<Prisma.ParticipantCreateNestedOneWithoutParticipantOnTaskInput["create"]>;
+};
+type ParticipantOnTaskTaskFactory = {
+    _factoryFor: "Task";
+    build: () => PromiseLike<Prisma.TaskCreateNestedOneWithoutParticipantOnTaskInput["create"]>;
+};
+type ParticipantOnTaskFactoryDefineInput = {
+    Participant: ParticipantOnTaskParticipantFactory | Prisma.ParticipantCreateNestedOneWithoutParticipantOnTaskInput;
+    Task: ParticipantOnTaskTaskFactory | Prisma.TaskCreateNestedOneWithoutParticipantOnTaskInput;
+};
+type ParticipantOnTaskFactoryDefineOptions = {
+    defaultData: Resolver<ParticipantOnTaskFactoryDefineInput, BuildDataOptions>;
+};
+interface ParticipantOnTaskFactoryInterface {
+    readonly _factoryFor: "ParticipantOnTask";
+    build(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Prisma.ParticipantOnTaskCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Prisma.ParticipantOnTaskCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.ParticipantOnTaskCreateInput>[]): PromiseLike<Prisma.ParticipantOnTaskCreateInput[]>;
+    pickForConnect(inputData: ParticipantOnTask): Pick<ParticipantOnTask, "participantId" | "taskId">;
+    create(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<ParticipantOnTask>;
+    createList(inputData: number | readonly Partial<Prisma.ParticipantOnTaskCreateInput>[]): PromiseLike<ParticipantOnTask[]>;
+    createForConnect(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Pick<ParticipantOnTask, "participantId" | "taskId">>;
+}
+export declare function defineParticipantOnTaskFactory(options: ParticipantOnTaskFactoryDefineOptions): ParticipantOnTaskFactoryInterface;
