@@ -11,54 +11,50 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async create(task: Task) {
-    const result = await this.prismaClient.task.create({
+    const result = await this.prismaClient.participantOnTask.create({
       data: {
-        id: task.id.id,
-        taskName: task.taskName.taskName,
+        participantId: task.ownerId.id,
+        taskId: task.id.id,
         taskStatusId: task.taskStatus.value,
-        ParticipantOnTask: {
-          create: {
-            participantId: task.ownerId.id,
-          },
-        },
       },
       include: {
-        taskStatus: true,
-        ParticipantOnTask: true,
+        Task: true,
       },
     });
 
-    const taskEntity = Task.reconstruct({
-      id: UniqueID.reconstruct(result.id),
+    const taskEntity = Task.create({
+      id: UniqueID.reconstruct(result.taskId),
       values: {
-        ownerId: UniqueID.reconstruct(
-          result.ParticipantOnTask[0].participantId,
-        ),
-        taskName: TaskName.create({ taskName: result.taskName }),
-        taskStatus: TaskStatus.reconstruct({ value: result.taskStatusId }),
+        ownerId: UniqueID.reconstruct(result.participantId),
+        taskName: TaskName.create({ taskName: result.Task.taskName }),
+        taskStatus: TaskStatus.reconstruct({
+          value: result.taskStatusId,
+        }),
       },
     });
 
     return taskEntity;
   }
 
-  async list() {
-    const tasks = await this.prismaClient.task.findMany({
+  async listWithOwnerId(ownerId: UniqueID) {
+    const tasks = await this.prismaClient.participantOnTask.findMany({
+      where: {
+        participantId: ownerId.id,
+      },
       include: {
-        taskStatus: true,
-        ParticipantOnTask: true,
+        Task: true,
       },
     });
 
     const taskEntities = tasks.map((task) => {
-      return Task.reconstruct({
-        id: UniqueID.reconstruct(task.id),
+      return Task.create({
+        id: UniqueID.reconstruct(task.taskId),
         values: {
-          ownerId: UniqueID.reconstruct(
-            task.ParticipantOnTask[0].participantId,
-          ),
-          taskName: TaskName.create({ taskName: task.taskName }),
-          taskStatus: TaskStatus.reconstruct({ value: task.taskStatusId }),
+          ownerId: UniqueID.reconstruct(task.participantId),
+          taskName: TaskName.create({ taskName: task.Task.taskName }),
+          taskStatus: TaskStatus.reconstruct({
+            value: task.taskStatusId,
+          }),
         },
       });
     });
@@ -66,19 +62,21 @@ export class TaskRepository implements ITaskRepository {
     return taskEntities;
   }
 
-  async getWithId(taskId: UniqueID) {
-    const { id } = taskId;
-    const task = await this.prismaClient.task.findUnique({
+  async get(ownerId: UniqueID, taskId: UniqueID) {
+    const task = await this.prismaClient.participantOnTask.findUnique({
       where: {
-        id: id,
+        participantId_taskId: {
+          participantId: ownerId.id,
+          taskId: taskId.id,
+        },
       },
       select: {
-        id: true,
-        taskName: true,
+        participantId: true,
+        taskId: true,
         taskStatusId: true,
-        ParticipantOnTask: {
+        Task: {
           select: {
-            participantId: true,
+            taskName: true,
           },
         },
       },
@@ -86,56 +84,49 @@ export class TaskRepository implements ITaskRepository {
 
     if (!task) return null;
 
-    const taskEntity = Task.reconstruct({
-      id: UniqueID.reconstruct(task.id),
+    const taskEntity = Task.create({
+      id: UniqueID.reconstruct(task.taskId),
       values: {
-        ownerId: UniqueID.reconstruct(task.ParticipantOnTask[0].participantId),
-        taskName: TaskName.create({ taskName: task.taskName }),
-        taskStatus: TaskStatus.reconstruct({ value: task.taskStatusId }),
+        ownerId: UniqueID.reconstruct(task.participantId),
+        taskName: TaskName.create({ taskName: task.Task.taskName }),
+        taskStatus: TaskStatus.reconstruct({
+          value: task.taskStatusId,
+        }),
       },
     });
 
     return taskEntity;
   }
 
-  async update(task: Task) {
-    const { id } = task.id;
-    const { taskName, taskStatus, ownerId } = task.values;
-    const updatedTask = await this.prismaClient.task.update({
+  async updateStatus(task: Task) {
+    const { taskStatus, ownerId } = task.values;
+    const updatedTask = await this.prismaClient.participantOnTask.update({
       where: {
-        id: id,
+        participantId_taskId: {
+          participantId: ownerId.id,
+          taskId: task.id.id,
+        },
       },
       data: {
-        taskName: taskName.taskName,
         taskStatusId: taskStatus.value,
-        ParticipantOnTask: {
-          update: {
-            where: {
-              participantId_taskId: {
-                participantId: ownerId.id,
-                taskId: id,
-              },
-            },
-            data: {
-              participantId: ownerId.id,
-            },
+      },
+      include: {
+        Task: {
+          select: {
+            taskName: true,
           },
         },
       },
-      include: {
-        taskStatus: true,
-        ParticipantOnTask: true,
-      },
     });
 
-    const updatedTaskEntity = Task.reconstruct({
-      id: UniqueID.reconstruct(updatedTask.id),
+    const updatedTaskEntity = Task.create({
+      id: UniqueID.reconstruct(updatedTask.taskId),
       values: {
-        ownerId: UniqueID.reconstruct(
-          updatedTask.ParticipantOnTask[0].participantId,
-        ),
-        taskName: TaskName.create({ taskName: updatedTask.taskName }),
-        taskStatus: TaskStatus.reconstruct({ value: updatedTask.taskStatusId }),
+        ownerId: UniqueID.reconstruct(updatedTask.participantId),
+        taskName: TaskName.create({ taskName: updatedTask.Task.taskName }),
+        taskStatus: TaskStatus.reconstruct({
+          value: updatedTask.taskStatusId,
+        }),
       },
     });
 

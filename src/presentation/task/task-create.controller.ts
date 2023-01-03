@@ -7,6 +7,10 @@ import { TaskRepository } from 'src/infrastructure/db/repository/task-repository
 class RequestBody {
   @IsNotEmpty()
   @IsString()
+  readonly taskId!: string;
+
+  @IsNotEmpty()
+  @IsString()
   readonly ownerId!: string;
 
   @IsNotEmpty()
@@ -16,7 +20,7 @@ class RequestBody {
 
 class ResponseBody {
   constructor(
-    private readonly id: string,
+    private readonly taskId: string,
     private readonly ownerId: string,
     private readonly taskName: string,
     private readonly taskStatus: number,
@@ -26,7 +30,7 @@ class ResponseBody {
 @Controller({
   path: '/tasks',
 })
-export class TaskListController {
+export class TaskCreateController {
   @Post()
   async createTask(@Body() req: RequestBody): Promise<ResponseBody> {
     const prisma = new PrismaClient();

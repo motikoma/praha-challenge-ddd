@@ -22,6 +22,7 @@ describe('participant-repository-impl', () => {
       await prisma.participantOnEnrollmentStatus.deleteMany();
     const deleteParticipantMailAddress =
       await prisma.participantMailAddress.deleteMany();
+    const deleteParticipantOnTask = await prisma.participantOnTask.deleteMany();
     const deleteParticipant = await prisma.participant.deleteMany();
   });
 

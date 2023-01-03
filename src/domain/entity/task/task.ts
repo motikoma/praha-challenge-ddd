@@ -21,15 +21,7 @@ export class Task extends Entity<ReadonlyProps> {
     super(props);
   }
 
-  static create(values: ReadonlyValues): Task {
-    const props = {
-      id: UniqueID.create(),
-      values,
-    };
-    return new Task(props);
-  }
-
-  static reconstruct(props: ReadonlyProps): Task {
+  static create(props: ReadonlyProps): Task {
     return new Task(props);
   }
 

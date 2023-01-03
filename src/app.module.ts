@@ -6,6 +6,7 @@ import { PrismaService } from './prisma.service';
 import { ParticipantUpdateController } from './presentation/participant/participant-update.controller';
 import { TaskListController } from './presentation/task/task-list.controller';
 import { TaskUpdateController } from './presentation/task/task-update.controller';
+import { TaskCreateController } from './presentation/task/task-create.controller';
 
 @Module({
   imports: [],
@@ -14,6 +15,7 @@ import { TaskUpdateController } from './presentation/task/task-update.controller
     ParticipantCreateController,
     ParticipantListController,
     ParticipantUpdateController,
+    TaskCreateController,
     TaskListController,
     TaskUpdateController,
   ],

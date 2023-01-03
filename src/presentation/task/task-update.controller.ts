@@ -1,14 +1,13 @@
 import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { CreateTaskUseCase } from 'src/application/task/create-task.usecase';
 import { UpdateTaskUseCase } from 'src/application/task/update-task.usecase';
 import { TaskRepository } from 'src/infrastructure/db/repository/task-repository-impl';
 
 class RequestBody {
   @IsNotEmpty()
   @IsString()
-  readonly participantId!: string;
+  readonly ownerId!: string;
 
   @IsNotEmpty()
   @IsNumber()

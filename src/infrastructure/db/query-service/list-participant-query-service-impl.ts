@@ -25,15 +25,9 @@ export class ListParticipantQueryService
               in: filter.taskIds,
             },
           },
-        },
-        AND: {
-          ParticipantOnTask: {
-            every: {
-              Task: {
-                taskStatusId: {
-                  equals: filter.taskStatus,
-                },
-              },
+          every: {
+            taskStatusId: {
+              equals: filter.taskStatus,
             },
           },
         },

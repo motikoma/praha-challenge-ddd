@@ -5,6 +5,7 @@ import { TaskStatus } from 'src/domain/entity/task/task-status';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 
 type Param = {
+  readonly taskId: string;
   readonly ownerId: string;
   readonly taskName: string;
 };
@@ -14,10 +15,18 @@ export class CreateTaskUseCase {
   constructor(private readonly repository: ITaskRepository) {}
 
   async do(param: ReadonlyParam) {
+    const taskId = UniqueID.reconstruct(param.taskId);
     const ownerId = UniqueID.reconstruct(param.ownerId);
     const taskName = TaskName.create({ taskName: param.taskName });
     const taskStatus = TaskStatus.create();
-    const task = Task.create({ ownerId, taskName, taskStatus });
+    const task = Task.create({
+      id: taskId,
+      values: {
+        ownerId,
+        taskName,
+        taskStatus,
+      },
+    });
 
     const newTask = await this.repository.create(task);
 

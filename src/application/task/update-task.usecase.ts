@@ -4,7 +4,7 @@ import { DomainException } from 'src/domain/shared/domain-exception';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 
 type Param = {
-  readonly participantId: string;
+  readonly ownerId: string;
   readonly taskStatus: number;
 };
 type ReadonlyParam = Readonly<Param>;
@@ -13,17 +13,17 @@ export class UpdateTaskUseCase {
   constructor(private readonly repository: ITaskRepository) {}
 
   async do(id: string, param: ReadonlyParam) {
-    const participantId = UniqueID.reconstruct(param.participantId);
+    const ownerId = UniqueID.reconstruct(param.ownerId);
     const taskId = UniqueID.reconstruct(id);
 
-    const task = await this.repository.getWithId(taskId);
+    const task = await this.repository.get(ownerId, taskId);
     if (!task) throw new DomainException('課題のidが存在しません');
 
     const newTaskStatus = TaskStatus.reconstruct({
       value: param.taskStatus,
     });
-    const updateTask = task.changeTaskStatus(participantId, newTaskStatus);
-    const updatedTask = await this.repository.update(updateTask);
+    const updateTask = task.changeTaskStatus(ownerId, newTaskStatus);
+    const updatedTask = await this.repository.updateStatus(updateTask);
 
     const updatedParticipantDto = new UpdateTaskDto(
       updatedTask.id.id,

@@ -21,7 +21,6 @@ describe('task-repository-impl', () => {
     await prisma.participantOnEnrollmentStatus.deleteMany();
     await prisma.participantMailAddress.deleteMany();
     await prisma.participantOnTask.deleteMany();
-    await prisma.task.deleteMany();
     await prisma.participant.deleteMany();
   });
 
@@ -29,7 +28,7 @@ describe('task-repository-impl', () => {
     await prisma.$disconnect();
   });
 
-  it('[正常系]createに成功するとTaskインスタンスが返る', async () => {
+  it('[正常系]create: 参加者に紐付けて作成した課題が返る', async () => {
     const participantId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -52,6 +51,7 @@ describe('task-repository-impl', () => {
     });
     await participantRepository.create(participant);
 
+    const id = UniqueID.reconstruct('1');
     const ownerId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -60,16 +60,19 @@ describe('task-repository-impl', () => {
     });
     const taskStatus = TaskStatus.create();
     const task = Task.create({
-      ownerId,
-      taskName,
-      taskStatus,
+      id,
+      values: {
+        ownerId,
+        taskName,
+        taskStatus,
+      },
     });
 
     const actual = await taskRepository.create(task);
     expect(actual).toBeInstanceOf(Task);
   });
 
-  it('[正常系]listに成功するとTaskインスタンスが複数返る', async () => {
+  it('[正常系]listWithOwnerId: 特定の参加者に紐づいた課題が複数返る', async () => {
     const participantId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -92,6 +95,7 @@ describe('task-repository-impl', () => {
     });
     await participantRepository.create(participant);
 
+    const id = UniqueID.reconstruct('1');
     const ownerId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -100,11 +104,15 @@ describe('task-repository-impl', () => {
     });
     const taskStatus = TaskStatus.create();
     const task1 = Task.create({
-      ownerId,
-      taskName,
-      taskStatus,
+      id,
+      values: {
+        ownerId,
+        taskName,
+        taskStatus,
+      },
     });
 
+    const id2 = UniqueID.reconstruct('2');
     const ownerId2 = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -113,19 +121,22 @@ describe('task-repository-impl', () => {
     });
     const taskStatus2 = TaskStatus.create();
     const task2 = Task.create({
-      ownerId: ownerId2,
-      taskName: taskName2,
-      taskStatus: taskStatus2,
+      id: id2,
+      values: {
+        ownerId: ownerId2,
+        taskName: taskName2,
+        taskStatus: taskStatus2,
+      },
     });
 
     await taskRepository.create(task1);
     await taskRepository.create(task2);
 
-    const actual = await taskRepository.list();
+    const actual = await taskRepository.listWithOwnerId(participantId);
     expect(actual).toHaveLength(2);
   });
 
-  it('[正常系]updateに成功すると部分的にアップデートされたParticipantインスタンスが返る', async () => {
+  it('[正常系]updateStatus: ステータスがアップデートされた課題が返る', async () => {
     /**
      * 参加者データ作成
      */
@@ -176,6 +187,7 @@ describe('task-repository-impl', () => {
     /**
      * 課題データ作成
      */
+    const id = UniqueID.reconstruct('1');
     const ownerId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -184,31 +196,30 @@ describe('task-repository-impl', () => {
     });
     const taskStatus = TaskStatus.create();
     const task = Task.create({
-      ownerId,
-      taskName,
-      taskStatus,
+      id,
+      values: {
+        ownerId,
+        taskName,
+        taskStatus,
+      },
     });
     const taskEntity = await taskRepository.create(task);
 
     /**
-     * 課題データ変更
-     * - 課題IDとオーナーIDは変更できない
+     * 課題ステータス変更
      */
-    const newTaskName = TaskName.create({
-      taskName: 'task2',
-    });
     const newTaskStatus = TaskStatus.reconstruct({
       value: TASK_STATUS.READY_FOR_REVIEW,
     });
-    const newTask = Task.reconstruct({
+    const newTask = Task.create({
       id: taskEntity.id, // 変更前のIDを指定
       values: {
         ownerId: taskEntity.ownerId, // 変更前のownerIdを指定
-        taskName: newTaskName,
+        taskName: taskEntity.taskName, // 変更前のtaskNameを指定
         taskStatus: newTaskStatus,
       },
     });
-    const actual = await taskRepository.update(newTask);
+    const actual = await taskRepository.updateStatus(newTask);
 
     expect(actual).toBeInstanceOf(Task);
     expect(actual?.ownerId).toEqual(newTask.ownerId);

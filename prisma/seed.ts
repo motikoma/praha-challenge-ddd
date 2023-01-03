@@ -81,49 +81,18 @@ const taskStatusData: Prisma.TaskStatusCreateInput[] = [
   },
 ];
 
-const participantData: Prisma.ParticipantCreateInput[] = [
-  {
-    id: '1',
-    lastName: '山田',
-    firstName: '太郎',
-    ParticipantOnEnrollmentStatus: {
-      create: {
-        enrollmentStatusId: 1,
-      },
-    },
-    ParticipantMailAddress: {
-      create: {
-        mailAddress: 'hoge@gmail.com',
-      },
-    },
-  },
-  {
-    id: '2',
-    lastName: '山田2',
-    firstName: '太郎2',
-    ParticipantOnEnrollmentStatus: {
-      create: {
-        enrollmentStatusId: 2,
-      },
-    },
-    ParticipantMailAddress: {
-      create: {
-        mailAddress: 'hoge2@gmail.com',
-      },
-    },
-  },
-];
-
 const taskData: Prisma.TaskCreateInput[] = [
   {
     id: '1',
     taskName: 'タスク1',
-    ParticipantOnTask: {
-      create: {
-        participantId: '1',
-        taskStatusId: 1,
-      },
-    },
+  },
+  {
+    id: '2',
+    taskName: 'タスク2',
+  },
+  {
+    id: '3',
+    taskName: 'タスク3',
   },
 ];
 
@@ -144,12 +113,6 @@ async function main() {
 
   for (const d of taskStatusData) {
     const data = await prisma.taskStatus.create({
-      data: d,
-    });
-  }
-
-  for (const d of participantData) {
-    const data = await prisma.participant.create({
       data: d,
     });
   }

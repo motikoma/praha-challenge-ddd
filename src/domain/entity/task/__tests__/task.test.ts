@@ -136,14 +136,18 @@ describe('changeTaskStatus', () => {
 });
 
 const createEntity = (taskStatus: TaskStatus): Task => {
+  const id = UniqueID.reconstruct('1');
   const taskName = TaskName.create({
     taskName: 'DBモデリング1',
   });
   const ownerId = UniqueID.reconstruct('1');
   const task = Task.create({
-    taskName: taskName,
-    taskStatus: taskStatus,
-    ownerId: ownerId,
+    id,
+    values: {
+      taskName: taskName,
+      taskStatus: taskStatus,
+      ownerId: ownerId,
+    },
   });
 
   return task;
