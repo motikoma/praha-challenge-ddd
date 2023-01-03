@@ -64,10 +64,6 @@ const modelFieldDefinitions = [{
     }, {
         name: "Task",
         fields: [{
-                name: "taskStatus",
-                type: "TaskStatus",
-                relationName: "TaskToTaskStatus"
-            }, {
                 name: "ParticipantOnTask",
                 type: "ParticipantOnTask",
                 relationName: "ParticipantOnTaskToTask"
@@ -75,9 +71,9 @@ const modelFieldDefinitions = [{
     }, {
         name: "TaskStatus",
         fields: [{
-                name: "Task",
-                type: "Task",
-                relationName: "TaskToTaskStatus"
+                name: "ParticipantOnTask",
+                type: "ParticipantOnTask",
+                relationName: "ParticipantOnTaskToTaskStatus"
             }]
     }, {
         name: "ParticipantOnTask",
@@ -89,6 +85,10 @@ const modelFieldDefinitions = [{
                 name: "Task",
                 type: "Task",
                 relationName: "ParticipantOnTaskToTask"
+            }, {
+                name: "TaskStatus",
+                type: "TaskStatus",
+                relationName: "ParticipantOnTaskToTaskStatus"
             }]
     }];
 function autoGenerateUserScalarsOrEnums({ seq }) {
@@ -377,9 +377,6 @@ function defineParticipantMailAddressFactory(options) {
     return defineParticipantMailAddressFactoryInternal(options);
 }
 exports.defineParticipantMailAddressFactory = defineParticipantMailAddressFactory;
-function isTasktaskStatusFactory(x) {
-    return x?._factoryFor === "TaskStatus";
-}
 function autoGenerateTaskScalarsOrEnums({ seq }) {
     return {
         id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Task", fieldName: "id", isId: true, isUnique: false, seq }),
@@ -395,11 +392,7 @@ function defineTaskFactoryInternal({ defaultData: defaultDataResolver }) {
         const requiredScalarData = autoGenerateTaskScalarsOrEnums({ seq });
         const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
-        const defaultAssociations = {
-            taskStatus: isTasktaskStatusFactory(defaultData.taskStatus) ? {
-                create: await defaultData.taskStatus.build()
-            } : defaultData.taskStatus
-        };
+        const defaultAssociations = {};
         const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
@@ -424,7 +417,7 @@ function defineTaskFactoryInternal({ defaultData: defaultDataResolver }) {
         createForConnect,
     };
 }
-function defineTaskFactory(options) {
+function defineTaskFactory(options = {}) {
     return defineTaskFactoryInternal(options);
 }
 exports.defineTaskFactory = defineTaskFactory;
@@ -478,6 +471,9 @@ function isParticipantOnTaskParticipantFactory(x) {
 function isParticipantOnTaskTaskFactory(x) {
     return x?._factoryFor === "Task";
 }
+function isParticipantOnTaskTaskStatusFactory(x) {
+    return x?._factoryFor === "TaskStatus";
+}
 function autoGenerateParticipantOnTaskScalarsOrEnums({ seq }) {
     return {};
 }
@@ -496,7 +492,10 @@ function defineParticipantOnTaskFactoryInternal({ defaultData: defaultDataResolv
             } : defaultData.Participant,
             Task: isParticipantOnTaskTaskFactory(defaultData.Task) ? {
                 create: await defaultData.Task.build()
-            } : defaultData.Task
+            } : defaultData.Task,
+            TaskStatus: isParticipantOnTaskTaskStatusFactory(defaultData.TaskStatus) ? {
+                create: await defaultData.TaskStatus.build()
+            } : defaultData.TaskStatus
         };
         const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;

@@ -64,22 +64,22 @@ model ParticipantMailAddress {
 model Task {
   id                String              @id
   taskName          String
-  taskStatusId      Int
-  taskStatus        TaskStatus          @relation(fields: [taskStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   ParticipantOnTask ParticipantOnTask[]
 }
 
 model TaskStatus {
-  id     Int    @id
-  status String
-  Task   Task[]
+  id                Int                 @id
+  status            String
+  ParticipantOnTask ParticipantOnTask[]
 }
 
 model ParticipantOnTask {
   participantId String
-  taskId        String
   Participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  taskId        String
   Task          Task        @relation(fields: [taskId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  taskStatusId  Int
+  TaskStatus    TaskStatus  @relation(fields: [taskStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
   @@id([participantId, taskId])
 }

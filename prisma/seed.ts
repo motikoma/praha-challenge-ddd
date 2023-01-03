@@ -118,14 +118,10 @@ const taskData: Prisma.TaskCreateInput[] = [
   {
     id: '1',
     taskName: 'タスク1',
-    taskStatus: {
-      connect: {
-        id: 1,
-      },
-    },
     ParticipantOnTask: {
       create: {
         participantId: '1',
+        taskStatusId: 1,
       },
     },
   },
