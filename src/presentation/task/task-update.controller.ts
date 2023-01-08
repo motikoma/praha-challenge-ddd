@@ -18,7 +18,6 @@ class ResponseBody {
   constructor(
     private readonly id: string,
     private readonly ownerId: string,
-    private readonly taskName: string,
     private readonly taskStatus: number,
   ) {}
 }
@@ -40,7 +39,6 @@ export class TaskUpdateController {
     const response = new ResponseBody(
       result.id,
       result.ownerId,
-      result.taskName,
       result.taskStatus,
     );
 

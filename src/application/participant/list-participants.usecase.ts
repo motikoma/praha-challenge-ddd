@@ -1,22 +1,22 @@
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
-import { IListParticipantQueryService } from './query-service/list-participants-query-service';
+import {
+  IListParticipantsQueryService,
+  PagingCondition,
+} from './query-service/list-participants-query-service';
 
 type Param = {
   taskIds: string[];
-  taskStatus: number;
+  taskStatus?: number;
+  pagingCondition: PagingCondition;
 };
 
 export class ListParticipantsUseCase {
-  constructor(
-    private readonly repository: IParticipantRepository,
-    private readonly queryService: IListParticipantQueryService,
-  ) {}
+  constructor(private readonly queryService: IListParticipantsQueryService) {}
 
   async do(param: Param) {
-    // const participants = await this.repository.list();
     const participants = await this.queryService.list(param);
 
-    const participantDtos = participants.map((participant) => {
+    const participantDtos = participants.items.map((participant) => {
       return new ParticipantDto(
         participant.id.id,
         participant.name.lastName,

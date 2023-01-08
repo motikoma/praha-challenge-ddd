@@ -144,7 +144,6 @@ const createEntity = (taskStatus: TaskStatus): Task => {
   const task = Task.create({
     id,
     values: {
-      taskName: taskName,
       taskStatus: taskStatus,
       ownerId: ownerId,
     },

@@ -1,7 +1,6 @@
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { DomainException } from '../../shared/domain-exception';
 import { Entity } from '../../shared/entity';
-import { TaskName } from './task-name';
 import { TaskStatus, TASK_STATUS } from './task-status';
 
 type Props = {
@@ -12,7 +11,6 @@ type ReadonlyProps = Readonly<Props>;
 
 type Values = {
   ownerId: UniqueID;
-  taskName: TaskName;
   taskStatus: TaskStatus;
 };
 type ReadonlyValues = Readonly<Values>;
@@ -33,12 +31,12 @@ export class Task extends Entity<ReadonlyProps> {
     return new Task({
       id: this._id,
       values: {
-        taskName: this._values.taskName,
         taskStatus: newTaskStatus,
         ownerId: this._values.ownerId,
       },
     });
   }
+
   get id() {
     return this._id;
   }
@@ -49,10 +47,6 @@ export class Task extends Entity<ReadonlyProps> {
 
   get ownerId() {
     return this._values.ownerId;
-  }
-
-  get taskName() {
-    return this._values.taskName;
   }
 
   get taskStatus() {

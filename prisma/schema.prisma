@@ -37,6 +37,7 @@ model Participant {
   id                            String                          @id
   lastName                      String
   firstName                     String
+  createdAt                     DateTime                        @default(now())
   ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
   ParticipantMailAddress        ParticipantMailAddress[]
   ParticipantOnTask             ParticipantOnTask[]

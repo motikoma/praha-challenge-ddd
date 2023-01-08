@@ -63,6 +63,7 @@ type ParticipantFactoryDefineInput = {
     id?: string;
     lastName?: string;
     firstName?: string;
+    createdAt?: Date;
     ParticipantOnEnrollmentStatus?: Prisma.ParticipantOnEnrollmentStatusCreateNestedManyWithoutParticipantInput;
     ParticipantMailAddress?: Prisma.ParticipantMailAddressCreateNestedManyWithoutParticipantInput;
     ParticipantOnTask?: Prisma.ParticipantOnTaskCreateNestedManyWithoutParticipantInput;

@@ -22,7 +22,8 @@ CREATE TABLE "Post" (
 CREATE TABLE "Participant" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "lastName" TEXT NOT NULL,
-    "firstName" TEXT NOT NULL
+    "firstName" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateTable

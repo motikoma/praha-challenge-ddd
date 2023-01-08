@@ -27,9 +27,8 @@ export class UpdateTaskUseCase {
 
     const updatedParticipantDto = new UpdateTaskDto(
       updatedTask.id.id,
-      updatedTask.taskName.taskName,
-      updatedTask.taskStatus.value,
       updatedTask.ownerId.id,
+      updatedTask.taskStatus.value,
     );
 
     return updatedParticipantDto;
@@ -39,24 +38,19 @@ export class UpdateTaskUseCase {
 class UpdateTaskDto {
   constructor(
     private readonly _id: string,
-    private readonly _taskName: string,
-    private readonly _taskStatus: number,
     private readonly _ownerId: string,
+    private readonly _taskStatus: number,
   ) {}
 
   get id() {
     return this._id;
   }
 
-  get taskName() {
-    return this._taskName;
+  get ownerId() {
+    return this._ownerId;
   }
 
   get taskStatus() {
     return this._taskStatus;
-  }
-
-  get ownerId() {
-    return this._ownerId;
   }
 }

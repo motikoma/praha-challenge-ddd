@@ -1,30 +1,25 @@
-import { ITaskRepository } from 'src/domain/entity/task/task-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { IListTasksQueryService } from './query-service/list-tasks-query-service';
 
 type Param = {
   readonly ownerId: string;
 };
 export class ListTasksUseCase {
-  constructor(private readonly repository: ITaskRepository) {}
+  constructor(private readonly queryService: IListTasksQueryService) {}
 
   async do(param: Param) {
     const ownerId = UniqueID.reconstruct(param.ownerId);
-    const tasks = await this.repository.listWithOwnerId(ownerId);
+    const tasks = await this.queryService.listWithOwnerId(ownerId);
 
     const taskDtos = tasks.map((task) => {
-      return new TaskDto(
-        task.id.id,
-        task.ownerId.id,
-        task.taskName.taskName,
-        task.taskStatus.value,
-      );
+      return new TaskDto(task.id, task.ownerId, task.taskName, task.taskStatus);
     });
 
     return taskDtos;
   }
 }
 
-class TaskDto {
+export class TaskDto {
   constructor(
     private readonly _id: string,
     private readonly _ownerId: string,

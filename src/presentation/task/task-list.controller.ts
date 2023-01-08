@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ListTasksUseCase } from 'src/application/task/list-tasks.usecase';
+import { ListTasksQueryService } from 'src/infrastructure/db/query-service/list-tasks-query-service-impl';
 import { TaskRepository } from 'src/infrastructure/db/repository/task-repository-impl';
 
 class RequestBody {
@@ -30,8 +31,8 @@ export class TaskListController {
   @Get()
   async listTasks(@Body() req: RequestBody): Promise<ResponseBody> {
     const prisma = new PrismaClient();
-    const repository = new TaskRepository(prisma);
-    const usecase = new ListTasksUseCase(repository);
+    const queryService = new ListTasksQueryService(prisma);
+    const usecase = new ListTasksUseCase(queryService);
     const result = await usecase.do(req);
 
     const response = new ResponseBody(

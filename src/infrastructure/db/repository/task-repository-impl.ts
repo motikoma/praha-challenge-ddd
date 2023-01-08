@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 import { Task } from 'src/domain/entity/task/task';
-import { TaskName } from 'src/domain/entity/task/task-name';
 import { ITaskRepository } from 'src/domain/entity/task/task-repository';
 import { TaskStatus } from 'src/domain/entity/task/task-status';
 import { UniqueID } from 'src/domain/shared/uniqueID';
@@ -17,16 +16,12 @@ export class TaskRepository implements ITaskRepository {
         taskId: task.id.id,
         taskStatusId: task.taskStatus.value,
       },
-      include: {
-        Task: true,
-      },
     });
 
     const taskEntity = Task.create({
       id: UniqueID.reconstruct(result.taskId),
       values: {
         ownerId: UniqueID.reconstruct(result.participantId),
-        taskName: TaskName.create({ taskName: result.Task.taskName }),
         taskStatus: TaskStatus.reconstruct({
           value: result.taskStatusId,
         }),
@@ -34,32 +29,6 @@ export class TaskRepository implements ITaskRepository {
     });
 
     return taskEntity;
-  }
-
-  async listWithOwnerId(ownerId: UniqueID) {
-    const tasks = await this.prismaClient.participantOnTask.findMany({
-      where: {
-        participantId: ownerId.id,
-      },
-      include: {
-        Task: true,
-      },
-    });
-
-    const taskEntities = tasks.map((task) => {
-      return Task.create({
-        id: UniqueID.reconstruct(task.taskId),
-        values: {
-          ownerId: UniqueID.reconstruct(task.participantId),
-          taskName: TaskName.create({ taskName: task.Task.taskName }),
-          taskStatus: TaskStatus.reconstruct({
-            value: task.taskStatusId,
-          }),
-        },
-      });
-    });
-
-    return taskEntities;
   }
 
   async get(ownerId: UniqueID, taskId: UniqueID) {
@@ -74,11 +43,6 @@ export class TaskRepository implements ITaskRepository {
         participantId: true,
         taskId: true,
         taskStatusId: true,
-        Task: {
-          select: {
-            taskName: true,
-          },
-        },
       },
     });
 
@@ -88,7 +52,6 @@ export class TaskRepository implements ITaskRepository {
       id: UniqueID.reconstruct(task.taskId),
       values: {
         ownerId: UniqueID.reconstruct(task.participantId),
-        taskName: TaskName.create({ taskName: task.Task.taskName }),
         taskStatus: TaskStatus.reconstruct({
           value: task.taskStatusId,
         }),
@@ -110,20 +73,12 @@ export class TaskRepository implements ITaskRepository {
       data: {
         taskStatusId: taskStatus.value,
       },
-      include: {
-        Task: {
-          select: {
-            taskName: true,
-          },
-        },
-      },
     });
 
     const updatedTaskEntity = Task.create({
       id: UniqueID.reconstruct(updatedTask.taskId),
       values: {
         ownerId: UniqueID.reconstruct(updatedTask.participantId),
-        taskName: TaskName.create({ taskName: updatedTask.Task.taskName }),
         taskStatus: TaskStatus.reconstruct({
           value: updatedTask.taskStatusId,
         }),
