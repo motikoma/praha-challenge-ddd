@@ -41,6 +41,8 @@ model Participant {
   ParticipantOnEnrollmentStatus ParticipantOnEnrollmentStatus[]
   ParticipantMailAddress        ParticipantMailAddress[]
   ParticipantOnTask             ParticipantOnTask[]
+  ParticipantOnPair             ParticipantOnPair[]
+  ParticipantOnTeam             ParticipantOnTeam[]
 }
 
 model EnrollmentStatus {
@@ -83,4 +85,45 @@ model ParticipantOnTask {
   TaskStatus    TaskStatus  @relation(fields: [taskStatusId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
   @@id([participantId, taskId])
+}
+
+model Pair {
+  id                String              @id
+  pairName          String
+  PairOnTeam        PairOnTeam[]
+  ParticipantOnPair ParticipantOnPair[]
+}
+
+model Team {
+  id                String              @id
+  teamName          String
+  PairOnTeam        PairOnTeam[]
+  ParticipantOnTeam ParticipantOnTeam[]
+}
+
+model PairOnTeam {
+  pairId String
+  Pair   Pair   @relation(fields: [pairId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  teamId String
+  Team   Team   @relation(fields: [teamId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([pairId, teamId])
+}
+
+model ParticipantOnTeam {
+  participantId String
+  Participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  teamId        String
+  Team          Team        @relation(fields: [teamId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([participantId, teamId])
+}
+
+model ParticipantOnPair {
+  participantId String
+  Participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  pairId        String
+  Pair          Pair        @relation(fields: [pairId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([participantId, pairId])
 }

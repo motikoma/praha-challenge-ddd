@@ -14,6 +14,8 @@ export class TaskName extends ValueObject<ReadonlyProps> {
   static create(props: ReadonlyProps): TaskName {
     const { taskName } = props;
     if (!taskName) throw new DomainException('課題名は必須です');
+    if (taskName.length === 0)
+      throw new DomainException('課題名は1文字以上で入力してください');
 
     return new TaskName(props);
   }

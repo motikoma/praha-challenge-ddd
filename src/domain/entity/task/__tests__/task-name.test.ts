@@ -2,7 +2,7 @@ import { DomainException } from '../../../shared/domain-exception';
 import { TaskName } from '../task-name';
 
 describe('TaskName', () => {
-  it('[正常系]: 課題名に1文字以上を入力した場合はエラーにならない', () => {
+  it('[正常系]: 課題名に1文字以上を入力した場合はOK', () => {
     const actual = TaskName.create({
       taskName: 'DBモデリング1',
     }).taskName;
@@ -16,6 +16,7 @@ describe('TaskName', () => {
         taskName: '',
       }).taskName;
     } catch (error) {
+      console.log(error);
       expect(DomainException);
     }
   });

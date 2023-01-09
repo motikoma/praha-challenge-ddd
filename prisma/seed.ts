@@ -81,6 +81,36 @@ const taskStatusData: Prisma.TaskStatusCreateInput[] = [
   },
 ];
 
+const teamData: Prisma.TeamCreateInput[] = [
+  {
+    id: '1',
+    teamName: '1',
+  },
+  {
+    id: '2',
+    teamName: '2',
+  },
+];
+
+const pairData: Prisma.PairCreateInput[] = [
+  {
+    id: '1',
+    pairName: 'a',
+  },
+  {
+    id: '2',
+    pairName: 'b',
+  },
+  {
+    id: '3',
+    pairName: 'c',
+  },
+  {
+    id: '4',
+    pairName: 'd',
+  },
+];
+
 const taskData: Prisma.TaskCreateInput[] = [
   {
     id: '1',
@@ -119,6 +149,18 @@ async function main() {
 
   for (const d of taskData) {
     const data = await prisma.task.create({
+      data: d,
+    });
+  }
+
+  for (const d of teamData) {
+    const data = await prisma.team.create({
+      data: d,
+    });
+  }
+
+  for (const d of pairData) {
+    const data = await prisma.pair.create({
       data: d,
     });
   }
