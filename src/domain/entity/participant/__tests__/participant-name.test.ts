@@ -12,35 +12,29 @@ describe('ParticipantName', () => {
   });
 
   it('[準正常系]: 名字または名前が空文字の場合はエラー', () => {
-    try {
+    expect(() => {
       ParticipantName.create({
         lastName: '',
         firstName: '',
-      }).fullName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      });
+    }).toThrowError(new DomainException('名字は必須です'));
   });
 
   it('[準正常系]: 名字が空文字の場合はエラー', () => {
-    try {
+    expect(() => {
       ParticipantName.create({
         lastName: '',
         firstName: '太郎',
-      }).fullName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      });
+    }).toThrowError(new DomainException('名字は必須です'));
   });
 
   it('[準正常系]: 名前が空文字の場合はエラー', () => {
-    try {
+    expect(() => {
       ParticipantName.create({
         lastName: '佐藤',
         firstName: '',
-      }).fullName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      });
+    }).toThrowError(new DomainException('名前は必須です'));
   });
 });

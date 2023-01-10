@@ -247,7 +247,7 @@ interface PairFactoryInterface {
 export declare function definePairFactory(options?: PairFactoryDefineOptions): PairFactoryInterface;
 type TeamFactoryDefineInput = {
     id?: string;
-    teamName?: string;
+    teamName?: number;
     PairOnTeam?: Prisma.PairOnTeamCreateNestedManyWithoutTeamInput;
     ParticipantOnTeam?: Prisma.ParticipantOnTeamCreateNestedManyWithoutTeamInput;
 };

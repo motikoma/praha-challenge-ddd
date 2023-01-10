@@ -11,13 +11,10 @@ describe('TaskName', () => {
   });
 
   it('[準正常系]: 課題名が空文字の場合はエラー', () => {
-    try {
+    expect(() =>
       TaskName.create({
         taskName: '',
-      }).taskName;
-    } catch (error) {
-      console.log(error);
-      expect(DomainException);
-    }
+      }),
+    ).toThrowError(new DomainException('課題名は必須です'));
   });
 });

@@ -14,16 +14,20 @@ import { TaskRepository } from '../../repository/task-repository-impl';
 import { ListParticipantsQueryService } from '../list-participants-query-service-impl';
 
 describe('list-participant-query-service-impl', () => {
-  const prismaClient = new PrismaService();
-  const taskRepository = new TaskRepository(prismaClient);
-  const participantRepository = new ParticipantRepository(prismaClient);
-  const queryService = new ListParticipantsQueryService(prismaClient);
+  const prisma = new PrismaService();
+  const taskRepository = new TaskRepository(prisma);
+  const participantRepository = new ParticipantRepository(prisma);
+  const queryService = new ListParticipantsQueryService(prisma);
 
   beforeEach(async () => {
-    await prismaClient.participantOnTask.deleteMany();
-    await prismaClient.participantOnEnrollmentStatus.deleteMany();
-    await prismaClient.participantMailAddress.deleteMany();
-    await prismaClient.participant.deleteMany();
+    await prisma.participantOnTask.deleteMany();
+    await prisma.participantOnEnrollmentStatus.deleteMany();
+    await prisma.participantMailAddress.deleteMany();
+    await prisma.participant.deleteMany();
+  });
+
+  afterAll(async () => {
+    await prisma.$disconnect();
   });
 
   describe('課題idと課題ステータスが合致する参加者が参加者登録日の降順で返る', () => {
@@ -611,8 +615,9 @@ describe('list-participant-query-service-impl', () => {
 
       try {
         const actual = await queryService.list(filter);
-      } catch (error) {
+      } catch (error: any) {
         expect(error).toBeInstanceOf(InfraException);
+        expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
     it('[準正常系]ページ番号が負の数値の場合はエラーを返す', async () => {
@@ -647,8 +652,9 @@ describe('list-participant-query-service-impl', () => {
 
       try {
         const actual = await queryService.list(filter);
-      } catch (error) {
+      } catch (error: any) {
         expect(error).toBeInstanceOf(InfraException);
+        expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
     it('[正常系]ページサイズが正の数値の場合は合致する結果を返す', async () => {
@@ -742,8 +748,9 @@ describe('list-participant-query-service-impl', () => {
 
       try {
         const actual = await queryService.list(filter);
-      } catch (error) {
+      } catch (error: any) {
         expect(error).toBeInstanceOf(InfraException);
+        expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
     it('[準正常系]ページサイズが負の数値の場合はエラーを返す', async () => {
@@ -778,8 +785,9 @@ describe('list-participant-query-service-impl', () => {
 
       try {
         const actual = await queryService.list(filter);
-      } catch (error) {
+      } catch (error: any) {
         expect(error).toBeInstanceOf(InfraException);
+        expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
   });

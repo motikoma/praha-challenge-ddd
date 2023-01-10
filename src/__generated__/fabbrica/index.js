@@ -636,7 +636,7 @@ exports.definePairFactory = definePairFactory;
 function autoGenerateTeamScalarsOrEnums({ seq }) {
     return {
         id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Team", fieldName: "id", isId: true, isUnique: false, seq }),
-        teamName: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Team", fieldName: "teamName", isId: false, isUnique: false, seq })
+        teamName: (0, internal_1.getScalarFieldValueGenerator)().Int({ modelName: "Team", fieldName: "teamName", isId: false, isUnique: false, seq })
     };
 }
 function defineTeamFactoryInternal({ defaultData: defaultDataResolver }) {

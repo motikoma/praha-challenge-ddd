@@ -84,11 +84,11 @@ const taskStatusData: Prisma.TaskStatusCreateInput[] = [
 const teamData: Prisma.TeamCreateInput[] = [
   {
     id: '1',
-    teamName: '1',
+    teamName: 1,
   },
   {
     id: '2',
-    teamName: '2',
+    teamName: 2,
   },
 ];
 

@@ -11,32 +11,32 @@ describe('PairName', () => {
   });
 
   it('[準正常系]: ペア名が空文字の場合はエラー', () => {
-    try {
+    expect(() =>
       PairName.create({
         pairName: '',
-      }).pairName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      }),
+    ).toThrowError(
+      new DomainException('ペア名は英文字1文字で入力してください'),
+    );
   });
 
   it('[準正常系]: ペア名が英字ではない場合はエラー', () => {
-    try {
+    expect(() =>
       PairName.create({
         pairName: 'あ',
-      }).pairName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      }),
+    ).toThrowError(
+      new DomainException('ペア名は英文字1文字で入力してください'),
+    );
   });
 
   it('[準正常系]: ペア名が1文字ではない場合はエラー', () => {
-    try {
+    expect(() =>
       PairName.create({
         pairName: 'aa',
-      }).pairName;
-    } catch (error) {
-      expect(DomainException);
-    }
+      }),
+    ).toThrowError(
+      new DomainException('ペア名は英文字1文字で入力してください'),
+    );
   });
 });

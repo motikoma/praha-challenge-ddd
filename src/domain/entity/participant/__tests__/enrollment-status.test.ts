@@ -1,3 +1,4 @@
+import { HttpException } from '@nestjs/common';
 import { DomainException } from 'src/domain/shared/domain-exception';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from '../enrollment-status';
 
@@ -30,11 +31,9 @@ describe('EnrollmentStatus', () => {
 
   describe('reconstructに不正な値を渡した場合', () => {
     it('[準正常系]: reconstructに不正な文字列を渡した場合、エラーになる', () => {
-      try {
-        EnrollmentStatus.reconstruct({ value: 4 }).value;
-      } catch (e) {
-        expect(DomainException);
-      }
+      expect(() => EnrollmentStatus.reconstruct({ value: 4 })).toThrowError(
+        new DomainException('invalid value'),
+      );
     });
   });
 });

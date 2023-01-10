@@ -2,25 +2,25 @@ import { ValueObject } from '../../shared/valueObject';
 import { DomainException } from '../../shared/domain-exception';
 
 type Props = {
-  pairName: string;
+  teamName: number;
 };
 type ReadonlyProps = Readonly<Props>;
 
-export class PairName extends ValueObject<ReadonlyProps> {
+export class TeamName extends ValueObject<ReadonlyProps> {
   private constructor(props: ReadonlyProps) {
     super(props);
   }
 
-  static create(props: ReadonlyProps): PairName {
-    const { pairName } = props;
-    if (!pairName) throw new DomainException('ペア名は必須です');
-    if (!/^[a-zA-Z]{1}$/.test(pairName))
-      throw new DomainException('ペア名は英文字1文字で入力してください');
+  static create(props: ReadonlyProps): TeamName {
+    const { teamName: teamName } = props;
 
-    return new PairName(props);
+    if (teamName.toString().length > 3)
+      throw new DomainException('チーム名は数字3文字以下で入力してください');
+
+    return new TeamName({ teamName });
   }
 
-  get pairName(): string {
-    return this._value.pairName;
+  get teamName(): number {
+    return this._value.teamName;
   }
 }

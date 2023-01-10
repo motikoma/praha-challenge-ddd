@@ -26,7 +26,9 @@ export class Pair extends Entity<ReadonlyProps> {
       values.participantIds.length !== 2 &&
       values.participantIds.length !== 3
     )
-      throw new DomainException('ペアの参加者は2人 or 3人のみ可能です');
+      throw new DomainException(
+        'ペアを作成する際には2名または3名の参加者が必要です',
+      );
 
     return new Pair(props);
   }

@@ -20,18 +20,17 @@ describe('changeTaskStatus', () => {
     });
 
     it('[準正常系]: 課題を所有していないユーザーは課題ステータスを変更できない', () => {
-      try {
-        const taskStatus = TaskStatus.create();
-        const task = createEntity(taskStatus);
-        const userId = UniqueID.reconstruct('1');
+      const taskStatus = TaskStatus.create();
+      const task = createEntity(taskStatus);
+      const userId = UniqueID.reconstruct('2');
 
-        const newTaskStatus = TaskStatus.reconstruct({
-          value: TASK_STATUS.READY_FOR_REVIEW,
-        });
-        const changedTask = task.changeTaskStatus(userId, newTaskStatus);
-      } catch (error) {
-        expect(DomainException);
-      }
+      const newTaskStatus = TaskStatus.reconstruct({
+        value: TASK_STATUS.READY_FOR_REVIEW,
+      });
+
+      expect(() => task.changeTaskStatus(userId, newTaskStatus)).toThrowError(
+        new DomainException('課題のオーナー以外は状態を変更できません'),
+      );
     });
   });
 
@@ -100,36 +99,35 @@ describe('changeTaskStatus', () => {
 
     describe('準正常系に関するテスト', () => {
       it('[準正常系]: 「完了」から「未着手」に変更できない', () => {
-        try {
-          const taskStatus = TaskStatus.reconstruct({
-            value: TASK_STATUS.DONE,
-          });
-          const task = createEntity(taskStatus);
-          const userId = UniqueID.reconstruct('1');
+        const taskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.DONE,
+        });
+        const task = createEntity(taskStatus);
+        const userId = UniqueID.reconstruct('1');
 
-          const newTaskStatus = TaskStatus.reconstruct({
-            value: TASK_STATUS.TODO,
-          });
-          const changedTask = task.changeTaskStatus(userId, newTaskStatus);
-        } catch (error) {
-          expect(DomainException);
-        }
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.TODO,
+        });
+
+        expect(() => task.changeTaskStatus(userId, newTaskStatus)).toThrowError(
+          new DomainException('完了した課題のステータスは変更できません'),
+        );
       });
-      it('[準正常系]: 「完了」から「レビュー待ち」に変更できない', () => {
-        try {
-          const taskStatus = TaskStatus.reconstruct({
-            value: TASK_STATUS.DONE,
-          });
-          const task = createEntity(taskStatus);
-          const userId = UniqueID.reconstruct('1');
 
-          const newTaskStatus = TaskStatus.reconstruct({
-            value: TASK_STATUS.READY_FOR_REVIEW,
-          });
-          const changedTask = task.changeTaskStatus(userId, newTaskStatus);
-        } catch (error) {
-          expect(DomainException);
-        }
+      it('[準正常系]: 「完了」から「レビュー待ち」に変更できない', () => {
+        const taskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.DONE,
+        });
+        const task = createEntity(taskStatus);
+        const userId = UniqueID.reconstruct('1');
+
+        const newTaskStatus = TaskStatus.reconstruct({
+          value: TASK_STATUS.READY_FOR_REVIEW,
+        });
+
+        expect(() => task.changeTaskStatus(userId, newTaskStatus)).toThrowError(
+          new DomainException('完了した課題のステータスは変更できません'),
+        );
       });
     });
   });

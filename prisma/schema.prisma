@@ -96,7 +96,7 @@ model Pair {
 
 model Team {
   id                String              @id
-  teamName          String
+  teamName          Int
   PairOnTeam        PairOnTeam[]
   ParticipantOnTeam ParticipantOnTeam[]
 }

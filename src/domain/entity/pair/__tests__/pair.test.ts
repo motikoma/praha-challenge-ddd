@@ -39,7 +39,7 @@ describe('Pair', () => {
     });
 
     it('[準正常系]: 参加者が0名であればペア作成に失敗', () => {
-      try {
+      expect(() =>
         Pair.create({
           values: {
             name: PairName.create({
@@ -47,14 +47,16 @@ describe('Pair', () => {
             }),
             participantIds: [],
           },
-        });
-      } catch (error) {
-        expect(DomainException);
-      }
+        }),
+      ).toThrowError(
+        new DomainException(
+          'ペアを作成する際には2名または3名の参加者が必要です',
+        ),
+      );
     });
 
     it('[準正常系]: 参加者が1名であればペア作成に失敗', () => {
-      try {
+      expect(() =>
         Pair.create({
           values: {
             name: PairName.create({
@@ -62,14 +64,16 @@ describe('Pair', () => {
             }),
             participantIds: [UniqueID.reconstruct('1')],
           },
-        });
-      } catch (error) {
-        expect(DomainException);
-      }
+        }),
+      ).toThrowError(
+        new DomainException(
+          'ペアを作成する際には2名または3名の参加者が必要です',
+        ),
+      );
     });
 
     it('[準正常系]: 参加者が4名であればペア作成に失敗', () => {
-      try {
+      expect(() =>
         Pair.create({
           values: {
             name: PairName.create({
@@ -82,10 +86,12 @@ describe('Pair', () => {
               UniqueID.reconstruct('4'),
             ],
           },
-        });
-      } catch (error) {
-        expect(DomainException);
-      }
+        }),
+      ).toThrowError(
+        new DomainException(
+          'ペアを作成する際には2名または3名の参加者が必要です',
+        ),
+      );
     });
   });
 });

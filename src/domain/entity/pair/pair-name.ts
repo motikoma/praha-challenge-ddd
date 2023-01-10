@@ -13,7 +13,6 @@ export class PairName extends ValueObject<ReadonlyProps> {
 
   static create(props: ReadonlyProps): PairName {
     const { pairName } = props;
-    if (!pairName) throw new DomainException('ペア名は必須です');
     if (!/^[a-zA-Z]{1}$/.test(pairName))
       throw new DomainException('ペア名は英文字1文字で入力してください');
 

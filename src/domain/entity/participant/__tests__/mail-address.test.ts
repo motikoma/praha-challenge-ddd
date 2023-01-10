@@ -11,29 +11,18 @@ describe('MailAddress', () => {
   });
 
   it('[準正常系]: 空文字の場合はエラー', () => {
-    try {
+    expect(() =>
       MailAddress.create({
         mailAddress: '',
-      });
-    } catch (e) {
-      expect(DomainException);
-    }
-
-    // MEMO: 下記のように書くとエラーを検知できない
-    // expect(() =>
-    //   MailAddress.create({
-    //     mailAddress: 'hoge@gmail.com',
-    //   }),
-    // ).toThrow(DomainException)
+      }),
+    ).toThrowError(new DomainException('mailAddress is required'));
   });
 
   it('[準正常系]: 表記が間違っている場合はエラー', () => {
-    try {
+    expect(() =>
       MailAddress.create({
         mailAddress: 'hogegmail.com',
-      });
-    } catch (error) {
-      expect(DomainException);
-    }
+      }),
+    ).toThrowError(new DomainException('mailAddress is invalid'));
   });
 });
