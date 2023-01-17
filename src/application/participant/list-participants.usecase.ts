@@ -1,4 +1,3 @@
-import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import {
   IListParticipantsQueryService,
   PagingCondition,

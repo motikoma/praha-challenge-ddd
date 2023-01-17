@@ -1,10 +1,12 @@
-import { EnrollmentStatus } from 'src/domain/entity/participant/enrollment-status';
-import { MailAddress } from 'src/domain/entity/participant/mail-address';
-import { Participant } from 'src/domain/entity/participant/participant';
-import { ParticipantName } from 'src/domain/entity/participant/participant-name';
+import { ICheckAssignedPairService } from 'src/domain/domain-service/check-assined-pair-service';
+import { ICheckAssignedTeamService } from 'src/domain/domain-service/check-assined-team-service';
+import {
+  EnrollmentStatus,
+  ENROLLMENT_STATUS,
+} from 'src/domain/entity/participant/enrollment-status';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
-import { DomainException } from 'src/domain/shared/domain-exception';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
   readonly enrollmentStatus: number;
@@ -12,20 +14,40 @@ type Param = {
 type ReadonlyParam = Readonly<Param>;
 
 export class UpdateParticipantUseCase {
-  constructor(private readonly repository: IParticipantRepository) {}
+  constructor(
+    private readonly repository: IParticipantRepository,
+    private readonly checkAssignedPairService: ICheckAssignedPairService,
+    private readonly checkAssignedTeamService: ICheckAssignedTeamService,
+  ) {}
 
   async do(id: string, param: ReadonlyParam) {
-    const participantID = UniqueID.reconstruct(id);
-    const participant = await this.repository.getWithId(participantID);
-    if (!participant) throw new DomainException('参加者のidが存在しません');
+    const participantId = UniqueID.reconstruct(id);
+    const participant = await this.repository.getWithId(participantId);
+
+    if (!participant)
+      throw new ApplicationException('参加者のidが存在しません');
+
+    if (participant.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED) {
+      const isAssignedPair =
+        await this.checkAssignedPairService.checkAssignedPair(participantId);
+      if (isAssignedPair)
+        throw new ApplicationException(
+          'ペアが割り当てられているので、在籍中から別のステータスに変更できません',
+        );
+
+      const isAssignedTeam =
+        await this.checkAssignedTeamService.checkAssignedTeam(participantId);
+      if (isAssignedTeam)
+        throw new ApplicationException(
+          'チームが割り当てられているので、在籍中から別のステータスに変更できません',
+        );
+    }
 
     const enrollmentStatus = EnrollmentStatus.reconstruct({
       value: param.enrollmentStatus,
     });
-
     const updateParticipant =
       participant.changeEnrollmentStatus(enrollmentStatus);
-
     const updatedParticipant = await this.repository.update(updateParticipant);
 
     const updatedParticipantDto = new UpdateParticipantDto(

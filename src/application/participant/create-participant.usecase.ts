@@ -2,7 +2,7 @@ import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { Participant } from 'src/domain/entity/participant/participant';
 import { ParticipantName } from 'src/domain/entity/participant/participant-name';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
-import { DomainException } from 'src/domain/shared/domain-exception';
+import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
   readonly lastName: string;
@@ -21,7 +21,9 @@ export class CreateParticipantUseCase {
 
     const isExist = await this.repository.getWithMailAddress(mailAddress);
     if (isExist)
-      throw new DomainException('参加者のメールアドレスがすでに存在します');
+      throw new ApplicationException(
+        '参加者のメールアドレスがすでに存在します',
+      );
 
     const participantName = ParticipantName.create({
       lastName: param.lastName,

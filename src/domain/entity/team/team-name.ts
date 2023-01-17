@@ -20,6 +20,10 @@ export class TeamName extends ValueObject<ReadonlyProps> {
     return new TeamName({ teamName });
   }
 
+  static reconstruct(props: ReadonlyProps): TeamName {
+    return new TeamName(props);
+  }
+
   get teamName(): number {
     return this._value.teamName;
   }

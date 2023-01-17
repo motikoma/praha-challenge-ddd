@@ -20,21 +20,40 @@ export class Pair extends Entity<ReadonlyProps> {
     super(props);
   }
 
-  static create(props: ReadonlyProps): Pair {
-    const { values } = props;
-    if (
-      values.participantIds.length !== 2 &&
-      values.participantIds.length !== 3
-    )
+  static create(props: ReadonlyValues): Pair {
+    const id = UniqueID.create();
+    const { participantIds } = props;
+
+    if (participantIds.length !== 2 && participantIds.length !== 3)
       throw new DomainException(
-        'ペアを作成する際には2名または3名の参加者が必要です',
+        'ペアは2名または3名の参加者で構成されている必要があります',
       );
 
-    return new Pair(props);
+    return new Pair({ id, values: props });
   }
 
   static reconstruct(props: ReadonlyProps): Pair {
     return new Pair(props);
+  }
+
+  addMember(addParticipantId: UniqueID) {
+    const newParticipantIds = [...this.participantIds, addParticipantId];
+
+    return Pair.reconstruct({
+      id: this.id,
+      values: { ...this.values, participantIds: newParticipantIds },
+    });
+  }
+
+  deleteMember(deleteParticipantId: UniqueID) {
+    const newParticipantIds = this.participantIds.filter(
+      (id) => id.id !== deleteParticipantId.id,
+    );
+
+    return Pair.reconstruct({
+      id: this.id,
+      values: { ...this.values, participantIds: newParticipantIds },
+    });
   }
 
   get id() {

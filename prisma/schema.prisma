@@ -87,27 +87,27 @@ model ParticipantOnTask {
   @@id([participantId, taskId])
 }
 
-model Pair {
-  id                String              @id
-  pairName          String
-  PairOnTeam        PairOnTeam[]
-  ParticipantOnPair ParticipantOnPair[]
-}
-
 model Team {
   id                String              @id
   teamName          Int
-  PairOnTeam        PairOnTeam[]
+  TeamOnPair        TeamOnPair[]
   ParticipantOnTeam ParticipantOnTeam[]
 }
 
-model PairOnTeam {
+model Pair {
+  id                String              @id
+  pairName          String
+  TeamOnPair        TeamOnPair[]
+  ParticipantOnPair ParticipantOnPair[]
+}
+
+model TeamOnPair {
   pairId String
   Pair   Pair   @relation(fields: [pairId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   teamId String
   Team   Team   @relation(fields: [teamId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
-  @@id([pairId, teamId])
+  @@id([pairId])
 }
 
 model ParticipantOnTeam {
@@ -116,7 +116,7 @@ model ParticipantOnTeam {
   teamId        String
   Team          Team        @relation(fields: [teamId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
-  @@id([participantId, teamId])
+  @@id([participantId])
 }
 
 model ParticipantOnPair {
@@ -125,5 +125,5 @@ model ParticipantOnPair {
   pairId        String
   Pair          Pair        @relation(fields: [pairId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
-  @@id([participantId, pairId])
+  @@id([participantId])
 }

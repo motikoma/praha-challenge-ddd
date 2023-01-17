@@ -19,6 +19,10 @@ export class PairName extends ValueObject<ReadonlyProps> {
     return new PairName(props);
   }
 
+  static reconstruct(props: ReadonlyProps): PairName {
+    return new PairName(props);
+  }
+
   get pairName(): string {
     return this._value.pairName;
   }

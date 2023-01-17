@@ -7,9 +7,9 @@ import type { ParticipantMailAddress } from "@prisma/client";
 import type { Task } from "@prisma/client";
 import type { TaskStatus } from "@prisma/client";
 import type { ParticipantOnTask } from "@prisma/client";
-import type { Pair } from "@prisma/client";
 import type { Team } from "@prisma/client";
-import type { PairOnTeam } from "@prisma/client";
+import type { Pair } from "@prisma/client";
+import type { TeamOnPair } from "@prisma/client";
 import type { ParticipantOnTeam } from "@prisma/client";
 import type { ParticipantOnPair } from "@prisma/client";
 import { Prisma } from "@prisma/client";
@@ -225,30 +225,10 @@ interface ParticipantOnTaskFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Pick<ParticipantOnTask, "participantId" | "taskId">>;
 }
 export declare function defineParticipantOnTaskFactory(options: ParticipantOnTaskFactoryDefineOptions): ParticipantOnTaskFactoryInterface;
-type PairFactoryDefineInput = {
-    id?: string;
-    pairName?: string;
-    PairOnTeam?: Prisma.PairOnTeamCreateNestedManyWithoutPairInput;
-    ParticipantOnPair?: Prisma.ParticipantOnPairCreateNestedManyWithoutPairInput;
-};
-type PairFactoryDefineOptions = {
-    defaultData?: Resolver<PairFactoryDefineInput, BuildDataOptions>;
-};
-interface PairFactoryInterface {
-    readonly _factoryFor: "Pair";
-    build(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
-    buildCreateInput(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
-    buildList(inputData: number | readonly Partial<Prisma.PairCreateInput>[]): PromiseLike<Prisma.PairCreateInput[]>;
-    pickForConnect(inputData: Pair): Pick<Pair, "id">;
-    create(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Pair>;
-    createList(inputData: number | readonly Partial<Prisma.PairCreateInput>[]): PromiseLike<Pair[]>;
-    createForConnect(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Pick<Pair, "id">>;
-}
-export declare function definePairFactory(options?: PairFactoryDefineOptions): PairFactoryInterface;
 type TeamFactoryDefineInput = {
     id?: string;
     teamName?: number;
-    PairOnTeam?: Prisma.PairOnTeamCreateNestedManyWithoutTeamInput;
+    TeamOnPair?: Prisma.TeamOnPairCreateNestedManyWithoutTeamInput;
     ParticipantOnTeam?: Prisma.ParticipantOnTeamCreateNestedManyWithoutTeamInput;
 };
 type TeamFactoryDefineOptions = {
@@ -265,32 +245,52 @@ interface TeamFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.TeamCreateInput>): PromiseLike<Pick<Team, "id">>;
 }
 export declare function defineTeamFactory(options?: TeamFactoryDefineOptions): TeamFactoryInterface;
-type PairOnTeamPairFactory = {
-    _factoryFor: "Pair";
-    build: () => PromiseLike<Prisma.PairCreateNestedOneWithoutPairOnTeamInput["create"]>;
+type PairFactoryDefineInput = {
+    id?: string;
+    pairName?: string;
+    TeamOnPair?: Prisma.TeamOnPairCreateNestedManyWithoutPairInput;
+    ParticipantOnPair?: Prisma.ParticipantOnPairCreateNestedManyWithoutPairInput;
 };
-type PairOnTeamTeamFactory = {
-    _factoryFor: "Team";
-    build: () => PromiseLike<Prisma.TeamCreateNestedOneWithoutPairOnTeamInput["create"]>;
+type PairFactoryDefineOptions = {
+    defaultData?: Resolver<PairFactoryDefineInput, BuildDataOptions>;
 };
-type PairOnTeamFactoryDefineInput = {
-    Pair: PairOnTeamPairFactory | Prisma.PairCreateNestedOneWithoutPairOnTeamInput;
-    Team: PairOnTeamTeamFactory | Prisma.TeamCreateNestedOneWithoutPairOnTeamInput;
-};
-type PairOnTeamFactoryDefineOptions = {
-    defaultData: Resolver<PairOnTeamFactoryDefineInput, BuildDataOptions>;
-};
-interface PairOnTeamFactoryInterface {
-    readonly _factoryFor: "PairOnTeam";
-    build(inputData?: Partial<Prisma.PairOnTeamCreateInput>): PromiseLike<Prisma.PairOnTeamCreateInput>;
-    buildCreateInput(inputData?: Partial<Prisma.PairOnTeamCreateInput>): PromiseLike<Prisma.PairOnTeamCreateInput>;
-    buildList(inputData: number | readonly Partial<Prisma.PairOnTeamCreateInput>[]): PromiseLike<Prisma.PairOnTeamCreateInput[]>;
-    pickForConnect(inputData: PairOnTeam): Pick<PairOnTeam, "pairId" | "teamId">;
-    create(inputData?: Partial<Prisma.PairOnTeamCreateInput>): PromiseLike<PairOnTeam>;
-    createList(inputData: number | readonly Partial<Prisma.PairOnTeamCreateInput>[]): PromiseLike<PairOnTeam[]>;
-    createForConnect(inputData?: Partial<Prisma.PairOnTeamCreateInput>): PromiseLike<Pick<PairOnTeam, "pairId" | "teamId">>;
+interface PairFactoryInterface {
+    readonly _factoryFor: "Pair";
+    build(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.PairCreateInput>[]): PromiseLike<Prisma.PairCreateInput[]>;
+    pickForConnect(inputData: Pair): Pick<Pair, "id">;
+    create(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Pair>;
+    createList(inputData: number | readonly Partial<Prisma.PairCreateInput>[]): PromiseLike<Pair[]>;
+    createForConnect(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Pick<Pair, "id">>;
 }
-export declare function definePairOnTeamFactory(options: PairOnTeamFactoryDefineOptions): PairOnTeamFactoryInterface;
+export declare function definePairFactory(options?: PairFactoryDefineOptions): PairFactoryInterface;
+type TeamOnPairPairFactory = {
+    _factoryFor: "Pair";
+    build: () => PromiseLike<Prisma.PairCreateNestedOneWithoutTeamOnPairInput["create"]>;
+};
+type TeamOnPairTeamFactory = {
+    _factoryFor: "Team";
+    build: () => PromiseLike<Prisma.TeamCreateNestedOneWithoutTeamOnPairInput["create"]>;
+};
+type TeamOnPairFactoryDefineInput = {
+    Pair: TeamOnPairPairFactory | Prisma.PairCreateNestedOneWithoutTeamOnPairInput;
+    Team: TeamOnPairTeamFactory | Prisma.TeamCreateNestedOneWithoutTeamOnPairInput;
+};
+type TeamOnPairFactoryDefineOptions = {
+    defaultData: Resolver<TeamOnPairFactoryDefineInput, BuildDataOptions>;
+};
+interface TeamOnPairFactoryInterface {
+    readonly _factoryFor: "TeamOnPair";
+    build(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<Prisma.TeamOnPairCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<Prisma.TeamOnPairCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.TeamOnPairCreateInput>[]): PromiseLike<Prisma.TeamOnPairCreateInput[]>;
+    pickForConnect(inputData: TeamOnPair): Pick<TeamOnPair, "pairId">;
+    create(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<TeamOnPair>;
+    createList(inputData: number | readonly Partial<Prisma.TeamOnPairCreateInput>[]): PromiseLike<TeamOnPair[]>;
+    createForConnect(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<Pick<TeamOnPair, "pairId">>;
+}
+export declare function defineTeamOnPairFactory(options: TeamOnPairFactoryDefineOptions): TeamOnPairFactoryInterface;
 type ParticipantOnTeamParticipantFactory = {
     _factoryFor: "Participant";
     build: () => PromiseLike<Prisma.ParticipantCreateNestedOneWithoutParticipantOnTeamInput["create"]>;
@@ -311,10 +311,10 @@ interface ParticipantOnTeamFactoryInterface {
     build(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Prisma.ParticipantOnTeamCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Prisma.ParticipantOnTeamCreateInput>;
     buildList(inputData: number | readonly Partial<Prisma.ParticipantOnTeamCreateInput>[]): PromiseLike<Prisma.ParticipantOnTeamCreateInput[]>;
-    pickForConnect(inputData: ParticipantOnTeam): Pick<ParticipantOnTeam, "participantId" | "teamId">;
+    pickForConnect(inputData: ParticipantOnTeam): Pick<ParticipantOnTeam, "participantId">;
     create(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<ParticipantOnTeam>;
     createList(inputData: number | readonly Partial<Prisma.ParticipantOnTeamCreateInput>[]): PromiseLike<ParticipantOnTeam[]>;
-    createForConnect(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Pick<ParticipantOnTeam, "participantId" | "teamId">>;
+    createForConnect(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Pick<ParticipantOnTeam, "participantId">>;
 }
 export declare function defineParticipantOnTeamFactory(options: ParticipantOnTeamFactoryDefineOptions): ParticipantOnTeamFactoryInterface;
 type ParticipantOnPairParticipantFactory = {
@@ -337,9 +337,9 @@ interface ParticipantOnPairFactoryInterface {
     build(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Prisma.ParticipantOnPairCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Prisma.ParticipantOnPairCreateInput>;
     buildList(inputData: number | readonly Partial<Prisma.ParticipantOnPairCreateInput>[]): PromiseLike<Prisma.ParticipantOnPairCreateInput[]>;
-    pickForConnect(inputData: ParticipantOnPair): Pick<ParticipantOnPair, "participantId" | "pairId">;
+    pickForConnect(inputData: ParticipantOnPair): Pick<ParticipantOnPair, "participantId">;
     create(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<ParticipantOnPair>;
     createList(inputData: number | readonly Partial<Prisma.ParticipantOnPairCreateInput>[]): PromiseLike<ParticipantOnPair[]>;
-    createForConnect(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Pick<ParticipantOnPair, "participantId" | "pairId">>;
+    createForConnect(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Pick<ParticipantOnPair, "participantId">>;
 }
 export declare function defineParticipantOnPairFactory(options: ParticipantOnPairFactoryDefineOptions): ParticipantOnPairFactoryInterface;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.definePairOnTeamFactory = exports.defineTeamFactory = exports.definePairFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.definePostFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
+exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.defineTeamOnPairFactory = exports.definePairFactory = exports.defineTeamFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.definePostFactory = exports.defineUserFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
 const internal_1 = require("@quramy/prisma-fabbrica/lib/internal");
 var internal_2 = require("@quramy/prisma-fabbrica/lib/internal");
 Object.defineProperty(exports, "initialize", { enumerable: true, get: function () { return internal_2.initialize; } });
@@ -99,37 +99,37 @@ const modelFieldDefinitions = [{
                 relationName: "ParticipantOnTaskToTaskStatus"
             }]
     }, {
-        name: "Pair",
-        fields: [{
-                name: "PairOnTeam",
-                type: "PairOnTeam",
-                relationName: "PairToPairOnTeam"
-            }, {
-                name: "ParticipantOnPair",
-                type: "ParticipantOnPair",
-                relationName: "PairToParticipantOnPair"
-            }]
-    }, {
         name: "Team",
         fields: [{
-                name: "PairOnTeam",
-                type: "PairOnTeam",
-                relationName: "PairOnTeamToTeam"
+                name: "TeamOnPair",
+                type: "TeamOnPair",
+                relationName: "TeamToTeamOnPair"
             }, {
                 name: "ParticipantOnTeam",
                 type: "ParticipantOnTeam",
                 relationName: "ParticipantOnTeamToTeam"
             }]
     }, {
-        name: "PairOnTeam",
+        name: "Pair",
+        fields: [{
+                name: "TeamOnPair",
+                type: "TeamOnPair",
+                relationName: "PairToTeamOnPair"
+            }, {
+                name: "ParticipantOnPair",
+                type: "ParticipantOnPair",
+                relationName: "PairToParticipantOnPair"
+            }]
+    }, {
+        name: "TeamOnPair",
         fields: [{
                 name: "Pair",
                 type: "Pair",
-                relationName: "PairToPairOnTeam"
+                relationName: "PairToTeamOnPair"
             }, {
                 name: "Team",
                 type: "Team",
-                relationName: "PairOnTeamToTeam"
+                relationName: "TeamToTeamOnPair"
             }]
     }, {
         name: "ParticipantOnTeam",
@@ -589,50 +589,6 @@ function defineParticipantOnTaskFactory(options) {
     return defineParticipantOnTaskFactoryInternal(options);
 }
 exports.defineParticipantOnTaskFactory = defineParticipantOnTaskFactory;
-function autoGeneratePairScalarsOrEnums({ seq }) {
-    return {
-        id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Pair", fieldName: "id", isId: true, isUnique: false, seq }),
-        pairName: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Pair", fieldName: "pairName", isId: false, isUnique: false, seq })
-    };
-}
-function definePairFactoryInternal({ defaultData: defaultDataResolver }) {
-    const seqKey = {};
-    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
-    const screen = (0, internal_1.createScreener)("Pair", modelFieldDefinitions);
-    const build = async (inputData = {}) => {
-        const seq = getSeq();
-        const requiredScalarData = autoGeneratePairScalarsOrEnums({ seq });
-        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
-        const defaultData = await resolveValue({ seq });
-        const defaultAssociations = {};
-        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
-        return data;
-    };
-    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
-    const pickForConnect = (inputData) => ({
-        id: inputData.id
-    });
-    const create = async (inputData = {}) => {
-        const data = await build(inputData).then(screen);
-        return await (0, internal_1.getClient)().pair.create({ data });
-    };
-    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
-    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
-    return {
-        _factoryFor: "Pair",
-        build,
-        buildList,
-        buildCreateInput: build,
-        pickForConnect,
-        create,
-        createList,
-        createForConnect,
-    };
-}
-function definePairFactory(options = {}) {
-    return definePairFactoryInternal(options);
-}
-exports.definePairFactory = definePairFactory;
 function autoGenerateTeamScalarsOrEnums({ seq }) {
     return {
         id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Team", fieldName: "id", isId: true, isUnique: false, seq }),
@@ -677,48 +633,37 @@ function defineTeamFactory(options = {}) {
     return defineTeamFactoryInternal(options);
 }
 exports.defineTeamFactory = defineTeamFactory;
-function isPairOnTeamPairFactory(x) {
-    return x?._factoryFor === "Pair";
+function autoGeneratePairScalarsOrEnums({ seq }) {
+    return {
+        id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Pair", fieldName: "id", isId: true, isUnique: false, seq }),
+        pairName: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Pair", fieldName: "pairName", isId: false, isUnique: false, seq })
+    };
 }
-function isPairOnTeamTeamFactory(x) {
-    return x?._factoryFor === "Team";
-}
-function autoGeneratePairOnTeamScalarsOrEnums({ seq }) {
-    return {};
-}
-function definePairOnTeamFactoryInternal({ defaultData: defaultDataResolver }) {
+function definePairFactoryInternal({ defaultData: defaultDataResolver }) {
     const seqKey = {};
     const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
-    const screen = (0, internal_1.createScreener)("PairOnTeam", modelFieldDefinitions);
+    const screen = (0, internal_1.createScreener)("Pair", modelFieldDefinitions);
     const build = async (inputData = {}) => {
         const seq = getSeq();
-        const requiredScalarData = autoGeneratePairOnTeamScalarsOrEnums({ seq });
+        const requiredScalarData = autoGeneratePairScalarsOrEnums({ seq });
         const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
         const defaultData = await resolveValue({ seq });
-        const defaultAssociations = {
-            Pair: isPairOnTeamPairFactory(defaultData.Pair) ? {
-                create: await defaultData.Pair.build()
-            } : defaultData.Pair,
-            Team: isPairOnTeamTeamFactory(defaultData.Team) ? {
-                create: await defaultData.Team.build()
-            } : defaultData.Team
-        };
+        const defaultAssociations = {};
         const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
         return data;
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
     const pickForConnect = (inputData) => ({
-        pairId: inputData.pairId,
-        teamId: inputData.teamId
+        id: inputData.id
     });
     const create = async (inputData = {}) => {
         const data = await build(inputData).then(screen);
-        return await (0, internal_1.getClient)().pairOnTeam.create({ data });
+        return await (0, internal_1.getClient)().pair.create({ data });
     };
     const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
     const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
     return {
-        _factoryFor: "PairOnTeam",
+        _factoryFor: "Pair",
         build,
         buildList,
         buildCreateInput: build,
@@ -728,10 +673,64 @@ function definePairOnTeamFactoryInternal({ defaultData: defaultDataResolver }) {
         createForConnect,
     };
 }
-function definePairOnTeamFactory(options) {
-    return definePairOnTeamFactoryInternal(options);
+function definePairFactory(options = {}) {
+    return definePairFactoryInternal(options);
 }
-exports.definePairOnTeamFactory = definePairOnTeamFactory;
+exports.definePairFactory = definePairFactory;
+function isTeamOnPairPairFactory(x) {
+    return x?._factoryFor === "Pair";
+}
+function isTeamOnPairTeamFactory(x) {
+    return x?._factoryFor === "Team";
+}
+function autoGenerateTeamOnPairScalarsOrEnums({ seq }) {
+    return {};
+}
+function defineTeamOnPairFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("TeamOnPair", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateTeamOnPairScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            Pair: isTeamOnPairPairFactory(defaultData.Pair) ? {
+                create: await defaultData.Pair.build()
+            } : defaultData.Pair,
+            Team: isTeamOnPairTeamFactory(defaultData.Team) ? {
+                create: await defaultData.Team.build()
+            } : defaultData.Team
+        };
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        pairId: inputData.pairId
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().teamOnPair.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "TeamOnPair",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineTeamOnPairFactory(options) {
+    return defineTeamOnPairFactoryInternal(options);
+}
+exports.defineTeamOnPairFactory = defineTeamOnPairFactory;
 function isParticipantOnTeamParticipantFactory(x) {
     return x?._factoryFor === "Participant";
 }
@@ -763,8 +762,7 @@ function defineParticipantOnTeamFactoryInternal({ defaultData: defaultDataResolv
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
     const pickForConnect = (inputData) => ({
-        participantId: inputData.participantId,
-        teamId: inputData.teamId
+        participantId: inputData.participantId
     });
     const create = async (inputData = {}) => {
         const data = await build(inputData).then(screen);
@@ -818,8 +816,7 @@ function defineParticipantOnPairFactoryInternal({ defaultData: defaultDataResolv
     };
     const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
     const pickForConnect = (inputData) => ({
-        participantId: inputData.participantId,
-        pairId: inputData.pairId
+        participantId: inputData.participantId
     });
     const create = async (inputData = {}) => {
         const data = await build(inputData).then(screen);
