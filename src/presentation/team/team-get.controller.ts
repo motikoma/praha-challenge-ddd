@@ -16,12 +16,12 @@ class ResponseBody {
   path: '/teams',
 })
 export class TeamGetController {
-  @Get('/:id')
-  async getTeam(@Param('id') id: string): Promise<ResponseBody> {
+  @Get('/:teamId')
+  async getTeam(@Param('teamId') teamId: string): Promise<ResponseBody> {
     const prisma = new PrismaClient();
     const repository = new TeamRepository(prisma);
     const usecase = new GetTeamUseCase(repository);
-    const result = await usecase.do(id);
+    const result = await usecase.do(teamId);
 
     const response = new ResponseBody(
       result.id,

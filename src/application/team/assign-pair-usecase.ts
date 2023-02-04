@@ -1,33 +1,50 @@
 import { Pair } from 'src/domain/entity/pair/pair';
 import { PairName } from 'src/domain/entity/pair/pair-name';
+import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
   readonly pairName: string;
-  readonly pairIds: string[];
+  readonly participantIds: string[];
 };
 type ReadonlyParam = Readonly<Param>;
 
 export class AssignPairUseCase {
-  constructor(private readonly repository: ITeamRepository) {}
+  constructor(
+    private readonly teamRepository: ITeamRepository,
+    private readonly participantRepository: IParticipantRepository,
+  ) {}
 
-  async do(id: string, param: ReadonlyParam) {
-    const teamId = UniqueID.reconstruct(id);
+  async do(_teamId: string, param: ReadonlyParam) {
+    const teamId = UniqueID.reconstruct(_teamId);
     const pairName = PairName.create({ pairName: param.pairName });
-    const pairIds = param.pairIds.map((id) => UniqueID.reconstruct(id));
+    const participantIds = param.participantIds.map((id) =>
+      UniqueID.reconstruct(id),
+    );
 
-    const team = await this.repository.getWithId(teamId);
+    const team = await this.teamRepository.getWithId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
+
+    // 参加者の状態をチェックする
+    const checkParticipantStatus = async (participantId: UniqueID) => {
+      const result = await this.participantRepository.getWithId(participantId);
+      result?.canBeAssignedPairOrTeam();
+    };
+
+    // TODO: promise.allで並列処理
+    await Promise.all(
+      participantIds.map(async (id) => checkParticipantStatus(id)),
+    );
 
     const newPair = Pair.create({
       name: pairName,
-      participantIds: pairIds,
+      participantIds,
     });
     team.addPair(newPair);
 
-    const upsertedTeam = await this.repository.upsert(team);
+    const upsertedTeam = await this.teamRepository.upsert(team);
 
     const upsertedTeamDto = new UpsertedTeamDto(
       upsertedTeam.id.id,

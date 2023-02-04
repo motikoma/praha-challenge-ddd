@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { UpdateTaskUseCase } from 'src/application/task/update-task.usecase';

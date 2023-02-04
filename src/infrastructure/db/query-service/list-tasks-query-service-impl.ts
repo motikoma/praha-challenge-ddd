@@ -1,15 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  IListParticipantsQueryService,
-  Filter,
-} from 'src/application/participant/query-service/list-participants-query-service';
 import { TaskDto } from 'src/application/task/list-tasks.usecase';
 import { IListTasksQueryService } from 'src/application/task/query-service/list-tasks-query-service';
-import { EnrollmentStatus } from 'src/domain/entity/participant/enrollment-status';
-import { MailAddress } from 'src/domain/entity/participant/mail-address';
-import { Participant } from 'src/domain/entity/participant/participant';
-import { ParticipantName } from 'src/domain/entity/participant/participant-name';
-import { Task } from 'src/domain/entity/task/task';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 
 export class ListTasksQueryService implements IListTasksQueryService {

@@ -45,7 +45,7 @@ export class Team extends Entity<ReadonlyProps> {
     });
   }
 
-  deleteMember(deleteParticipantId: UniqueID) {
+  removeMember(deleteParticipantId: UniqueID) {
     const newParticipantIds = this.participantIds.filter(
       (id) => id.id !== deleteParticipantId.id,
     );
@@ -57,11 +57,6 @@ export class Team extends Entity<ReadonlyProps> {
   }
 
   addPair(newPair: Pair) {
-    // TODO: 参加者のステータスをチェックする
-    // newPair.participantIds.forEach((id) => {
-
-    // });
-
     const isAllParticipantIds = newPair.participantIds.every((id) =>
       this.participantIds.some((participantId) => participantId.equals(id)),
     );

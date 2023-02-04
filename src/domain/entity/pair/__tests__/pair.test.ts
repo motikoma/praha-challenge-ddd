@@ -7,15 +7,10 @@ describe('Pair', () => {
   describe('create: ペアの作成には参加者が2名または3名のみ可能', () => {
     it('[正常系]: 参加者が2名であればペア作成に成功', () => {
       const actual = Pair.create({
-        values: {
-          name: PairName.create({
-            pairName: 'a',
-          }),
-          participantIds: [
-            UniqueID.reconstruct('1'),
-            UniqueID.reconstruct('2'),
-          ],
-        },
+        name: PairName.create({
+          pairName: 'a',
+        }),
+        participantIds: [UniqueID.reconstruct('1'), UniqueID.reconstruct('2')],
       }).participantIds.length;
       const expected = 2;
       expect(actual).toBe(expected);
@@ -23,16 +18,14 @@ describe('Pair', () => {
 
     it('[正常系]: 参加者が3名であればペア作成に成功', () => {
       const actual = Pair.create({
-        values: {
-          name: PairName.create({
-            pairName: 'a',
-          }),
-          participantIds: [
-            UniqueID.reconstruct('1'),
-            UniqueID.reconstruct('2'),
-            UniqueID.reconstruct('3'),
-          ],
-        },
+        name: PairName.create({
+          pairName: 'a',
+        }),
+        participantIds: [
+          UniqueID.reconstruct('1'),
+          UniqueID.reconstruct('2'),
+          UniqueID.reconstruct('3'),
+        ],
       }).participantIds.length;
       const expected = 3;
       expect(actual).toBe(expected);
@@ -41,12 +34,10 @@ describe('Pair', () => {
     it('[準正常系]: 参加者が0名であればペア作成に失敗', () => {
       expect(() =>
         Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [],
         }),
       ).toThrowError(
         new DomainException(
@@ -58,12 +49,10 @@ describe('Pair', () => {
     it('[準正常系]: 参加者が1名であればペア作成に失敗', () => {
       expect(() =>
         Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [UniqueID.reconstruct('1')],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [UniqueID.reconstruct('1')],
         }),
       ).toThrowError(
         new DomainException(
@@ -75,17 +64,15 @@ describe('Pair', () => {
     it('[準正常系]: 参加者が4名であればペア作成に失敗', () => {
       expect(() =>
         Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [
-              UniqueID.reconstruct('1'),
-              UniqueID.reconstruct('2'),
-              UniqueID.reconstruct('3'),
-              UniqueID.reconstruct('4'),
-            ],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [
+            UniqueID.reconstruct('1'),
+            UniqueID.reconstruct('2'),
+            UniqueID.reconstruct('3'),
+            UniqueID.reconstruct('4'),
+          ],
         }),
       ).toThrowError(
         new DomainException(
@@ -99,15 +86,13 @@ describe('Pair', () => {
     describe('addMember: ペアに新規メンバーを追加する', () => {
       it('[正常系]: ペアが2名の時に新規メンバーを追加できる', () => {
         const pair = Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [
-              UniqueID.reconstruct('1'),
-              UniqueID.reconstruct('2'),
-            ],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [
+            UniqueID.reconstruct('1'),
+            UniqueID.reconstruct('2'),
+          ],
         });
 
         const actual = pair.addMember(UniqueID.reconstruct('3')).participantIds
@@ -118,16 +103,14 @@ describe('Pair', () => {
 
       it('[準正常系]: ペアが3名の時に新規メンバーを追加できない', () => {
         const pair = Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [
-              UniqueID.reconstruct('1'),
-              UniqueID.reconstruct('2'),
-              UniqueID.reconstruct('3'),
-            ],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [
+            UniqueID.reconstruct('1'),
+            UniqueID.reconstruct('2'),
+            UniqueID.reconstruct('3'),
+          ],
         });
 
         expect(() => pair.addMember(UniqueID.reconstruct('4'))).toThrowError(
@@ -141,18 +124,16 @@ describe('Pair', () => {
     describe('deleteMember: ペアからメンバーを削除する', () => {
       it('[正常系]: ペアが3名の時に新規メンバーを削除できる', () => {
         const pair = Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [
-              UniqueID.reconstruct('1'),
-              UniqueID.reconstruct('2'),
-              UniqueID.reconstruct('3'),
-            ],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [
+            UniqueID.reconstruct('1'),
+            UniqueID.reconstruct('2'),
+            UniqueID.reconstruct('3'),
+          ],
         });
-        const actual = pair.deleteMember(UniqueID.reconstruct('3'));
+        const actual = pair.removeMember(UniqueID.reconstruct('3'));
 
         expect(
           actual.participantIds.filter((id) => id.id === '3'),
@@ -162,18 +143,16 @@ describe('Pair', () => {
 
       it('[準正常系]: ペアが2名の時に新規メンバーを削除できない', () => {
         const pair = Pair.create({
-          values: {
-            name: PairName.create({
-              pairName: 'a',
-            }),
-            participantIds: [
-              UniqueID.reconstruct('1'),
-              UniqueID.reconstruct('2'),
-            ],
-          },
+          name: PairName.create({
+            pairName: 'a',
+          }),
+          participantIds: [
+            UniqueID.reconstruct('1'),
+            UniqueID.reconstruct('2'),
+          ],
         });
 
-        expect(() => pair.deleteMember(UniqueID.reconstruct('2'))).toThrowError(
+        expect(() => pair.removeMember(UniqueID.reconstruct('2'))).toThrowError(
           new DomainException(
             'ペアは2名または3名の参加者で構成されている必要があります',
           ),

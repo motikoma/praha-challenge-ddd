@@ -45,9 +45,9 @@ export class Pair extends Entity<ReadonlyProps> {
     });
   }
 
-  deleteMember(deleteParticipantId: UniqueID) {
+  removeMember(removeParticipantId: UniqueID) {
     const newParticipantIds = this.participantIds.filter(
-      (id) => id.id !== deleteParticipantId.id,
+      (id) => id.id !== removeParticipantId.id,
     );
 
     return Pair.reconstruct({

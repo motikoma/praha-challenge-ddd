@@ -27,6 +27,8 @@ export class UpdateParticipantUseCase {
     if (!participant)
       throw new ApplicationException('参加者のidが存在しません');
 
+    // MEMO: 参加者エンティティがペアやチームのインスタンス参照をしていないので
+    // usecaseで在籍中の参加者がペアもしくはチームに割り当てられているかどうかを確認する
     if (participant.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED) {
       const isAssignedPair =
         await this.checkAssignedPairService.checkAssignedPair(participantId);

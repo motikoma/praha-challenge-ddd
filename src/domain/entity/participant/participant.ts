@@ -45,9 +45,11 @@ export class Participant extends Entity<ReadonlyProps> {
     return new Participant(props);
   }
 
-  canBeAssignedPairOrTeam(): boolean {
+  canBeAssignedPairOrTeam() {
     if (!(this._values.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED))
-      return false;
+      return new DomainException(
+        '在籍中ではない場合はチームやペアに割り当てることができません',
+      );
     return true;
   }
 
