@@ -3,6 +3,7 @@ import { Task } from 'src/domain/entity/task/task';
 import { ITaskRepository } from 'src/domain/entity/task/task-repository';
 import { TaskStatus } from 'src/domain/entity/task/task-status';
 import { UniqueID } from 'src/domain/shared/uniqueID';
+import { InfraException } from 'src/infrastructure/infra-exception';
 
 export class TaskRepository implements ITaskRepository {
   constructor(private readonly prismaClient: PrismaClient) {
@@ -10,81 +11,94 @@ export class TaskRepository implements ITaskRepository {
   }
 
   async create(task: Task) {
-    const result = await this.prismaClient.participantOnTask.create({
-      data: {
-        participantId: task.ownerId.id,
-        taskId: task.id.id,
-        taskStatusId: task.taskStatus.value,
-      },
-    });
+    try {
+      const result = await this.prismaClient.participantOnTask.create({
+        data: {
+          participantId: task.ownerId.id,
+          taskId: task.id.id,
+          taskStatusId: task.taskStatus.value,
+        },
+      });
 
-    const taskEntity = Task.create({
-      id: UniqueID.reconstruct(result.taskId),
-      values: {
-        ownerId: UniqueID.reconstruct(result.participantId),
-        taskStatus: TaskStatus.reconstruct({
-          value: result.taskStatusId,
-        }),
-      },
-    });
+      const taskEntity = Task.create({
+        id: UniqueID.reconstruct(result.taskId),
+        values: {
+          ownerId: UniqueID.reconstruct(result.participantId),
+          taskStatus: TaskStatus.reconstruct({
+            value: result.taskStatusId,
+          }),
+        },
+      });
 
-    return taskEntity;
+      return taskEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
   }
 
   async get(ownerId: UniqueID, taskId: UniqueID) {
-    const task = await this.prismaClient.participantOnTask.findUnique({
-      where: {
-        participantId_taskId: {
-          participantId: ownerId.id,
-          taskId: taskId.id,
+    try {
+      const task = await this.prismaClient.participantOnTask.findUnique({
+        where: {
+          participantId_taskId: {
+            participantId: ownerId.id,
+            taskId: taskId.id,
+          },
         },
-      },
-      select: {
-        participantId: true,
-        taskId: true,
-        taskStatusId: true,
-      },
-    });
+        select: {
+          participantId: true,
+          taskId: true,
+          taskStatusId: true,
+        },
+      });
 
-    if (!task) return null;
+      if (!task) return null;
 
-    const taskEntity = Task.create({
-      id: UniqueID.reconstruct(task.taskId),
-      values: {
-        ownerId: UniqueID.reconstruct(task.participantId),
-        taskStatus: TaskStatus.reconstruct({
-          value: task.taskStatusId,
-        }),
-      },
-    });
+      const taskEntity = Task.create({
+        id: UniqueID.reconstruct(task.taskId),
+        values: {
+          ownerId: UniqueID.reconstruct(task.participantId),
+          taskStatus: TaskStatus.reconstruct({
+            value: task.taskStatusId,
+          }),
+        },
+      });
 
-    return taskEntity;
+      return taskEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
   }
 
   async updateStatus(task: Task) {
     const { taskStatus, ownerId } = task.values;
-    const updatedTask = await this.prismaClient.participantOnTask.update({
-      where: {
-        participantId_taskId: {
-          participantId: ownerId.id,
-          taskId: task.id.id,
+
+    try {
+      const updatedTask = await this.prismaClient.participantOnTask.update({
+        where: {
+          participantId_taskId: {
+            participantId: ownerId.id,
+            taskId: task.id.id,
+          },
         },
-      },
-      data: {
-        taskStatusId: taskStatus.value,
-      },
-    });
+        data: {
+          taskStatusId: taskStatus.value,
+        },
+      });
 
-    const updatedTaskEntity = Task.create({
-      id: UniqueID.reconstruct(updatedTask.taskId),
-      values: {
-        ownerId: UniqueID.reconstruct(updatedTask.participantId),
-        taskStatus: TaskStatus.reconstruct({
-          value: updatedTask.taskStatusId,
-        }),
-      },
-    });
+      const updatedTaskEntity = Task.create({
+        id: UniqueID.reconstruct(updatedTask.taskId),
+        values: {
+          ownerId: UniqueID.reconstruct(updatedTask.participantId),
+          taskStatus: TaskStatus.reconstruct({
+            value: updatedTask.taskStatusId,
+          }),
+        },
+      });
 
-    return updatedTaskEntity;
+      return updatedTaskEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
   }
 }

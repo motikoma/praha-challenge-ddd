@@ -71,6 +71,42 @@ CREATE TABLE "ParticipantOnTask" (
     CONSTRAINT "ParticipantOnTask_taskStatusId_fkey" FOREIGN KEY ("taskStatusId") REFERENCES "TaskStatus" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
+-- CreateTable
+CREATE TABLE "Team" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "teamName" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Pair" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "pairName" TEXT NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "TeamOnPair" (
+    "pairId" TEXT NOT NULL PRIMARY KEY,
+    "teamId" TEXT NOT NULL,
+    CONSTRAINT "TeamOnPair_pairId_fkey" FOREIGN KEY ("pairId") REFERENCES "Pair" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "TeamOnPair_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- CreateTable
+CREATE TABLE "ParticipantOnTeam" (
+    "participantId" TEXT NOT NULL PRIMARY KEY,
+    "teamId" TEXT NOT NULL,
+    CONSTRAINT "ParticipantOnTeam_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "ParticipantOnTeam_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
+-- CreateTable
+CREATE TABLE "ParticipantOnPair" (
+    "participantId" TEXT NOT NULL PRIMARY KEY,
+    "pairId" TEXT NOT NULL,
+    CONSTRAINT "ParticipantOnPair_participantId_fkey" FOREIGN KEY ("participantId") REFERENCES "Participant" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT "ParticipantOnPair_pairId_fkey" FOREIGN KEY ("pairId") REFERENCES "Pair" ("id") ON DELETE RESTRICT ON UPDATE RESTRICT
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 

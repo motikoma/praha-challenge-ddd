@@ -1,12 +1,5 @@
-import { ICheckAssignedPairService } from 'src/domain/domain-service/check-assined-pair-service';
-import { ICheckAssignedTeamService } from 'src/domain/domain-service/check-assined-team-service';
-import {
-  EnrollmentStatus,
-  ENROLLMENT_STATUS,
-} from 'src/domain/entity/participant/enrollment-status';
-import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
+import { UpdateParticipantDomainService } from 'src/domain/domain-service/update-participant-domain-service';
 import { UniqueID } from 'src/domain/shared/uniqueId';
-import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
   readonly enrollmentStatus: number;
@@ -15,42 +8,15 @@ type ReadonlyParam = Readonly<Param>;
 
 export class UpdateParticipantUseCase {
   constructor(
-    private readonly repository: IParticipantRepository,
-    private readonly checkAssignedPairService: ICheckAssignedPairService,
-    private readonly checkAssignedTeamService: ICheckAssignedTeamService,
+    private readonly updateParticipantDomainService: UpdateParticipantDomainService,
   ) {}
 
   async do(id: string, param: ReadonlyParam) {
     const participantId = UniqueID.reconstruct(id);
-    const participant = await this.repository.getWithId(participantId);
-
-    if (!participant)
-      throw new ApplicationException('参加者のidが存在しません');
-
-    // MEMO: 参加者エンティティがペアやチームのインスタンス参照をしていないので
-    // usecaseで在籍中の参加者がペアもしくはチームに割り当てられているかどうかを確認する
-    if (participant.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED) {
-      const isAssignedPair =
-        await this.checkAssignedPairService.checkAssignedPair(participantId);
-      if (isAssignedPair)
-        throw new ApplicationException(
-          'ペアが割り当てられているので、在籍中から別のステータスに変更できません',
-        );
-
-      const isAssignedTeam =
-        await this.checkAssignedTeamService.checkAssignedTeam(participantId);
-      if (isAssignedTeam)
-        throw new ApplicationException(
-          'チームが割り当てられているので、在籍中から別のステータスに変更できません',
-        );
-    }
-
-    const enrollmentStatus = EnrollmentStatus.reconstruct({
-      value: param.enrollmentStatus,
-    });
-    const updateParticipant =
-      participant.changeEnrollmentStatus(enrollmentStatus);
-    const updatedParticipant = await this.repository.update(updateParticipant);
+    const updatedParticipant = await this.updateParticipantDomainService.update(
+      participantId,
+      param,
+    );
 
     const updatedParticipantDto = new UpdateParticipantDto(
       updatedParticipant.id.id,

@@ -74,45 +74,49 @@ export class ListParticipantsQueryService
       );
     };
 
-    const participants = await this.prismaClient.participant.findMany({
-      where: createWhere(filter),
-      orderBy: {
-        createdAt: 'desc',
-      },
-      skip: createSkip(filter),
-      take: filter.pagingCondition.pageSize,
-      include: {
-        ParticipantOnEnrollmentStatus: true,
-        ParticipantMailAddress: true,
-      },
-    });
-
-    const participantEntities = participants.map((participant) => {
-      const participantEntity = Participant.reconstruct({
-        id: UniqueID.reconstruct(participant.id),
-        values: {
-          name: ParticipantName.reconstruct({
-            lastName: participant.lastName,
-            firstName: participant.firstName,
-          }),
-          mailAddress: MailAddress.reconstruct({
-            mailAddress: participant.ParticipantMailAddress[0]!.mailAddress,
-          }),
-          enrollmentStatus: EnrollmentStatus.reconstruct({
-            value:
-              participant.ParticipantOnEnrollmentStatus[0]!.enrollmentStatusId,
-          }),
+    try {
+      const participants = await this.prismaClient.participant.findMany({
+        where: createWhere(filter),
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: createSkip(filter),
+        take: filter.pagingCondition.pageSize,
+        include: {
+          ParticipantOnEnrollmentStatus: true,
+          ParticipantMailAddress: true,
         },
       });
-      return participantEntity;
-    });
 
-    const paging = new Paging(
-      filter.pagingCondition.pageSize,
-      filter.pagingCondition.pageNumber,
-    );
-    const page = new Page<Participant>(participantEntities, paging);
+      const participantEntities = participants.map((participant) => {
+        const participantEntity = Participant.reconstruct({
+          id: UniqueID.reconstruct(participant.id),
+          values: {
+            name: ParticipantName.reconstruct({
+              lastName: participant.lastName,
+              firstName: participant.firstName,
+            }),
+            mailAddress: MailAddress.reconstruct({
+              mailAddress: participant.ParticipantMailAddress[0]!.mailAddress,
+            }),
+            enrollmentStatus: EnrollmentStatus.reconstruct({
+              value:
+                participant.ParticipantOnEnrollmentStatus[0]!
+                  .enrollmentStatusId,
+            }),
+          },
+        });
+        return participantEntity;
+      });
 
-    return page;
+      const paging = new Paging(
+        filter.pagingCondition.pageSize,
+        filter.pagingCondition.pageNumber,
+      );
+      const page = new Page<Participant>(participantEntities, paging);
+      return page;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
   }
 }
