@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.defineTeamOnPairFactory = exports.definePairFactory = exports.defineTeamFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
+exports.defineFoodsFactory = exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.defineTeamOnPairFactory = exports.definePairFactory = exports.defineTeamFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
 const internal_1 = require("@quramy/prisma-fabbrica/lib/internal");
 var internal_2 = require("@quramy/prisma-fabbrica/lib/internal");
 Object.defineProperty(exports, "initialize", { enumerable: true, get: function () { return internal_2.initialize; } });
@@ -139,6 +139,9 @@ const modelFieldDefinitions = [{
                 type: "Pair",
                 relationName: "PairToParticipantOnPair"
             }]
+    }, {
+        name: "Foods",
+        fields: []
     }];
 function autoGenerateParticipantScalarsOrEnums({ seq }) {
     return {
@@ -732,3 +735,47 @@ function defineParticipantOnPairFactory(options) {
     return defineParticipantOnPairFactoryInternal(options);
 }
 exports.defineParticipantOnPairFactory = defineParticipantOnPairFactory;
+function autoGenerateFoodsScalarsOrEnums({ seq }) {
+    return {
+        id: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Foods", fieldName: "id", isId: true, isUnique: false, seq }),
+        foodName: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Foods", fieldName: "foodName", isId: false, isUnique: false, seq })
+    };
+}
+function defineFoodsFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("Foods", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateFoodsScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {};
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().foods.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "Foods",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineFoodsFactory(options = {}) {
+    return defineFoodsFactoryInternal(options);
+}
+exports.defineFoodsFactory = defineFoodsFactory;

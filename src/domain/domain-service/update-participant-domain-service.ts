@@ -26,6 +26,7 @@ export class UpdateParticipantDomainService {
     private readonly checkAssignedTeamService: ICheckAssignedTeamService,
     private readonly checkAssignedPairService: ICheckAssignedPairService,
   ) {
+    this.repository = repository;
     this.checkAssignedTeamService = checkAssignedTeamService;
     this.checkAssignedPairService = checkAssignedPairService;
   }

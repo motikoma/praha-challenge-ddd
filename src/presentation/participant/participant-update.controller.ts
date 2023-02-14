@@ -4,6 +4,9 @@ import { UpdateParticipantUseCase } from 'src/application/participant/update-par
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
+import { UpdateParticipantDomainService } from 'src/domain/domain-service/update-participant-domain-service';
+import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
+import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 class RequestBody {
   @IsNotEmpty()
   @IsNumber()
@@ -30,7 +33,13 @@ export class ParticipantUpdateController {
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
     const prisma = new PrismaClient();
-    const repository = new ParticipantRepository(prisma);
+
+    const repository = new UpdateParticipantDomainService(
+      new ParticipantRepository(prisma),
+      new CheckAssignedTeamService(prisma),
+      new CheckAssignedPairService(prisma),
+    );
+
     const usecase = new UpdateParticipantUseCase(repository);
     const result = await usecase.do(id, req);
 
