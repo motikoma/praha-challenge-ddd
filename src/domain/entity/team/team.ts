@@ -77,6 +77,7 @@ export class Team extends Entity<ReadonlyProps> {
     const newPairs = this.values.pairs.filter(
       (pair) => pair.id.id !== deletePairId.id,
     );
+
     return Team.create({
       id: this.id,
       values: { ...this.values, pairs: newPairs },
