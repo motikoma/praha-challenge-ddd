@@ -6,12 +6,11 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
-  readonly pairName: string;
-  readonly participantIds: string[];
+  readonly participantId: string;
 };
 type ReadonlyParam = Readonly<Param>;
 
-export class AssignPairUseCase {
+export class AssignParticipantUseCase {
   constructor(
     private readonly teamRepository: ITeamRepository,
     private readonly participantRepository: IParticipantRepository,
@@ -19,31 +18,17 @@ export class AssignPairUseCase {
 
   async do(_teamId: string, param: ReadonlyParam) {
     const teamId = UniqueID.reconstruct(_teamId);
-    const pairName = PairName.create({ pairName: param.pairName });
-    const participantIds = param.participantIds.map((id) =>
-      UniqueID.reconstruct(id),
-    );
+    const participantId = UniqueID.reconstruct(param.participantId);
 
     const team = await this.teamRepository.getWithId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
     // 参加者の状態をチェックする
-    const checkParticipantStatus = async (participantId: UniqueID) => {
-      const result = await this.participantRepository.getWithId(participantId);
-      if (!result) throw new ApplicationException('参加者が存在しません');
+    const result = await this.participantRepository.getWithId(participantId);
+    if (!result) throw new ApplicationException('参加者が存在しません');
+    result.canBeAssignedPairOrTeam();
 
-      result.canBeAssignedPairOrTeam();
-    };
-
-    await Promise.all(
-      participantIds.map(async (id) => checkParticipantStatus(id)),
-    );
-
-    const newPair = Pair.create({
-      name: pairName,
-      participantIds,
-    });
-    team.addPair(newPair);
+    team.addMember(participantId);
 
     const upsertedTeam = await this.teamRepository.upsert(team);
 
