@@ -21,9 +21,6 @@ describe('create', () => {
     },
   });
 
-  // 参加者のメールアドレスがすでに存在する場合はエラーになる
-  // getWithMailAddressメソッドに渡る引数のチェック
-  // createメソッドに渡る引数のチェック
   it('正常系_参加者を作成する際に正しい値がRepositoryの引数に渡る', async () => {
     jest.spyOn(participantRepository, 'create').mockResolvedValue(participant);
 
