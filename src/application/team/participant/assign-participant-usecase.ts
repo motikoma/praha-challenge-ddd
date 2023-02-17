@@ -1,9 +1,7 @@
-import { Pair } from 'src/domain/entity/pair/pair';
-import { PairName } from 'src/domain/entity/pair/pair-name';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
-import { ApplicationException } from '../shared/application-exception';
+import { ApplicationException } from '../../shared/application-exception';
 
 type Param = {
   readonly participantId: string;
@@ -28,9 +26,9 @@ export class AssignParticipantUseCase {
     if (!result) throw new ApplicationException('参加者が存在しません');
     result.canBeAssignedPairOrTeam();
 
-    team.addMember(participantId);
+    const teamWithChangeMember = team.addMember(participantId);
 
-    const upsertedTeam = await this.teamRepository.upsert(team);
+    const upsertedTeam = await this.teamRepository.upsert(teamWithChangeMember);
 
     const upsertedTeamDto = new UpsertedTeamDto(
       upsertedTeam.id.id,

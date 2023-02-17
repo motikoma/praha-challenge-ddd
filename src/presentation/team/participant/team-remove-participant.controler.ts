@@ -1,7 +1,7 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { AssignParticipantUseCase } from 'src/application/team/assign-participant-usecase';
+import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 
@@ -23,16 +23,16 @@ class ResponseBody {
 @Controller({
   path: '/teams',
 })
-export class TeamAssignParticipantController {
+export class TeamRemoveParticipantController {
   @Put('/:teamId')
-  async assignParticipantToTeam(
+  async removeParticipantToTeam(
     @Param('teamId') teamId: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
     const prisma = new PrismaClient();
     const teamRepository = new TeamRepository(prisma);
     const participantRepository = new ParticipantRepository(prisma);
-    const usecase = new AssignParticipantUseCase(
+    const usecase = new RemoveParticipantUseCase(
       teamRepository,
       participantRepository,
     );

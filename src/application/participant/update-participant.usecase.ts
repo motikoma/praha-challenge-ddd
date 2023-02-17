@@ -1,4 +1,4 @@
-import { UpdateParticipantDomainService } from 'src/domain/domain-service/update-participant-domain-service';
+import { UpdateParticipantDomainService } from 'src/application/participant/domain-service/update-participant-domain-service';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 
 type Param = {

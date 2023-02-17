@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ICheckAssignedTeamService } from 'src/domain/domain-service/update-participant-domain-service';
+import { ICheckAssignedTeamService } from 'src/application/participant/domain-service/update-participant-domain-service';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
 

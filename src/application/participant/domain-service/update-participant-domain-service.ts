@@ -2,10 +2,10 @@ import { ApplicationException } from 'src/application/shared/application-excepti
 import {
   EnrollmentStatus,
   ENROLLMENT_STATUS,
-} from '../entity/participant/enrollment-status';
-import { Participant } from '../entity/participant/participant';
-import { IParticipantRepository } from '../entity/participant/participant-repository';
-import { UniqueID } from '../shared/uniqueId';
+} from '../../../domain/entity/participant/enrollment-status';
+import { Participant } from '../../../domain/entity/participant/participant';
+import { IParticipantRepository } from '../../../domain/entity/participant/participant-repository';
+import { UniqueID } from '../../../domain/shared/uniqueId';
 
 type Param = {
   readonly enrollmentStatus: number;

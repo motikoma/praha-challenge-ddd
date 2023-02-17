@@ -1,18 +1,14 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { AssignPairUseCase } from 'src/application/team/assign-pair-usecase';
+import { AssignParticipantUseCase } from 'src/application/team/participant/assign-participant-usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 
 class RequestBody {
   @IsNotEmpty()
   @IsString()
-  readonly pairName!: string;
-
-  @IsNotEmpty()
-  @IsString({ each: true })
-  readonly participantIds!: string[];
+  readonly participantId!: string;
 }
 
 class ResponseBody {
@@ -27,16 +23,16 @@ class ResponseBody {
 @Controller({
   path: '/teams',
 })
-export class TeamAssignPairController {
+export class TeamAssignParticipantController {
   @Put('/:teamId')
-  async assignPairToTeam(
+  async assignParticipantToTeam(
     @Param('teamId') teamId: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
     const prisma = new PrismaClient();
     const teamRepository = new TeamRepository(prisma);
     const participantRepository = new ParticipantRepository(prisma);
-    const usecase = new AssignPairUseCase(
+    const usecase = new AssignParticipantUseCase(
       teamRepository,
       participantRepository,
     );

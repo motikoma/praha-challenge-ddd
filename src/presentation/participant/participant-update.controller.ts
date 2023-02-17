@@ -4,7 +4,7 @@ import { UpdateParticipantUseCase } from 'src/application/participant/update-par
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { UpdateParticipantDomainService } from 'src/domain/domain-service/update-participant-domain-service';
+import { UpdateParticipantDomainService } from 'src/application/participant/domain-service/update-participant-domain-service';
 import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
 import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 class RequestBody {

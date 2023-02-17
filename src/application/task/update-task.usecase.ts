@@ -22,8 +22,13 @@ export class UpdateTaskUseCase {
     const newTaskStatus = TaskStatus.reconstruct({
       value: param.taskStatus,
     });
-    const updateTask = task.changeTaskStatus(ownerId, newTaskStatus);
-    const updatedTask = await this.repository.updateStatus(updateTask);
+    const taskWithChangeTaskStatus = task.changeTaskStatus(
+      ownerId,
+      newTaskStatus,
+    );
+    const updatedTask = await this.repository.updateStatus(
+      taskWithChangeTaskStatus,
+    );
 
     const updatedParticipantDto = new UpdateTaskDto(
       updatedTask.id.id,

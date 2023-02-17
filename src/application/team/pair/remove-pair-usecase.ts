@@ -1,8 +1,6 @@
-import { Pair } from 'src/domain/entity/pair/pair';
-import { PairName } from 'src/domain/entity/pair/pair-name';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
-import { ApplicationException } from '../shared/application-exception';
+import { ApplicationException } from '../../shared/application-exception';
 
 type Param = {
   readonly pairId: string;
@@ -18,9 +16,9 @@ export class RemovePairUseCase {
     const team = await this.repository.getWithId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
-    team.removePair(pairId);
+    const teamWithChangePair = team.removePair(pairId);
 
-    const upsertedTeam = await this.repository.upsert(team);
+    const upsertedTeam = await this.repository.upsert(teamWithChangePair);
 
     const upsertedTeamDto = new UpsertedTeamDto(
       upsertedTeam.id.id,
