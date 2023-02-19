@@ -16,6 +16,9 @@ type Values = {
 type ReadonlyValues = Readonly<Values>;
 
 export class Pair extends Entity<ReadonlyProps> {
+  static readonly MIN_PARTICIPANT_COUNT = 1;
+  static readonly MAX_PARTICIPANT_COUNT = 3;
+
   private constructor(props: ReadonlyProps) {
     super(props);
   }
@@ -24,7 +27,10 @@ export class Pair extends Entity<ReadonlyProps> {
     const id = UniqueID.create();
     const { participantIds } = props;
 
-    if (participantIds.length !== 2 && participantIds.length !== 3)
+    if (
+      participantIds.length !== 2 &&
+      participantIds.length !== Pair.MAX_PARTICIPANT_COUNT
+    )
       throw new DomainException(
         'ペアは2名または3名の参加者で構成されている必要があります',
       );
@@ -57,7 +63,7 @@ export class Pair extends Entity<ReadonlyProps> {
   }
 
   get id() {
-    if (!this._id) throw new DomainException('id is undefined');
+    if (!this._id) throw new DomainException('ペアのidが存在しません');
     return this._id;
   }
 

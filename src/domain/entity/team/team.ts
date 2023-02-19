@@ -56,6 +56,14 @@ export class Team extends Entity<ReadonlyProps> {
     });
   }
 
+  getPairWithParticipantId(participantId: UniqueID) {
+    const pair = this.pairs.find((pair) => {
+      return pair.participantIds.includes(participantId);
+    });
+    if (!pair) throw new DomainException('ペアが存在しません');
+    return pair;
+  }
+
   addPair(newPair: Pair) {
     const isAllParticipantIds = newPair.participantIds.every((id) =>
       this.participantIds.some((participantId) => participantId.equals(id)),
@@ -67,6 +75,28 @@ export class Team extends Entity<ReadonlyProps> {
     }
 
     const newPairs = [...this.values.pairs, newPair];
+    return Team.create({
+      id: this.id,
+      values: { ...this.values, pairs: newPairs },
+    });
+  }
+
+  updatePair(updatePair: Pair) {
+    const isAllParticipantIds = updatePair.participantIds.every((id) =>
+      this.participantIds.some((participantId) => participantId.equals(id)),
+    );
+    if (!isAllParticipantIds) {
+      throw new DomainException(
+        'ペアは同一チームの参加者で構成される必要があります',
+      );
+    }
+
+    // チームからupdatePairと同じidを持つペアを削除して、再度updatePairを追加する
+    const newPairs = this.values.pairs.filter(
+      (pair) => pair.id.id !== updatePair.id.id,
+    );
+    newPairs.push(updatePair);
+
     return Team.create({
       id: this.id,
       values: { ...this.values, pairs: newPairs },
@@ -85,7 +115,7 @@ export class Team extends Entity<ReadonlyProps> {
   }
 
   get id() {
-    if (!this._id) throw new DomainException('id is undefined');
+    if (!this._id) throw new DomainException('チームidが存在しません');
     return this._id;
   }
 

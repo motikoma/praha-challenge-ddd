@@ -31,7 +31,7 @@ export class UpdateParticipantDomainService {
     this.checkAssignedPairService = checkAssignedPairService;
   }
 
-  async update(
+  async do(
     participantId: UniqueID,
     param: ReadonlyParam,
   ): Promise<Participant> {

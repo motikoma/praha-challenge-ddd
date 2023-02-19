@@ -1,6 +1,7 @@
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { alertMailWithLessThan2ParticipantsInTeam } from 'src/infrastructure/mail/alertMailWithLessThan2ParticipantsInTeam';
 import { ApplicationException } from '../../shared/application-exception';
 
 type Param = {
@@ -21,9 +22,10 @@ export class RemoveParticipantUseCase {
     const team = await this.teamRepository.getWithId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
-    // 参加者の状態をチェックする
-    const result = await this.participantRepository.getWithId(participantId);
-    if (!result) throw new ApplicationException('参加者が存在しません');
+    const changeMember = await this.participantRepository.getWithId(
+      participantId,
+    );
+    if (!changeMember) throw new ApplicationException('参加者が存在しません');
 
     const teamWithChangeMember = team.removeMember(participantId);
 
@@ -35,6 +37,17 @@ export class RemoveParticipantUseCase {
       upsertedTeam.participantIds.map((id) => id.id),
       upsertedTeam.pairs.map((pair) => pair.id.id),
     );
+
+    // チームの参加者が2人以下になった場合はメールを送信する
+    if (upsertedTeamDto.participantIds.length <= 2) {
+      const mailInformation = {
+        decreasedParticipant: changeMember,
+        teamName: upsertedTeamDto.teamName,
+        currentParticipantIds: upsertedTeamDto.participantIds,
+      };
+
+      alertMailWithLessThan2ParticipantsInTeam(mailInformation);
+    }
 
     return upsertedTeamDto;
   }

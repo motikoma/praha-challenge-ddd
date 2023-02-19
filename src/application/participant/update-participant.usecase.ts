@@ -13,7 +13,7 @@ export class UpdateParticipantUseCase {
 
   async do(id: string, param: ReadonlyParam) {
     const participantId = UniqueID.reconstruct(id);
-    const updatedParticipant = await this.updateParticipantDomainService.update(
+    const updatedParticipant = await this.updateParticipantDomainService.do(
       participantId,
       param,
     );

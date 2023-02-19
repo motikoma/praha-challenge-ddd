@@ -3,5 +3,5 @@ import { Team } from './team';
 
 export type ITeamRepository = {
   getWithId: (id: UniqueID) => Promise<Team | null>;
-  upsert: (task: Team) => Promise<Team>;
+  upsert: (team: Team) => Promise<Team>;
 };
