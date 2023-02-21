@@ -56,9 +56,9 @@ export class Team extends Entity<ReadonlyProps> {
     });
   }
 
-  getPairWithParticipantId(participantId: UniqueID) {
+  getPairWithPairId(pairId: UniqueID) {
     const pair = this.pairs.find((pair) => {
-      return pair.participantIds.includes(participantId);
+      return pair.id.equals(pairId);
     });
     if (!pair) throw new DomainException('ペアが存在しません');
     return pair;
