@@ -13,7 +13,7 @@ export class RemovePairUseCase {
   async do(id: string, param: ReadonlyParam) {
     const teamId = UniqueID.reconstruct(id);
     const pairId = UniqueID.reconstruct(param.pairId);
-    const team = await this.repository.getWithId(teamId);
+    const team = await this.repository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
     const teamWithChangePair = team.removePair(pairId);

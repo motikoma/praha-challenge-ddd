@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { ParticipantCreateController } from './presentation/participant/participant-create.controller';
 import { ParticipantListController } from './presentation/participant/participant-list.controller';
 import { PrismaService } from './prisma.service';
-import { ParticipantUpdateController } from './presentation/participant/participant-update.controller';
+import { ParticipantUpdateEnrollmentStatusController } from './presentation/participant/participant-update-enrollment-status.controller';
 import { TaskListController } from './presentation/task/task-list.controller';
 import { TaskUpdateController } from './presentation/task/task-update.controller';
 import { TaskCreateController } from './presentation/task/task-create.controller';
@@ -14,7 +14,7 @@ import { TaskCreateController } from './presentation/task/task-create.controller
     AppController,
     ParticipantCreateController,
     ParticipantListController,
-    ParticipantUpdateController,
+    ParticipantUpdateEnrollmentStatusController,
     TaskCreateController,
     TaskListController,
     TaskUpdateController,

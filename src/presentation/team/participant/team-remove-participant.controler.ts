@@ -24,7 +24,7 @@ class ResponseBody {
   path: '/teams',
 })
 export class TeamRemoveParticipantController {
-  @Put('/:teamId')
+  @Put('/:teamId/removeParticipant')
   async removeParticipantToTeam(
     @Param('teamId') teamId: string,
     @Body() req: RequestBody,

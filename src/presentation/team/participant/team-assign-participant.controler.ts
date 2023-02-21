@@ -24,7 +24,7 @@ class ResponseBody {
   path: '/teams',
 })
 export class TeamAssignParticipantController {
-  @Put('/:teamId')
+  @Put('/:teamId/assignParticipant')
   async assignParticipantToTeam(
     @Param('teamId') teamId: string,
     @Body() req: RequestBody,

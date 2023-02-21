@@ -1,18 +1,15 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { AssignPairUseCase } from 'src/application/team/pair/assign-pair-usecase';
+import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
+
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 
 class RequestBody {
   @IsNotEmpty()
   @IsString()
-  readonly pairName!: string;
-
-  @IsNotEmpty()
-  @IsString({ each: true })
-  readonly participantIds!: string[];
+  readonly participantId!: string;
 }
 
 class ResponseBody {
@@ -27,20 +24,25 @@ class ResponseBody {
 @Controller({
   path: '/teams',
 })
-export class TeamAssignPairController {
-  @Put('/:teamId')
-  async assignPairToTeam(
+export class TeamUpdatePairRemoveParticipantController {
+  @Put('/:teamId/:paidId/removeParticipant')
+  async deleteTeam(
     @Param('teamId') teamId: string,
+    @Param('pairId') pairId: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
     const prisma = new PrismaClient();
     const teamRepository = new TeamRepository(prisma);
     const participantRepository = new ParticipantRepository(prisma);
-    const usecase = new AssignPairUseCase(
+    const usecase = new UpdatePairRemoveParticipantUseCase(
       teamRepository,
       participantRepository,
     );
-    const result = await usecase.do(teamId, req);
+    const result = await usecase.do({
+      teamId,
+      pairId,
+      participantId: req.participantId,
+    });
 
     const response = new ResponseBody(
       result.id,

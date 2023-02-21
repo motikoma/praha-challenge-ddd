@@ -1,4 +1,4 @@
-import { UpdateParticipantDomainService } from 'src/application/participant/domain-service/update-participant-domain-service';
+import { UpdateParticipantForEnrolledDomainService } from 'src/application/participant/domain-service/update-participant-for-enrolled-domain-service';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { ApplicationException } from '../shared/application-exception';

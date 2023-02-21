@@ -36,7 +36,7 @@ describe('create', () => {
       mailAddress: participant.mailAddress.mailAddress,
     });
 
-    // participanRepositoryに引数として渡した値をチェック
+    // participantRepositoryに引数として渡した値をチェック
     expect(participantRepository.getWithMailAddress).toHaveBeenCalledWith(
       expect.objectContaining({
         mailAddress: participant.mailAddress.mailAddress,

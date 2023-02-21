@@ -8,6 +8,8 @@ import { alertMailWithMergeablePairNotExist } from 'src/infrastructure/mail/aler
 import { ApplicationException } from '../../shared/application-exception';
 
 type Param = {
+  readonly teamId: string;
+  readonly pairId: string;
   readonly participantId: string;
 };
 type ReadonlyParam = Readonly<Param>;
@@ -18,11 +20,12 @@ export class UpdatePairRemoveParticipantUseCase {
     private readonly participantRepository: IParticipantRepository,
   ) {}
 
-  async do(_teamId: string, param: ReadonlyParam) {
-    const teamId = UniqueID.reconstruct(_teamId);
+  async do(param: ReadonlyParam) {
+    const teamId = UniqueID.reconstruct(param.teamId);
+    const pairId = UniqueID.reconstruct(param.pairId);
     const participantId = UniqueID.reconstruct(param.participantId);
 
-    const team = await this.teamRepository.getWithId(teamId);
+    const team = await this.teamRepository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
     const checkParticipantStatus = async (participantId: UniqueID) => {
@@ -34,7 +37,7 @@ export class UpdatePairRemoveParticipantUseCase {
     };
     await checkParticipantStatus(participantId);
 
-    const pair = team.getPairWithParticipantId(participantId);
+    const pair = team.getPairWithPairId(pairId);
     const removedParticipantPair = pair.removeMember(participantId);
 
     // ペアに参加者が1人しかいない場合は、該当ペアを解散して、残った参加者を同一チームで最も参加者数が少ないペアに合流させる

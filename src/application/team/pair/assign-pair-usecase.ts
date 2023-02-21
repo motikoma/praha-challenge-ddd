@@ -24,7 +24,7 @@ export class AssignPairUseCase {
       UniqueID.reconstruct(id),
     );
 
-    const team = await this.teamRepository.getWithId(teamId);
+    const team = await this.teamRepository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
     // TODO: ドメインサービスに切り出す
