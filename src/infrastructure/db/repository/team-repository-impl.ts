@@ -12,6 +12,130 @@ export class TeamRepository implements ITeamRepository {
     this.prismaClient = prismaClient;
   }
 
+  async getWithTeamId(teamId: UniqueID) {
+    try {
+      const result = await this.prismaClient.team.findUnique({
+        where: {
+          id: teamId.id,
+        },
+        include: {
+          ParticipantOnTeam: {
+            include: {
+              Participant: true,
+            },
+          },
+          TeamOnPair: {
+            include: {
+              Pair: true,
+            },
+          },
+        },
+      });
+
+      if (result === null) {
+        return null;
+      }
+
+      // Participant: ドメインオブジェクトへの変換処理
+      let teamParticipantIdsEntity: UniqueID[] = [];
+      result.ParticipantOnTeam.map((participantOnTeam) => {
+        teamParticipantIdsEntity.push(
+          UniqueID.reconstruct(participantOnTeam.participantId),
+        );
+      });
+
+      // Pair: ドメインオブジェクトへの変換処理
+      let pairsEntity: Pair[] = [];
+      result.TeamOnPair.map((teamOnPair) => {
+        pairsEntity.push(
+          Pair.reconstruct({
+            id: UniqueID.reconstruct(teamOnPair.pairId),
+            values: {
+              name: PairName.reconstruct({
+                pairName: teamOnPair.Pair.pairName,
+              }),
+              participantIds: teamParticipantIdsEntity,
+            },
+          }),
+        );
+      });
+
+      // Team: ドメインオブジェクトへの変換処理
+      const teamEntity = Team.reconstruct({
+        id: UniqueID.reconstruct(result.id),
+        values: {
+          name: TeamName.reconstruct({
+            teamName: result.teamName,
+          }),
+          participantIds: teamParticipantIdsEntity,
+          pairs: pairsEntity,
+        },
+      });
+
+      return teamEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
+  }
+
+  async getWithParticipantId(participantId: UniqueID) {
+    try {
+      const result = await this.prismaClient.participantOnTeam.findUnique({
+        where: {
+          participantId: participantId.id,
+        },
+        include: {
+          Team: {
+            include: {
+              ParticipantOnTeam: true,
+              TeamOnPair: {
+                include: {
+                  Pair: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (result === null) {
+        return null;
+      }
+
+      // Team: ドメインオブジェクトへの変換処理
+      const teamEntity = Team.reconstruct({
+        id: UniqueID.reconstruct(result.Team.id),
+        values: {
+          name: TeamName.reconstruct({
+            teamName: result.Team.teamName,
+          }),
+          participantIds: result.Team.ParticipantOnTeam.map(
+            (participantOnTeam) =>
+              UniqueID.reconstruct(participantOnTeam.participantId),
+          ),
+          pairs: result.Team.TeamOnPair.map((teamOnPair) => {
+            return Pair.reconstruct({
+              id: UniqueID.reconstruct(teamOnPair.pairId),
+              values: {
+                name: PairName.reconstruct({
+                  pairName: teamOnPair.Pair.pairName,
+                }),
+                participantIds: result.Team.ParticipantOnTeam.map(
+                  (participantOnTeam) =>
+                    UniqueID.reconstruct(participantOnTeam.participantId),
+                ),
+              },
+            });
+          }),
+        },
+      });
+
+      return teamEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
+  }
+
   async upsert(team: Team) {
     const { participantIds, pairs } = team.values;
 
@@ -153,71 +277,5 @@ export class TeamRepository implements ITeamRepository {
     });
 
     return result;
-  }
-
-  async getWithId(id: UniqueID) {
-    try {
-      const result = await this.prismaClient.team.findUnique({
-        where: {
-          id: id.id,
-        },
-        include: {
-          ParticipantOnTeam: {
-            include: {
-              Participant: true,
-            },
-          },
-          TeamOnPair: {
-            include: {
-              Pair: true,
-            },
-          },
-        },
-      });
-
-      if (result === null) {
-        return null;
-      }
-
-      // Participant: ドメインオブジェクトへの変換処理
-      let teamParticipantIdsEntity: UniqueID[] = [];
-      result.ParticipantOnTeam.map((participantOnTeam) => {
-        teamParticipantIdsEntity.push(
-          UniqueID.reconstruct(participantOnTeam.participantId),
-        );
-      });
-
-      // Pair: ドメインオブジェクトへの変換処理
-      let pairsEntity: Pair[] = [];
-      result.TeamOnPair.map((teamOnPair) => {
-        pairsEntity.push(
-          Pair.reconstruct({
-            id: UniqueID.reconstruct(teamOnPair.pairId),
-            values: {
-              name: PairName.reconstruct({
-                pairName: teamOnPair.Pair.pairName,
-              }),
-              participantIds: teamParticipantIdsEntity,
-            },
-          }),
-        );
-      });
-
-      // Team: ドメインオブジェクトへの変換処理
-      const teamEntity = Team.reconstruct({
-        id: UniqueID.reconstruct(result.id),
-        values: {
-          name: TeamName.reconstruct({
-            teamName: result.teamName,
-          }),
-          participantIds: teamParticipantIdsEntity,
-          pairs: pairsEntity,
-        },
-      });
-
-      return teamEntity;
-    } catch (error: any) {
-      throw new InfraException(error.message);
-    }
   }
 }

@@ -2,6 +2,7 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { Team } from './team';
 
 export type ITeamRepository = {
-  getWithId: (id: UniqueID) => Promise<Team | null>;
+  getWithTeamId: (id: UniqueID) => Promise<Team | null>;
+  getWithParticipantId: (id: UniqueID) => Promise<Team | null>;
   upsert: (team: Team) => Promise<Team>;
 };

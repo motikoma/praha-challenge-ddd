@@ -6,7 +6,9 @@ export class GetTeamUseCase {
   constructor(private readonly repository: ITeamRepository) {}
 
   async do(teamId: string): Promise<TeamDto> {
-    const team = await this.repository.getWithId(UniqueID.reconstruct(teamId));
+    const team = await this.repository.getWithTeamId(
+      UniqueID.reconstruct(teamId),
+    );
     if (!team) throw new ApplicationException('チームが存在しません');
 
     const teamDto = new TeamDto(
