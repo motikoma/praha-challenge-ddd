@@ -18,7 +18,7 @@ export class AssignParticipantUseCase {
     const teamId = UniqueID.reconstruct(_teamId);
     const participantId = UniqueID.reconstruct(param.participantId);
 
-    const team = await this.teamRepository.getWithId(teamId);
+    const team = await this.teamRepository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
     const result = await this.participantRepository.getWithId(participantId);
