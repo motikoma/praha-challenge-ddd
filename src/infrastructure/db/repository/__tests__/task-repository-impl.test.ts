@@ -28,9 +28,7 @@ describe('task-repository-impl', () => {
   });
 
   it('[正常系]create: 参加者に紐付けて作成した課題が返る', async () => {
-    const participantId = UniqueID.reconstruct(
-      '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
-    );
+    const participantId = UniqueID.reconstruct('1');
     const name = ParticipantName.create({
       lastName: 'sakamoto',
       firstName: 'keisuke',
@@ -51,14 +49,11 @@ describe('task-repository-impl', () => {
     await participantRepository.create(participant);
 
     const id = UniqueID.reconstruct('1');
-    const ownerId = UniqueID.reconstruct(
-      '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
-    );
     const taskStatus = TaskStatus.create();
     const task = Task.create({
       id,
       values: {
-        ownerId,
+        ownerId: participantId,
         taskStatus,
       },
     });
@@ -68,9 +63,6 @@ describe('task-repository-impl', () => {
   });
 
   it('[正常系]updateStatus: ステータスがアップデートされた課題が返る', async () => {
-    /**
-     * 参加者データ作成
-     */
     const participantId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );
@@ -118,7 +110,7 @@ describe('task-repository-impl', () => {
     /**
      * 課題データ作成
      */
-    const id = UniqueID.reconstruct('1');
+    const id = UniqueID.reconstruct('2');
     const ownerId = UniqueID.reconstruct(
       '4130b8c4-ca82-48bf-92e1-3f32c618ee93',
     );

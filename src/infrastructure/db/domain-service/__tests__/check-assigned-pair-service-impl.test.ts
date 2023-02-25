@@ -54,7 +54,6 @@ describe('check-assigned-pair-service-impl', () => {
       /**
        * 参加者とペアの紐付けデータ作成
        */
-
       const pair = Pair.reconstruct({
         id: UniqueID.reconstruct('1'),
         values: {

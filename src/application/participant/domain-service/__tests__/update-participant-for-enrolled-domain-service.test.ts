@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
+import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import {
   EnrollmentStatus,
   ENROLLMENT_STATUS,
@@ -29,9 +30,13 @@ describe('update', () => {
         teamRepository,
         participantRepository,
       );
+    const removeParticipantUsecase = new RemoveParticipantUseCase(
+      teamRepository,
+      participantRepository,
+    );
 
     jest
-      .spyOn(participantRepository, 'getWithId')
+      .spyOn(participantRepository, 'getWithParticipantId')
       .mockResolvedValue(participantSeceder);
     jest
       .spyOn(participantRepository, 'update')
@@ -50,6 +55,7 @@ describe('update', () => {
     const updateParticipantDomainService =
       new UpdateParticipantForEnrolledDomainService(
         updatePairRemoveParticipantUseCase,
+        removeParticipantUsecase,
         participantRepository,
         teamRepository,
         checkAssignedTeamService,
@@ -60,7 +66,7 @@ describe('update', () => {
       enrollmentStatus: ENROLLMENT_STATUS.ENROLLED,
     });
 
-    expect(participantRepository.getWithId).toHaveBeenCalledWith(
+    expect(participantRepository.getWithParticipantId).toHaveBeenCalledWith(
       UniqueID.reconstruct('1'),
     );
 
@@ -83,8 +89,14 @@ it('準正常系_参加者のidが存在しない場合はエラーになる', a
       teamRepository,
       participantRepository,
     );
+  const removeParticipantUsecase = new RemoveParticipantUseCase(
+    teamRepository,
+    participantRepository,
+  );
 
-  jest.spyOn(participantRepository, 'getWithId').mockResolvedValue(null);
+  jest
+    .spyOn(participantRepository, 'getWithParticipantId')
+    .mockResolvedValue(null);
 
   jest
     .spyOn(participantRepository, 'update')
@@ -103,6 +115,7 @@ it('準正常系_参加者のidが存在しない場合はエラーになる', a
   const updateParticipantDomainService =
     new UpdateParticipantForEnrolledDomainService(
       updatePairRemoveParticipantUseCase,
+      removeParticipantUsecase,
       participantRepository,
       teamRepository,
       checkAssignedTeamService,
@@ -130,9 +143,13 @@ describe('参加者のステータスがENROLLEDの場合', () => {
         teamRepository,
         participantRepository,
       );
+    const removeParticipantUsecase = new RemoveParticipantUseCase(
+      teamRepository,
+      participantRepository,
+    );
 
     jest
-      .spyOn(participantRepository, 'getWithId')
+      .spyOn(participantRepository, 'getWithParticipantId')
       .mockResolvedValue(participantEnrolled);
 
     const checkAssignedTeamService = new CheckAssignedTeamService(prismaClient);
@@ -148,6 +165,7 @@ describe('参加者のステータスがENROLLEDの場合', () => {
     const updateParticipantDomainService =
       new UpdateParticipantForEnrolledDomainService(
         updatePairRemoveParticipantUseCase,
+        removeParticipantUsecase,
         participantRepository,
         teamRepository,
         checkAssignedTeamService,
@@ -176,9 +194,13 @@ describe('参加者のステータスがENROLLEDの場合', () => {
         teamRepository,
         participantRepository,
       );
+    const removeParticipantUsecase = new RemoveParticipantUseCase(
+      teamRepository,
+      participantRepository,
+    );
 
     jest
-      .spyOn(participantRepository, 'getWithId')
+      .spyOn(participantRepository, 'getWithParticipantId')
       .mockResolvedValue(participantEnrolled);
 
     const checkAssignedTeamService = new CheckAssignedTeamService(prismaClient);
@@ -194,6 +216,7 @@ describe('参加者のステータスがENROLLEDの場合', () => {
     const updateParticipantDomainService =
       new UpdateParticipantForEnrolledDomainService(
         updatePairRemoveParticipantUseCase,
+        removeParticipantUsecase,
         participantRepository,
         teamRepository,
         checkAssignedTeamService,
