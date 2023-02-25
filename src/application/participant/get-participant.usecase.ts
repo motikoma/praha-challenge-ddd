@@ -8,7 +8,7 @@ export class GetParticipantUseCase {
 
   async do(participantId: string) {
     const participantIdVo = UniqueID.reconstruct(participantId);
-    const participant = await this.participantRepository.getWithId(
+    const participant = await this.participantRepository.getWithParticipantId(
       participantIdVo,
     );
     if (!participant) {

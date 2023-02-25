@@ -113,7 +113,7 @@ describe('participant-repository-impl', () => {
     });
 
     await repository.create(participant);
-    const actual = await repository.getWithId(participant.id);
+    const actual = await repository.getWithParticipantId(participant.id);
     expect(actual).toBeInstanceOf(Participant);
     expect(actual?.id).toEqual(participant.id);
   });

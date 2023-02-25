@@ -104,7 +104,7 @@ export class ParticipantRepository implements IParticipantRepository {
     }
   }
 
-  async getWithId(id: UniqueID) {
+  async getWithParticipantId(id: UniqueID) {
     try {
       const gotParticipant =
         await this.prismaClient.participantMailAddress.findUnique({
