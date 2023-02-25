@@ -10,7 +10,6 @@ import type { Pair } from "@prisma/client";
 import type { TeamOnPair } from "@prisma/client";
 import type { ParticipantOnTeam } from "@prisma/client";
 import type { ParticipantOnPair } from "@prisma/client";
-import type { Foods } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Resolver } from "@quramy/prisma-fabbrica/lib/internal";
 export { initialize, resetSequence, registerScalarFieldValueGenerator, resetScalarFieldValueGenerator } from "@quramy/prisma-fabbrica/lib/internal";
@@ -296,21 +295,3 @@ interface ParticipantOnPairFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Pick<ParticipantOnPair, "participantId">>;
 }
 export declare function defineParticipantOnPairFactory(options: ParticipantOnPairFactoryDefineOptions): ParticipantOnPairFactoryInterface;
-type FoodsFactoryDefineInput = {
-    id?: string;
-    foodName?: string;
-};
-type FoodsFactoryDefineOptions = {
-    defaultData?: Resolver<FoodsFactoryDefineInput, BuildDataOptions>;
-};
-interface FoodsFactoryInterface {
-    readonly _factoryFor: "Foods";
-    build(inputData?: Partial<Prisma.FoodsCreateInput>): PromiseLike<Prisma.FoodsCreateInput>;
-    buildCreateInput(inputData?: Partial<Prisma.FoodsCreateInput>): PromiseLike<Prisma.FoodsCreateInput>;
-    buildList(inputData: number | readonly Partial<Prisma.FoodsCreateInput>[]): PromiseLike<Prisma.FoodsCreateInput[]>;
-    pickForConnect(inputData: Foods): Pick<Foods, "id">;
-    create(inputData?: Partial<Prisma.FoodsCreateInput>): PromiseLike<Foods>;
-    createList(inputData: number | readonly Partial<Prisma.FoodsCreateInput>[]): PromiseLike<Foods[]>;
-    createForConnect(inputData?: Partial<Prisma.FoodsCreateInput>): PromiseLike<Pick<Foods, "id">>;
-}
-export declare function defineFoodsFactory(options?: FoodsFactoryDefineOptions): FoodsFactoryInterface;
