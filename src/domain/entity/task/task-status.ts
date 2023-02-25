@@ -13,10 +13,6 @@ type Props = {
 type ReadonlyProps = Readonly<Props>;
 
 export class TaskStatus extends ValueObject<ReadonlyProps> {
-  get value(): number {
-    return this._value.value;
-  }
-
   private constructor(props: ReadonlyProps) {
     super(props);
   }
@@ -39,7 +35,11 @@ export class TaskStatus extends ValueObject<ReadonlyProps> {
       case 3:
         return TASK_STATUS.DONE;
       default:
-        throw new DomainException('invalid value');
+        throw new DomainException(`status: ${status} は不正な値です`);
     }
+  }
+
+  get value(): number {
+    return this._value.value;
   }
 }
