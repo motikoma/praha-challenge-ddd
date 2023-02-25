@@ -22,7 +22,7 @@ export class RemoveParticipantUseCase {
     const team = await this.teamRepository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
-    const changeMember = await this.participantRepository.getWithId(
+    const changeMember = await this.participantRepository.getWithParticipantId(
       participantId,
     );
     if (!changeMember) throw new ApplicationException('参加者が存在しません');

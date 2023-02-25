@@ -29,7 +29,7 @@ export class UpdatePairRemoveParticipantUseCase {
     if (!team) throw new ApplicationException('チームが存在しません');
 
     const checkParticipantStatus = async (participantId: UniqueID) => {
-      const participant = await this.participantRepository.getWithId(
+      const participant = await this.participantRepository.getWithParticipantId(
         participantId,
       );
       if (!participant) throw new ApplicationException('参加者が存在しません');

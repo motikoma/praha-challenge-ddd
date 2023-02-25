@@ -21,7 +21,9 @@ export class AssignParticipantUseCase {
     const team = await this.teamRepository.getWithTeamId(teamId);
     if (!team) throw new ApplicationException('チームが存在しません');
 
-    const result = await this.participantRepository.getWithId(participantId);
+    const result = await this.participantRepository.getWithParticipantId(
+      participantId,
+    );
     if (!result) throw new ApplicationException('参加者が存在しません');
     result.canBeAssignedPairOrTeam();
 

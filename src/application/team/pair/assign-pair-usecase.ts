@@ -29,7 +29,9 @@ export class AssignPairUseCase {
 
     // TODO: ドメインサービスに切り出す
     const checkParticipantStatus = async (participantId: UniqueID) => {
-      const result = await this.participantRepository.getWithId(participantId);
+      const result = await this.participantRepository.getWithParticipantId(
+        participantId,
+      );
       if (!result) throw new ApplicationException('参加者が存在しません');
       result.canBeAssignedPairOrTeam();
     };
