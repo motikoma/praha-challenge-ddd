@@ -1,3 +1,4 @@
+import { DomainException } from 'src/domain/shared/domain-exception';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from '../enrollment-status';
 import { MailAddress } from '../mail-address';
@@ -47,7 +48,7 @@ describe('Participant', () => {
       expect(actual.canBeAssignedPairOrTeam()).toBeTruthy();
     });
 
-    it('[正常系]: ステータスが「休会中」の場合、チームやペアに所属できない', () => {
+    it('[準正常系]: ステータスが「休会中」の場合、チームやペアに所属できない', () => {
       const id = UniqueID.reconstruct('1');
 
       const name = ParticipantName.create({
@@ -68,10 +69,14 @@ describe('Participant', () => {
         },
       });
 
-      expect(actual.canBeAssignedPairOrTeam()).toBeFalsy();
+      expect(() => actual.canBeAssignedPairOrTeam()).toThrowError(
+        new DomainException(
+          '在籍中ではない場合はチームやペアに割り当てることができません',
+        ),
+      );
     });
 
-    it('[正常系]: ステータスが「退会済」の場合、チームやペアに所属できない', () => {
+    it('[準正常系]: ステータスが「退会済」の場合、チームやペアに所属できない', () => {
       const id = UniqueID.reconstruct('1');
 
       const name = ParticipantName.create({
@@ -92,7 +97,11 @@ describe('Participant', () => {
         },
       });
 
-      expect(actual.canBeAssignedPairOrTeam()).toBeFalsy();
+      expect(() => actual.canBeAssignedPairOrTeam()).toThrowError(
+        new DomainException(
+          '在籍中ではない場合はチームやペアに割り当てることができません',
+        ),
+      );
     });
   });
 

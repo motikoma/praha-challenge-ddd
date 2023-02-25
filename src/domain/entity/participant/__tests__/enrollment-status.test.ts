@@ -1,4 +1,3 @@
-import { HttpException } from '@nestjs/common';
 import { DomainException } from 'src/domain/shared/domain-exception';
 import { EnrollmentStatus, ENROLLMENT_STATUS } from '../enrollment-status';
 
