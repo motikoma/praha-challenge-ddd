@@ -136,6 +136,74 @@ export class TeamRepository implements ITeamRepository {
     }
   }
 
+  async list(): Promise<Team[]> {
+    try {
+      const result = await this.prismaClient.team.findMany({
+        include: {
+          ParticipantOnTeam: {
+            include: {
+              Participant: true,
+            },
+          },
+          TeamOnPair: {
+            include: {
+              Pair: true,
+            },
+          },
+        },
+      });
+
+      if (result === null) {
+        return [];
+      }
+
+      // Team: ドメインオブジェクトへの変換処理
+      let teamsEntity: Team[] = [];
+      result.map((team) => {
+        // Participant: ドメインオブジェクトへの変換処理
+        let teamParticipantIdsEntity: UniqueID[] = [];
+        team.ParticipantOnTeam.map((participantOnTeam) => {
+          teamParticipantIdsEntity.push(
+            UniqueID.reconstruct(participantOnTeam.participantId),
+          );
+        });
+
+        // Pair: ドメインオブジェクトへの変換処理
+        let pairsEntity: Pair[] = [];
+        team.TeamOnPair.map((teamOnPair) => {
+          pairsEntity.push(
+            Pair.reconstruct({
+              id: UniqueID.reconstruct(teamOnPair.pairId),
+              values: {
+                name: PairName.reconstruct({
+                  pairName: teamOnPair.Pair.pairName,
+                }),
+                participantIds: teamParticipantIdsEntity,
+              },
+            }),
+          );
+        });
+
+        teamsEntity.push(
+          Team.reconstruct({
+            id: UniqueID.reconstruct(team.id),
+            values: {
+              name: TeamName.reconstruct({
+                teamName: team.teamName,
+              }),
+              participantIds: teamParticipantIdsEntity,
+              pairs: pairsEntity,
+            },
+          }),
+        );
+      });
+
+      return teamsEntity;
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
+  }
+
   async upsert(team: Team) {
     const { participantIds, pairs } = team.values;
 

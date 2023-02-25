@@ -1,5 +1,6 @@
 import { ApplicationException } from 'src/application/shared/application-exception';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
+import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import {
   EnrollmentStatus,
@@ -25,6 +26,7 @@ export interface ICheckAssignedPairService {
 export class UpdateParticipantForEnrolledDomainService {
   constructor(
     private readonly updatePairRemoveParticipantUseCase: UpdatePairRemoveParticipantUseCase,
+    private readonly removeParticipantUseCase: RemoveParticipantUseCase,
     private readonly participantRepository: IParticipantRepository,
     private readonly teamRepository: ITeamRepository,
     private readonly checkAssignedTeamService: ICheckAssignedTeamService,
@@ -32,6 +34,7 @@ export class UpdateParticipantForEnrolledDomainService {
   ) {
     this.updatePairRemoveParticipantUseCase =
       updatePairRemoveParticipantUseCase;
+    this.removeParticipantUseCase = removeParticipantUseCase;
     this.participantRepository = participantRepository;
     this.teamRepository = teamRepository;
     this.checkAssignedTeamService = checkAssignedTeamService;
@@ -42,7 +45,7 @@ export class UpdateParticipantForEnrolledDomainService {
     participantId: UniqueID,
     param: ReadonlyParam,
   ): Promise<Participant> {
-    const participant = await this.participantRepository.getWithId(
+    const participant = await this.participantRepository.getWithParticipantId(
       participantId,
     );
 
@@ -82,7 +85,7 @@ export class UpdateParticipantForEnrolledDomainService {
     return updatedParticipant;
   }
 
-  // ステータスを在籍中から休会中または退職済に変更する場合は、ペアの割り当てを解除する
+  // ステータスを在籍中から休会中または退会済に変更する場合は、ペアの割り当てを解除する
   private updatePairRemoveParticipant = async (participantId: UniqueID) => {
     const team = await this.teamRepository.getWithParticipantId(participantId);
     if (!team)
@@ -103,6 +106,19 @@ export class UpdateParticipantForEnrolledDomainService {
     await this.updatePairRemoveParticipantUseCase.do({
       teamId: team.id.id,
       pairId: pair.id.id,
+      participantId: participantId.id,
+    });
+  };
+
+  // ステータスを在籍中から休会中または退会済に変更する場合は、チームの割り当てを解除する
+  private updateTeamRemoveParticipant = async (participantId: UniqueID) => {
+    const team = await this.teamRepository.getWithParticipantId(participantId);
+    if (!team)
+      throw new ApplicationException(
+        `${participantId}が所属するチームが存在しません`,
+      );
+
+    await this.removeParticipantUseCase.do(team.id.id, {
       participantId: participantId.id,
     });
   };
