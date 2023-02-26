@@ -33,7 +33,6 @@ export class UpdatePairRemoveParticipantUseCase {
         participantId,
       );
       if (!participant) throw new ApplicationException('参加者が存在しません');
-      participant.canBeAssignedPairOrTeam();
     };
     await checkParticipantStatus(participantId);
 

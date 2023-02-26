@@ -310,18 +310,36 @@ export class TeamRepository implements ITeamRepository {
 
       // Pair: ドメインオブジェクトへの変換処理
       let pairsEntity: Pair[] = [];
-      participantOnPairResults.map((result) => {
-        let pairParticipantIdsEntity: UniqueID[] = [];
-        pairParticipantIdsEntity.push(
-          UniqueID.reconstruct(result.participantId),
-        );
+      const results: {
+        pairId: string;
+        pairName: string;
+        participantIds: string[];
+      }[] = participantOnPairResults.reduce(
+        (acc, { pairId, Pair, participantId }) => {
+          if (!acc.hasOwnProperty(pairId)) {
+            acc[pairId] = {
+              pairId,
+              pairName: Pair.pairName,
+              participantIds: [],
+            };
+          }
+          acc[pairId].participantIds.push(participantId);
+          return acc;
+        },
+        [],
+      );
 
+      results.map((result) => {
+        let pairParticipantIdsEntity: UniqueID[] = [];
+        result.participantIds.map((participantId) => {
+          pairParticipantIdsEntity.push(UniqueID.reconstruct(participantId));
+        });
         pairsEntity.push(
           Pair.reconstruct({
             id: UniqueID.reconstruct(result.pairId),
             values: {
               name: PairName.reconstruct({
-                pairName: result.Pair.pairName,
+                pairName: result.pairName,
               }),
               participantIds: pairParticipantIdsEntity,
             },

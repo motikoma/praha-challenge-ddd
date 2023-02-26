@@ -25,6 +25,9 @@ export class UpdateParticipantEnrollmentStatusUseCase {
   async do(id: string, param: ReadonlyParam) {
     const participantId = UniqueID.reconstruct(id);
 
+    /**
+     * 在籍中の参加者が休会または退会
+     */
     if (param.enrollmentStatus === ENROLLMENT_STATUS.ENROLLED) {
       const updatedParticipant =
         await this.updateParticipantForEnrolledDomainService.do(
@@ -43,7 +46,7 @@ export class UpdateParticipantEnrollmentStatusUseCase {
       return updatedParticipantDto;
     } else {
       /**
-       * 休会中の参加者が復帰
+       * 休会中または退会済みの参加者が復帰
        */
       const participant = await this.participantRepository.getWithParticipantId(
         participantId,

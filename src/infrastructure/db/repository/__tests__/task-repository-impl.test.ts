@@ -10,13 +10,16 @@ import { ParticipantRepository } from '../participant-repository-impl';
 
 import { TaskRepository } from '../task-repository-impl';
 
-describe('task-repository-impl', () => {
+describe('TaskRepository', () => {
   const prisma = new PrismaService();
 
   const participantRepository = new ParticipantRepository(prisma);
   const taskRepository = new TaskRepository(prisma);
 
   beforeEach(async () => {
+    await prisma.participantOnPair.deleteMany();
+    await prisma.participantOnTeam.deleteMany();
+    await prisma.teamOnPair.deleteMany();
     await prisma.participantOnEnrollmentStatus.deleteMany();
     await prisma.participantMailAddress.deleteMany();
     await prisma.participantOnTask.deleteMany();

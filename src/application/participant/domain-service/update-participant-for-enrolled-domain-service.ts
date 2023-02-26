@@ -48,30 +48,27 @@ export class UpdateParticipantForEnrolledDomainService {
     const participant = await this.participantRepository.getWithParticipantId(
       participantId,
     );
-
     if (!participant)
       throw new ApplicationException('参加者のidが存在しません');
 
-    if (!(participant.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED))
-      throw new ApplicationException(
-        '参加者のステータスが在籍中ではありません',
-      );
-
     // MEMO: 参加者エンティティがペアやチームのインスタンス参照をしていないのでドメインサービスで在籍中の参加者がペアもしくはチームに割り当てられているかどうかを確認する
-    const isAssignedPair =
-      await this.checkAssignedPairService.checkAssignedPair(participantId);
-    if (isAssignedPair)
-      throw new ApplicationException(
-        'ペアが割り当てられているので、在籍中から別のステータスに変更できません',
-      );
-    const isAssignedTeam =
-      await this.checkAssignedTeamService.checkAssignedTeam(participantId);
-    if (isAssignedTeam)
-      throw new ApplicationException(
-        'チームが割り当てられているので、在籍中から別のステータスに変更できません',
-      );
+    if (participant.enrollmentStatus.value === ENROLLMENT_STATUS.ENROLLED) {
+      const isAssignedPair =
+        await this.checkAssignedPairService.checkAssignedPair(participantId);
+      if (isAssignedPair)
+        throw new ApplicationException(
+          'ペアが割り当てられているので、在籍中から別のステータスに変更できません',
+        );
+      const isAssignedTeam =
+        await this.checkAssignedTeamService.checkAssignedTeam(participantId);
+      if (isAssignedTeam)
+        throw new ApplicationException(
+          'チームが割り当てられているので、在籍中から別のステータスに変更できません',
+        );
+    }
 
     await this.updatePairRemoveParticipant(participantId);
+    await this.updateTeamRemoveParticipant(participantId);
 
     const enrollmentStatus = EnrollmentStatus.reconstruct({
       value: param.enrollmentStatus,

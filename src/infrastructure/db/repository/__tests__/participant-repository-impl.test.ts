@@ -9,7 +9,7 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { PrismaService } from 'src/prisma.service';
 import { ParticipantRepository } from '../participant-repository-impl';
 
-describe('participant-repository-impl', () => {
+describe('ParticipantRepository', () => {
   const prisma = new PrismaService();
 
   // TODO: fabbricaを使ったテストについて調べる
@@ -18,12 +18,13 @@ describe('participant-repository-impl', () => {
   const repository = new ParticipantRepository(prisma);
 
   beforeEach(async () => {
-    const deleteParticipantEnrollmentStatus =
-      await prisma.participantOnEnrollmentStatus.deleteMany();
-    const deleteParticipantMailAddress =
-      await prisma.participantMailAddress.deleteMany();
-    const deleteParticipantOnTask = await prisma.participantOnTask.deleteMany();
-    const deleteParticipant = await prisma.participant.deleteMany();
+    await prisma.participantOnPair.deleteMany();
+    await prisma.participantOnTeam.deleteMany();
+    await prisma.teamOnPair.deleteMany();
+    await prisma.participantOnEnrollmentStatus.deleteMany();
+    await prisma.participantMailAddress.deleteMany();
+    await prisma.participantOnTask.deleteMany();
+    await prisma.participant.deleteMany();
   });
 
   afterAll(async () => {

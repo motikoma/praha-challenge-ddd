@@ -1,16 +1,11 @@
 import { Filter } from 'src/application/participant/query-service/list-participants-query-service';
-import { EnrollmentStatus } from 'src/domain/entity/participant/enrollment-status';
-import { MailAddress } from 'src/domain/entity/participant/mail-address';
-import { Participant } from 'src/domain/entity/participant/participant';
-import { ParticipantName } from 'src/domain/entity/participant/participant-name';
-import { Task } from 'src/domain/entity/task/task';
-import { TaskStatus, TASK_STATUS } from 'src/domain/entity/task/task-status';
 import { Page } from 'src/domain/shared/page';
-import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
 import { ParticipantRepository } from '../../repository/participant-repository-impl';
 import { TaskRepository } from '../../repository/task-repository-impl';
+import { createParticipantData } from '../../shared/testDataFactory/create-participant-data';
+import { createTaskData } from '../../shared/testDataFactory/create-task-data';
 import { ListParticipantsQueryService } from '../list-participants-query-service-impl';
 
 describe('list-participant-query-service-impl', () => {
@@ -20,9 +15,12 @@ describe('list-participant-query-service-impl', () => {
   const queryService = new ListParticipantsQueryService(prisma);
 
   beforeEach(async () => {
-    await prisma.participantOnTask.deleteMany();
+    await prisma.participantOnPair.deleteMany();
+    await prisma.participantOnTeam.deleteMany();
+    await prisma.teamOnPair.deleteMany();
     await prisma.participantOnEnrollmentStatus.deleteMany();
     await prisma.participantMailAddress.deleteMany();
+    await prisma.participantOnTask.deleteMany();
     await prisma.participant.deleteMany();
   });
 
@@ -37,19 +35,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -78,19 +94,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -119,19 +153,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -162,19 +214,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 1, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 2, 10, 21);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 2,
+          startParticipantId: 10,
+          endParticipantId: 21,
+        });
 
         /**
          * actual作成
@@ -204,19 +274,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 21);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 21,
+        });
 
         /**
          * actual作成
@@ -246,19 +334,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 21);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 21,
+        });
 
         /**
          * actual作成
@@ -290,19 +396,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 1, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 2, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 2,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -332,19 +456,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 2, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -374,19 +516,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 2, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 2,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -418,20 +578,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 1, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
-
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
         /**
          * actual作成
          */
@@ -460,19 +637,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 3, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 3, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 3,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -502,19 +697,37 @@ describe('list-participant-query-service-impl', () => {
          * 参加者データ30人分作成
          */
         const participantsNumber = 30;
-        await createParticipantData(participantsNumber);
+        await createParticipantData({
+          participantRepository,
+          participantsNumber,
+        });
 
         /**
          * 課題データ作成
          */
-        const taskId1 = '1';
-        await createTaskData(taskId1, 1, 0, 5);
+        await createTaskData({
+          taskRepository,
+          taskId: '1',
+          status: 1,
+          startParticipantId: 0,
+          endParticipantId: 5,
+        });
 
-        const taskId2 = '2';
-        await createTaskData(taskId2, 3, 0, 10);
+        await createTaskData({
+          taskRepository,
+          taskId: '2',
+          status: 3,
+          startParticipantId: 0,
+          endParticipantId: 10,
+        });
 
-        const taskId3 = '3';
-        await createTaskData(taskId3, 3, 10, 20);
+        await createTaskData({
+          taskRepository,
+          taskId: '3',
+          status: 3,
+          startParticipantId: 10,
+          endParticipantId: 20,
+        });
 
         /**
          * actual作成
@@ -547,19 +760,37 @@ describe('list-participant-query-service-impl', () => {
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -588,19 +819,37 @@ describe('list-participant-query-service-impl', () => {
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -620,24 +869,43 @@ describe('list-participant-query-service-impl', () => {
         expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
+
     it('[準正常系]ページ番号が負の数値の場合はエラーを返す', async () => {
       /**
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -657,24 +925,43 @@ describe('list-participant-query-service-impl', () => {
         expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
+
     it('[正常系]ページサイズが正の数値の場合は合致する結果を返す', async () => {
       /**
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -716,24 +1003,43 @@ describe('list-participant-query-service-impl', () => {
         '4130b8c4-ca82-48bf-92e1-3f32c618ee-10',
       );
     });
+
     it('[準正常系]ページサイズが0の場合はエラーを返す', async () => {
       /**
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -753,24 +1059,43 @@ describe('list-participant-query-service-impl', () => {
         expect(error.message).toBe('ページ番号は1以上を指定してください');
       }
     });
+
     it('[準正常系]ページサイズが負の数値の場合はエラーを返す', async () => {
       /**
        * 参加者データ30人分作成
        */
       const participantsNumber = 30;
-      await createParticipantData(participantsNumber);
+      await createParticipantData({
+        participantRepository,
+        participantsNumber,
+      });
 
       /**
        * 課題データ作成
        */
-      const taskId1 = '1';
-      await createTaskData(taskId1, 1, 0, 5);
+      await createTaskData({
+        taskRepository,
+        taskId: '1',
+        status: 1,
+        startParticipantId: 0,
+        endParticipantId: 5,
+      });
 
-      const taskId2 = '2';
-      await createTaskData(taskId2, 2, 0, 10);
+      await createTaskData({
+        taskRepository,
+        taskId: '2',
+        status: 2,
+        startParticipantId: 0,
+        endParticipantId: 10,
+      });
 
-      const taskId3 = '3';
-      await createTaskData(taskId3, 3, 10, 20);
+      await createTaskData({
+        taskRepository,
+        taskId: '3',
+        status: 3,
+        startParticipantId: 10,
+        endParticipantId: 20,
+      });
 
       /**
        * actual作成
@@ -791,66 +1116,4 @@ describe('list-participant-query-service-impl', () => {
       }
     });
   });
-
-  /**
-   * 参加者テストデータ作成メソッド
-   */
-  const createParticipantData = async (participantsNumber: number) => {
-    for (let i = 0; i < participantsNumber; i++) {
-      const participantId = UniqueID.reconstruct(
-        `4130b8c4-ca82-48bf-92e1-3f32c618ee-${i}`,
-      );
-      const name = ParticipantName.create({
-        lastName: `sakamoto_${i}`,
-        firstName: `keisuke_${i}`,
-      });
-      const mailAddress = MailAddress.create({
-        mailAddress: `hoge_${i}@gmail.com`,
-      });
-      const enrollmentStatus = EnrollmentStatus.create();
-
-      const participant = Participant.reconstruct({
-        id: participantId,
-        values: {
-          name,
-          mailAddress,
-          enrollmentStatus,
-        },
-      });
-
-      await participantRepository.create(participant);
-    }
-  };
-
-  /**
-   * 課題テストデータ作成メソッド
-   *
-   * @param taskId 課題ID
-   * @param taskStatus 課題ステータス
-   * @param taskNumber 課題数
-   * @param startParticipantId 参加者IDの開始番号
-   */
-  const createTaskData = async (
-    taskId: string,
-    status: number,
-    startParticipantId: number,
-    endParticipantId: number,
-  ) => {
-    for (let i = startParticipantId; i < endParticipantId; i++) {
-      const id = UniqueID.reconstruct(taskId);
-      const ownerId = UniqueID.reconstruct(
-        `4130b8c4-ca82-48bf-92e1-3f32c618ee-${i}`,
-      );
-      const taskStatus = TaskStatus.reconstruct({ value: status });
-      const task = Task.create({
-        id,
-        values: {
-          ownerId,
-          taskStatus,
-        },
-      });
-
-      await taskRepository.create(task);
-    }
-  };
 });
