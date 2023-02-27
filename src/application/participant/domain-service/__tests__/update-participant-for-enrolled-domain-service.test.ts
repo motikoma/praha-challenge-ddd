@@ -27,18 +27,6 @@ describe('update', () => {
     const participantSeceder = participantCreator(ENROLLMENT_STATUS.SECEDER);
     const participantEnrolled = participantCreator(ENROLLMENT_STATUS.ENROLLED);
 
-    const teamRepository = new TeamRepository(prismaClient);
-    const participantRepository = new ParticipantRepository(prismaClient);
-    const updatePairRemoveParticipantUseCase =
-      new UpdatePairRemoveParticipantUseCase(
-        teamRepository,
-        participantRepository,
-      );
-    const removeParticipantUsecase = new RemoveParticipantUseCase(
-      teamRepository,
-      participantRepository,
-    );
-
     const pair = Pair.reconstruct({
       id: UniqueID.reconstruct('1'),
       values: {
@@ -65,12 +53,13 @@ describe('update', () => {
       },
     });
 
+    const teamRepository = new TeamRepository(prismaClient);
+    jest.spyOn(teamRepository, 'getWithParticipantId').mockResolvedValue(team);
+
+    const participantRepository = new ParticipantRepository(prismaClient);
     jest
       .spyOn(participantRepository, 'getWithParticipantId')
       .mockResolvedValue(participantSeceder);
-
-    jest.spyOn(teamRepository, 'getWithParticipantId').mockResolvedValue(team);
-
     jest
       .spyOn(participantRepository, 'update')
       .mockResolvedValue(participantEnrolled);
@@ -84,6 +73,37 @@ describe('update', () => {
     jest
       .spyOn(checkAssignedPairService, 'checkAssignedPair')
       .mockResolvedValue(null);
+
+    jest.mock(
+      'src/application/team/pair/update-pair-remove-participant',
+      () => {
+        return jest.fn().mockImplementation(() => {
+          return {
+            teamRepository: jest.fn(),
+            participantRepository: jest.fn(),
+            do: jest.fn(),
+          };
+        });
+      },
+    );
+    const UpdatePairRemoveParticipantUseCase = require('src/application/team/pair/update-pair-remove-participant');
+    const updatePairRemoveParticipantUseCase =
+      new UpdatePairRemoveParticipantUseCase();
+
+    jest.mock(
+      'src/application/team/participant/remove-participant-usecase',
+      () => {
+        return jest.fn().mockImplementation(() => {
+          return {
+            teamRepository: jest.fn(),
+            participantRepository: jest.fn(),
+            do: jest.fn(),
+          };
+        });
+      },
+    );
+    const RemoveParticipantUsecase = require('src/application/team/participant/remove-participant-usecase');
+    const removeParticipantUsecase = new RemoveParticipantUsecase();
 
     const updateParticipantDomainService =
       new UpdateParticipantForEnrolledDomainService(
