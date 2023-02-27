@@ -1,14 +1,14 @@
+import { Participant } from '@prisma/client';
 import { ApplicationException } from 'src/application/shared/application-exception';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import {
-  EnrollmentStatus,
   ENROLLMENT_STATUS,
-} from '../../../domain/entity/participant/enrollment-status';
-import { Participant } from '../../../domain/entity/participant/participant';
-import { IParticipantRepository } from '../../../domain/entity/participant/participant-repository';
-import { UniqueID } from '../../../domain/shared/uniqueId';
+  EnrollmentStatus,
+} from '../entity/participant/enrollment-status';
+import { IParticipantRepository } from '../entity/participant/participant-repository';
+import { UniqueID } from '../shared/uniqueId';
 
 type Param = {
   readonly enrollmentStatus: number;
