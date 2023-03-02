@@ -1,4 +1,5 @@
 import { Filter } from 'src/application/participant/query-service/list-participants-query-service';
+import { TASK_STATUS } from 'src/domain/entity/task/task-status';
 import { Page } from 'src/domain/shared/page';
 import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
