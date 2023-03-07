@@ -3,13 +3,14 @@ import { PrismaClient } from '@prisma/client';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { UpdateParticipantForEnrolledDomainService } from 'src/application/participant/domain-service/update-participant-for-enrolled-domain-service';
 import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
 import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 import { UpdateParticipantEnrollmentStatusUseCase } from 'src/application/participant/update-participant-enrollment-status.usecase';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
+import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
+
 class RequestBody {
   @IsNotEmpty()
   @IsNumber()

@@ -1,4 +1,3 @@
-import { Participant } from '@prisma/client';
 import { ApplicationException } from 'src/application/shared/application-exception';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
@@ -7,6 +6,7 @@ import {
   ENROLLMENT_STATUS,
   EnrollmentStatus,
 } from '../entity/participant/enrollment-status';
+import { Participant } from '../entity/participant/participant';
 import { IParticipantRepository } from '../entity/participant/participant-repository';
 import { UniqueID } from '../shared/uniqueId';
 

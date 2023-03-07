@@ -1,4 +1,4 @@
-import { UpdateParticipantForEnrolledDomainService } from 'src/application/participant/domain-service/update-participant-for-enrolled-domain-service';
+import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
 import { Pair } from 'src/domain/entity/pair/pair';
 import { PairName } from 'src/domain/entity/pair/pair-name';
 import {
