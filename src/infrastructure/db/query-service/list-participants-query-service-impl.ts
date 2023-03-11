@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import {
   IListParticipantsQueryService,
   Filter,
@@ -10,13 +10,13 @@ import { ParticipantName } from 'src/domain/entity/participant/participant-name'
 import { Page, Paging } from 'src/domain/shared/page';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
+import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class ListParticipantsQueryService
   implements IListParticipantsQueryService
 {
-  constructor(private readonly prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
   async list(filter: Filter): Promise<Page<Participant>> {
     const createWhere = (filter: Filter) => {
       if (!filter.taskStatus && filter.taskIds.length === 0) {
@@ -75,7 +75,7 @@ export class ListParticipantsQueryService
     };
 
     try {
-      const participants = await this.prismaClient.participant.findMany({
+      const participants = await this.prismaService.participant.findMany({
         where: createWhere(filter),
         orderBy: {
           createdAt: 'desc',

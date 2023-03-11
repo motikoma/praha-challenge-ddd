@@ -1,15 +1,15 @@
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { TaskDto } from 'src/application/task/list-tasks.usecase';
 import { IListTasksQueryService } from 'src/application/task/query-service/list-tasks-query-service';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class ListTasksQueryService implements IListTasksQueryService {
-  constructor(private readonly prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async listWithOwnerId(ownerId: UniqueID): Promise<TaskDto[]> {
-    const tasks = await this.prismaClient.participantOnTask.findMany({
+    const tasks = await this.prismaService.participantOnTask.findMany({
       where: {
         participantId: ownerId.id,
       },

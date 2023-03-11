@@ -1,5 +1,4 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
@@ -10,6 +9,7 @@ import { TeamRepository } from 'src/infrastructure/db/repository/team-repository
 import { UpdateParticipantEnrollmentStatusUseCase } from 'src/application/participant/update-participant-enrollment-status.usecase';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
+import { PrismaService } from 'src/prisma.service';
 
 class RequestBody {
   @IsNotEmpty()
@@ -31,15 +31,15 @@ class ResponseBody {
   path: '/participants',
 })
 export class ParticipantUpdateEnrollmentStatusController {
+  constructor(private readonly prismaService: PrismaService) {}
+
   @Put('/:id')
   async updateParticipant(
     @Param('id') id: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
-    const prisma = new PrismaClient();
-
-    const teamRepository = new TeamRepository(prisma);
-    const participantRepository = new ParticipantRepository(prisma);
+    const teamRepository = new TeamRepository(this.prismaService);
+    const participantRepository = new ParticipantRepository(this.prismaService);
     const updatePairRemoveParticipantUseCase =
       new UpdatePairRemoveParticipantUseCase(
         teamRepository,
@@ -56,8 +56,8 @@ export class ParticipantUpdateEnrollmentStatusController {
         removeParticipantUseCase,
         participantRepository,
         teamRepository,
-        new CheckAssignedTeamService(prisma),
-        new CheckAssignedPairService(prisma),
+        new CheckAssignedTeamService(this.prismaService),
+        new CheckAssignedPairService(this.prismaService),
       );
 
     const usecase = new UpdateParticipantEnrollmentStatusUseCase(

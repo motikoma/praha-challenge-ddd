@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import {
   IListParticipantsQueryService,
   PagingCondition,
@@ -9,6 +10,7 @@ type Param = {
   pagingCondition: PagingCondition;
 };
 
+@Injectable()
 export class ListParticipantsUseCase {
   constructor(private readonly queryService: IListParticipantsQueryService) {}
 

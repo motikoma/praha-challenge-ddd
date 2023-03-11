@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
 import { Pair } from 'src/domain/entity/pair/pair';
 import { PairName } from 'src/domain/entity/pair/pair-name';
@@ -15,6 +16,7 @@ type Param = {
 };
 type ReadonlyParam = Readonly<Param>;
 
+@Injectable()
 export class UpdateParticipantEnrollmentStatusUseCase {
   constructor(
     private readonly participantRepository: IParticipantRepository,

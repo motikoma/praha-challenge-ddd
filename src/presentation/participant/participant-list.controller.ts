@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -12,6 +11,7 @@ import {
 } from 'class-validator';
 import { ListParticipantsUseCase } from 'src/application/participant/list-participants.usecase';
 import { ListParticipantsQueryService } from 'src/infrastructure/db/query-service/list-participants-query-service-impl';
+import { PrismaService } from 'src/prisma.service';
 
 class PagingCondition {
   @IsNotEmpty()
@@ -59,10 +59,11 @@ class Participant {
   path: '/participants',
 })
 export class ParticipantListController {
+  constructor(private readonly prismaService: PrismaService) {}
+
   @Get()
   async listParticipants(@Body() req: RequestBody): Promise<ResponseBody> {
-    const prisma = new PrismaClient();
-    const queryService = new ListParticipantsQueryService(prisma);
+    const queryService = new ListParticipantsQueryService(this.prismaService);
     const usecase = new ListParticipantsUseCase(queryService);
     const result = await usecase.do(req);
 

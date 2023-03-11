@@ -1,17 +1,19 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ParticipantCreateController } from './presentation/participant/participant-create.controller';
 import { ParticipantListController } from './presentation/participant/participant-list.controller';
-import { PrismaService } from './prisma.service';
 import { ParticipantUpdateEnrollmentStatusController } from './presentation/participant/participant-update-enrollment-status.controller';
+import { TaskCreateController } from './presentation/task/task-create.controller';
 import { TaskListController } from './presentation/task/task-list.controller';
 import { TaskUpdateController } from './presentation/task/task-update.controller';
-import { TaskCreateController } from './presentation/task/task-create.controller';
+import { PrismaService } from './prisma.service';
+
+export enum ConstantTokens {
+  REPOSITORY = 'repository',
+}
 
 @Module({
   imports: [],
   controllers: [
-    AppController,
     ParticipantCreateController,
     ParticipantListController,
     ParticipantUpdateEnrollmentStatusController,
@@ -19,6 +21,13 @@ import { TaskCreateController } from './presentation/task/task-create.controller
     TaskListController,
     TaskUpdateController,
   ],
-  providers: [PrismaService],
+  providers: [
+    PrismaService,
+    // CreateParticipantUseCase,
+    // {
+    //   provide: ConstantTokens.REPOSITORY,
+    //   useClass: ParticipantRepository,
+    // },
+  ],
 })
 export class AppModule {}

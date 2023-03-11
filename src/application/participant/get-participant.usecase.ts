@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
 import { ApplicationException } from '../shared/application-exception';
 
+@Injectable()
 export class GetParticipantUseCase {
   constructor(private readonly participantRepository: IParticipantRepository) {}
 

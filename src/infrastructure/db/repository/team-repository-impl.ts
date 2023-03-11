@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { Pair } from 'src/domain/entity/pair/pair';
 import { PairName } from 'src/domain/entity/pair/pair-name';
 import { Team } from 'src/domain/entity/team/team';
@@ -6,15 +6,15 @@ import { TeamName } from 'src/domain/entity/team/team-name';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueID';
 import { InfraException } from 'src/infrastructure/infra-exception';
+import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class TeamRepository implements ITeamRepository {
-  constructor(private readonly prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async getWithTeamId(teamId: UniqueID) {
     try {
-      const result = await this.prismaClient.team.findUnique({
+      const result = await this.prismaService.team.findUnique({
         where: {
           id: teamId.id,
         },
@@ -80,7 +80,7 @@ export class TeamRepository implements ITeamRepository {
 
   async getWithParticipantId(participantId: UniqueID) {
     try {
-      const result = await this.prismaClient.participantOnTeam.findUnique({
+      const result = await this.prismaService.participantOnTeam.findUnique({
         where: {
           participantId: participantId.id,
         },
@@ -138,7 +138,7 @@ export class TeamRepository implements ITeamRepository {
 
   async list(): Promise<Team[]> {
     try {
-      const result = await this.prismaClient.team.findMany({
+      const result = await this.prismaService.team.findMany({
         include: {
           ParticipantOnTeam: {
             include: {
@@ -207,7 +207,7 @@ export class TeamRepository implements ITeamRepository {
   async upsert(team: Team) {
     const { participantIds, pairs } = team.values;
 
-    const result = await this.prismaClient.$transaction(async (prisma) => {
+    const result = await this.prismaService.$transaction(async (prisma) => {
       // チームと参加者の紐付け処理
       let participantOnTeamResults: any[] = [];
       const asyncOperation1 = async () => {

@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 const enrollmentStatusData: Prisma.EnrollmentStatusCreateInput[] = [
   {
@@ -15,7 +16,7 @@ const enrollmentStatusData: Prisma.EnrollmentStatusCreateInput[] = [
   },
 ];
 
-const prisma = new PrismaClient();
+const prisma = new PrismaService();
 
 export const enrollmentStatusSeedCreate = async () => {
   for (const d of enrollmentStatusData) {

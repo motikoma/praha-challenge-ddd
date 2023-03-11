@@ -1,8 +1,8 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { UpdateTaskUseCase } from 'src/application/task/update-task.usecase';
 import { TaskRepository } from 'src/infrastructure/db/repository/task-repository-impl';
+import { PrismaService } from 'src/prisma.service';
 
 class RequestBody {
   @IsNotEmpty()
@@ -26,13 +26,14 @@ class ResponseBody {
   path: '/tasks',
 })
 export class TaskUpdateController {
+  constructor(private readonly prismaService: PrismaService) {}
+
   @Put('/:id')
   async createTask(
     @Param('id') id: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
-    const prisma = new PrismaClient();
-    const repository = new TaskRepository(prisma);
+    const repository = new TaskRepository(this.prismaService);
     const usecase = new UpdateTaskUseCase(repository);
     const result = await usecase.do(id, req);
 

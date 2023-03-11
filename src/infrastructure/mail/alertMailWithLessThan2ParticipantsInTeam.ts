@@ -1,6 +1,6 @@
-import { PrismaClient } from '.prisma/client';
 import { GetParticipantUseCase } from 'src/application/participant/get-participant.usecase';
 import { Participant } from 'src/domain/entity/participant/participant';
+import { PrismaService } from 'src/prisma.service';
 import { ParticipantRepository } from '../db/repository/participant-repository-impl';
 
 type Props = {
@@ -15,8 +15,8 @@ export const alertMailWithLessThan2ParticipantsInTeam = async ({
   decreasedParticipant,
   currentParticipantIds,
 }: Props) => {
-  const prismaClient = new PrismaClient();
-  const repository = new ParticipantRepository(prismaClient);
+  const prismaService = new PrismaService();
+  const repository = new ParticipantRepository(prismaService);
   const getParticipantUseCase = new GetParticipantUseCase(repository);
 
   // TODO: パフォーマンスが悪いので、複数の参加者を取得するクエリを新規作成

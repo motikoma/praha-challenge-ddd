@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import { EnrollmentStatus } from 'src/domain/entity/participant/enrollment-status';
 import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { Participant } from 'src/domain/entity/participant/participant';
@@ -7,10 +6,11 @@ import { UniqueID } from 'src/domain/shared/uniqueId';
 import { CreateParticipantUseCase } from '../create-participant.usecase';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 import { ApplicationException } from 'src/application/shared/application-exception';
+import { PrismaService } from 'src/prisma.service';
 
 describe('create', () => {
-  const prismaClient = new PrismaClient();
-  const participantRepository = new ParticipantRepository(prismaClient);
+  const prismaService = new PrismaService();
+  const participantRepository = new ParticipantRepository(prismaService);
 
   const participant = Participant.reconstruct({
     id: UniqueID.reconstruct('1'),

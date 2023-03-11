@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import { PrismaService } from 'src/prisma.service';
 
 const teamData: Prisma.TeamCreateInput[] = [
   {
@@ -11,7 +12,7 @@ const teamData: Prisma.TeamCreateInput[] = [
   },
 ];
 
-const prisma = new PrismaClient();
+const prisma = new PrismaService();
 
 export const teamSeedCreate = async () => {
   for (const d of teamData) {

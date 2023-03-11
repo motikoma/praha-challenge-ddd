@@ -1,7 +1,7 @@
-import { Controller, Get, Param, Put } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Controller, Get, Param } from '@nestjs/common';
 import { GetTeamUseCase } from 'src/application/team/get-team.usecase';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
+import { PrismaService } from 'src/prisma.service';
 
 class ResponseBody {
   constructor(
@@ -16,10 +16,11 @@ class ResponseBody {
   path: '/teams',
 })
 export class TeamGetController {
+  constructor(private readonly prismaService: PrismaService) {}
+
   @Get('/:teamId')
   async getTeam(@Param('teamId') teamId: string): Promise<ResponseBody> {
-    const prisma = new PrismaClient();
-    const repository = new TeamRepository(prisma);
+    const repository = new TeamRepository(this.prismaService);
     const usecase = new GetTeamUseCase(repository);
     const result = await usecase.do(teamId);
 

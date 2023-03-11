@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { Pair } from 'src/domain/entity/pair/pair';
@@ -17,11 +16,12 @@ import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/c
 import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
+import { PrismaService } from 'src/prisma.service';
 import { UpdateParticipantForEnrolledDomainService } from '../update-participant-for-enrolled-domain-service';
 
 describe('update', () => {
   it('正常系_退会済の参加者のステータスを更新する際に正しい値がRepositoryの引数に渡る', async () => {
-    const prismaClient = new PrismaClient();
+    const prismaService = new PrismaService();
 
     const participantId = UniqueID.reconstruct('1');
     const participantSeceder = participantCreator(ENROLLMENT_STATUS.SECEDER);
@@ -53,10 +53,10 @@ describe('update', () => {
       },
     });
 
-    const teamRepository = new TeamRepository(prismaClient);
+    const teamRepository = new TeamRepository(prismaService);
     jest.spyOn(teamRepository, 'getWithParticipantId').mockResolvedValue(team);
 
-    const participantRepository = new ParticipantRepository(prismaClient);
+    const participantRepository = new ParticipantRepository(prismaService);
     jest
       .spyOn(participantRepository, 'getWithParticipantId')
       .mockResolvedValue(participantSeceder);
@@ -64,12 +64,16 @@ describe('update', () => {
       .spyOn(participantRepository, 'update')
       .mockResolvedValue(participantEnrolled);
 
-    const checkAssignedTeamService = new CheckAssignedTeamService(prismaClient);
+    const checkAssignedTeamService = new CheckAssignedTeamService(
+      prismaService,
+    );
     jest
       .spyOn(checkAssignedTeamService, 'checkAssignedTeam')
       .mockResolvedValue(null);
 
-    const checkAssignedPairService = new CheckAssignedPairService(prismaClient);
+    const checkAssignedPairService = new CheckAssignedPairService(
+      prismaService,
+    );
     jest
       .spyOn(checkAssignedPairService, 'checkAssignedPair')
       .mockResolvedValue(null);
@@ -130,15 +134,15 @@ describe('update', () => {
 
   describe('参加者のステータスがENROLLEDの場合', () => {
     it('準正常系_チームが割り当てられている場合、在籍中から別のステータスに変更できません', async () => {
-      const prismaClient = new PrismaClient();
+      const prismaService = new PrismaService();
 
       const participantId = UniqueID.reconstruct('1');
       const participantEnrolled = participantCreator(
         ENROLLMENT_STATUS.ENROLLED,
       );
 
-      const teamRepository = new TeamRepository(prismaClient);
-      const participantRepository = new ParticipantRepository(prismaClient);
+      const teamRepository = new TeamRepository(prismaService);
+      const participantRepository = new ParticipantRepository(prismaService);
       const updatePairRemoveParticipantUseCase =
         new UpdatePairRemoveParticipantUseCase(
           teamRepository,
@@ -154,14 +158,14 @@ describe('update', () => {
         .mockResolvedValue(participantEnrolled);
 
       const checkAssignedTeamService = new CheckAssignedTeamService(
-        prismaClient,
+        prismaService,
       );
       jest
         .spyOn(checkAssignedTeamService, 'checkAssignedTeam')
         .mockResolvedValue(true);
 
       const checkAssignedPairService = new CheckAssignedPairService(
-        prismaClient,
+        prismaService,
       );
       jest
         .spyOn(checkAssignedPairService, 'checkAssignedPair')
@@ -187,15 +191,15 @@ describe('update', () => {
     });
 
     it('準正常系_ペアが割り当てられている場合、在籍中から別のステータスに変更できません', async () => {
-      const prismaClient = new PrismaClient();
+      const prismaService = new PrismaService();
 
       const participantId = UniqueID.reconstruct('1');
       const participantEnrolled = participantCreator(
         ENROLLMENT_STATUS.ENROLLED,
       );
 
-      const teamRepository = new TeamRepository(prismaClient);
-      const participantRepository = new ParticipantRepository(prismaClient);
+      const teamRepository = new TeamRepository(prismaService);
+      const participantRepository = new ParticipantRepository(prismaService);
       const updatePairRemoveParticipantUseCase =
         new UpdatePairRemoveParticipantUseCase(
           teamRepository,
@@ -211,14 +215,14 @@ describe('update', () => {
         .mockResolvedValue(participantEnrolled);
 
       const checkAssignedTeamService = new CheckAssignedTeamService(
-        prismaClient,
+        prismaService,
       );
       jest
         .spyOn(checkAssignedTeamService, 'checkAssignedTeam')
         .mockResolvedValue(null);
 
       const checkAssignedPairService = new CheckAssignedPairService(
-        prismaClient,
+        prismaService,
       );
       jest
         .spyOn(checkAssignedPairService, 'checkAssignedPair')
@@ -245,13 +249,13 @@ describe('update', () => {
   });
 
   it('準正常系_参加者のidが存在しない場合はエラーになる', async () => {
-    const prismaClient = new PrismaClient();
+    const prismaService = new PrismaService();
 
     const participantId = UniqueID.reconstruct('1');
     const participantEnrolled = participantCreator(ENROLLMENT_STATUS.ENROLLED);
 
-    const teamRepository = new TeamRepository(prismaClient);
-    const participantRepository = new ParticipantRepository(prismaClient);
+    const teamRepository = new TeamRepository(prismaService);
+    const participantRepository = new ParticipantRepository(prismaService);
     const updatePairRemoveParticipantUseCase =
       new UpdatePairRemoveParticipantUseCase(
         teamRepository,
@@ -270,12 +274,16 @@ describe('update', () => {
       .spyOn(participantRepository, 'update')
       .mockResolvedValue(participantEnrolled);
 
-    const checkAssignedTeamService = new CheckAssignedTeamService(prismaClient);
+    const checkAssignedTeamService = new CheckAssignedTeamService(
+      prismaService,
+    );
     jest
       .spyOn(checkAssignedTeamService, 'checkAssignedTeam')
       .mockResolvedValue(null);
 
-    const checkAssignedPairService = new CheckAssignedPairService(prismaClient);
+    const checkAssignedPairService = new CheckAssignedPairService(
+      prismaService,
+    );
     jest
       .spyOn(checkAssignedPairService, 'checkAssignedPair')
       .mockResolvedValue(null);

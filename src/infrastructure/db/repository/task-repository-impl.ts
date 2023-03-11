@@ -1,18 +1,18 @@
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { Task } from 'src/domain/entity/task/task';
 import { ITaskRepository } from 'src/domain/entity/task/task-repository';
 import { TaskStatus } from 'src/domain/entity/task/task-status';
 import { UniqueID } from 'src/domain/shared/uniqueID';
 import { InfraException } from 'src/infrastructure/infra-exception';
+import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class TaskRepository implements ITaskRepository {
-  constructor(private readonly prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(task: Task) {
     try {
-      const result = await this.prismaClient.participantOnTask.create({
+      const result = await this.prismaService.participantOnTask.create({
         data: {
           participantId: task.ownerId.id,
           taskId: task.id.id,
@@ -38,7 +38,7 @@ export class TaskRepository implements ITaskRepository {
 
   async get(ownerId: UniqueID, taskId: UniqueID) {
     try {
-      const task = await this.prismaClient.participantOnTask.findUnique({
+      const task = await this.prismaService.participantOnTask.findUnique({
         where: {
           participantId_taskId: {
             participantId: ownerId.id,
@@ -74,7 +74,7 @@ export class TaskRepository implements ITaskRepository {
     const { taskStatus, ownerId } = task.values;
 
     try {
-      const updatedTask = await this.prismaClient.participantOnTask.update({
+      const updatedTask = await this.prismaService.participantOnTask.update({
         where: {
           participantId_taskId: {
             participantId: ownerId.id,

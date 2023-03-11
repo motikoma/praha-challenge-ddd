@@ -1,16 +1,16 @@
-import { PrismaClient } from '@prisma/client';
 import { Pair } from 'src/domain/entity/pair/pair';
 import { PairName } from 'src/domain/entity/pair/pair-name';
 import { Team } from 'src/domain/entity/team/team';
 import { TeamName } from 'src/domain/entity/team/team-name';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { PrismaService } from 'src/prisma.service';
 import { createParticipantData } from '../../shared/testDataFactory/create-participant-data';
 import { ParticipantRepository } from '../participant-repository-impl';
 import { TeamRepository } from '../team-repository-impl';
 
 // TODO
 describe('TeamRepository', () => {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaService();
   const teamRepository = new TeamRepository(prisma);
   const participantRepository = new ParticipantRepository(prisma);
 

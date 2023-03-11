@@ -1,8 +1,8 @@
 import { Body, Controller, Param, Put } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { RemovePairUseCase } from 'src/application/team/pair/remove-pair-usecase';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
+import { PrismaService } from 'src/prisma.service';
 
 class RequestBody {
   @IsNotEmpty()
@@ -23,13 +23,14 @@ class ResponseBody {
   path: '/teams',
 })
 export class TeamRemovePairController {
+  constructor(private readonly prismaService: PrismaService) {}
+
   @Put('/:teamId/removePair')
   async deleteTeam(
     @Param('teamId') teamId: string,
     @Body() req: RequestBody,
   ): Promise<ResponseBody> {
-    const prisma = new PrismaClient();
-    const repository = new TeamRepository(prisma);
+    const repository = new TeamRepository(this.prismaService);
     const usecase = new RemovePairUseCase(repository);
     const result = await usecase.do(teamId, req);
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { EnrollmentStatus } from 'src/domain/entity/participant/enrollment-status';
 import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { Participant } from 'src/domain/entity/participant/participant';
@@ -6,18 +6,18 @@ import { ParticipantName } from 'src/domain/entity/participant/participant-name'
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { UniqueID } from 'src/domain/shared/uniqueID';
 import { InfraException } from 'src/infrastructure/infra-exception';
+import { PrismaService } from 'src/prisma.service';
 
+@Injectable()
 export class ParticipantRepository implements IParticipantRepository {
-  constructor(private readonly prismaClient: PrismaClient) {
-    this.prismaClient = prismaClient;
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async create(participant: Participant) {
     const { id } = participant.id;
     const { name, mailAddress, enrollmentStatus } = participant.values;
 
     try {
-      const createdParticipant = await this.prismaClient.participant.create({
+      const createdParticipant = await this.prismaService.participant.create({
         data: {
           id: id,
           lastName: name.lastName,
@@ -66,7 +66,7 @@ export class ParticipantRepository implements IParticipantRepository {
 
   async list() {
     try {
-      const listedParticipants = await this.prismaClient.participant.findMany({
+      const listedParticipants = await this.prismaService.participant.findMany({
         include: {
           ParticipantOnEnrollmentStatus: true,
           ParticipantMailAddress: true,
@@ -107,7 +107,7 @@ export class ParticipantRepository implements IParticipantRepository {
   async getWithParticipantId(id: UniqueID) {
     try {
       const gotParticipant =
-        await this.prismaClient.participantMailAddress.findUnique({
+        await this.prismaService.participantMailAddress.findUnique({
           where: {
             participantId: id.id,
           },
@@ -151,7 +151,7 @@ export class ParticipantRepository implements IParticipantRepository {
   async getWithMailAddress(mailAddress: MailAddress) {
     try {
       const gotParticipant =
-        await this.prismaClient.participantMailAddress.findUnique({
+        await this.prismaService.participantMailAddress.findUnique({
           where: {
             mailAddress: mailAddress.mailAddress,
           },
@@ -197,7 +197,7 @@ export class ParticipantRepository implements IParticipantRepository {
     const { name, mailAddress, enrollmentStatus } = participant.values;
 
     try {
-      const updatedParticipant = await this.prismaClient.participant.update({
+      const updatedParticipant = await this.prismaService.participant.update({
         where: {
           id: id,
         },
