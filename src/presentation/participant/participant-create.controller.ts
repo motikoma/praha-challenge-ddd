@@ -1,9 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { CreateParticipantUseCase } from 'src/application/participant/create-participant.usecase';
-import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { PrismaService } from 'src/prisma.service';
+import { CreateParticipantUseCase } from 'src/application/participant/create-participant.usecase';
 class RequestBody {
   @IsNotEmpty()
   @IsString()
@@ -33,13 +31,13 @@ class ResponseBody {
   path: '/participants',
 })
 export class ParticipantCreateController {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly createParticipantUseCase: CreateParticipantUseCase,
+  ) {}
 
   @Post()
   async createParticipant(@Body() req: RequestBody): Promise<ResponseBody> {
-    const repository = new ParticipantRepository(this.prismaService);
-    const usecase = new CreateParticipantUseCase(repository);
-    const result = await usecase.do(req);
+    const result = await this.createParticipantUseCase.do(req);
 
     const response = new ResponseBody(
       result.id,

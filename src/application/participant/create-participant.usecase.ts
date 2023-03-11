@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { constantTokens } from 'src/constants';
 import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { Participant } from 'src/domain/entity/participant/participant';
 import { ParticipantName } from 'src/domain/entity/participant/participant-name';
@@ -14,7 +15,10 @@ type ReadonlyParam = Readonly<Param>;
 
 @Injectable()
 export class CreateParticipantUseCase {
-  constructor(private readonly repository: IParticipantRepository) {}
+  constructor(
+    @Inject(constantTokens.PARTICIPANT_REPOSITORY)
+    private readonly repository: IParticipantRepository,
+  ) {}
 
   async do(param: ReadonlyParam) {
     const mailAddress = MailAddress.create({
