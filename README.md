@@ -9,3 +9,12 @@ TODO: 後で貼り直す
 # 参考リポジトリ
 
 https://github.com/prisma/prisma-examples/tree/latest/typescript/rest-nestjs
+
+# 環境変数
+
+- .local.env ファイルと.test.env ファイルを作成し、以下の環境変数を設定してください。
+
+```
+SECRET_KEY="dummy_password"
+DATABASE_URL="file:./dev.db"
+```

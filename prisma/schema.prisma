@@ -21,6 +21,8 @@ model Participant {
   ParticipantOnTask             ParticipantOnTask[]
   ParticipantOnPair             ParticipantOnPair[]
   ParticipantOnTeam             ParticipantOnTeam[]
+  ParticipantAuth               ParticipantAuth[]
+  ParticipantOnRole             ParticipantOnRole[]
 }
 
 model EnrollmentStatus {
@@ -104,4 +106,26 @@ model ParticipantOnPair {
   Pair          Pair        @relation(fields: [pairId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
   @@id([participantId])
+}
+
+model ParticipantAuth {
+  id           String
+  Participant  Participant @relation(fields: [id], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  passwordHash String
+
+  @@id([id])
+}
+
+model Role {
+  id                Int                 @id
+  name              String
+  ParticipantOnRole ParticipantOnRole[]
+}
+
+model ParticipantOnRole {
+  id            Int         @id @default(autoincrement())
+  participantId String
+  Participant   Participant @relation(fields: [participantId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  roleId        Int
+  role          Role        @relation(fields: [roleId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 }

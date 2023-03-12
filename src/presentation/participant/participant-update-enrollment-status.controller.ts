@@ -2,13 +2,13 @@ import { Body, Controller, Param, Put } from '@nestjs/common';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
-import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
-import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
-import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
-import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 import { UpdateParticipantEnrollmentStatusUseCase } from 'src/application/participant/update-participant-enrollment-status.usecase';
+import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
+import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
+import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
+import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
 import { PrismaService } from 'src/prisma.service';
 
 class RequestBody {
@@ -33,7 +33,8 @@ class ResponseBody {
 export class ParticipantUpdateEnrollmentStatusController {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Put('/:id')
+  // TODO: EnrollmentStatusの種類ごとに分割する
+  @Put('/:id/updateEnrollmentStatus')
   async updateParticipant(
     @Param('id') id: string,
     @Body() req: RequestBody,

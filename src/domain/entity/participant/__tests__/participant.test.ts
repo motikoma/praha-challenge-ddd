@@ -7,6 +7,7 @@ import { ParticipantName } from '../participant-name';
 
 describe('Participant', () => {
   it('[正常系]: 初回登録時のステータスは「在籍中」', () => {
+    const id = UniqueID.reconstruct('1');
     const name = ParticipantName.create({
       lastName: 'sakamoto',
       firstName: 'keisuke',
@@ -15,6 +16,7 @@ describe('Participant', () => {
       mailAddress: 'hoge@gmail.com',
     });
     const actual = Participant.create({
+      id,
       name,
       mailAddress,
     });
@@ -107,6 +109,7 @@ describe('Participant', () => {
 
   describe('ステータスの変更', () => {
     it('[正常系]: ステータスは「在籍中」から「休会中」に変更できる', () => {
+      const id = UniqueID.reconstruct('1');
       const name = ParticipantName.create({
         lastName: 'sakamoto',
         firstName: 'keisuke',
@@ -115,6 +118,7 @@ describe('Participant', () => {
         mailAddress: 'hoge@gmail.com',
       });
       const participant = Participant.create({
+        id,
         name,
         mailAddress,
       });
@@ -132,6 +136,7 @@ describe('Participant', () => {
     });
 
     it('[正常系]: ステータスは「在籍中」から「退会済」に変更できる', () => {
+      const id = UniqueID.reconstruct('1');
       const name = ParticipantName.create({
         lastName: 'sakamoto',
         firstName: 'keisuke',
@@ -140,6 +145,7 @@ describe('Participant', () => {
         mailAddress: 'hoge@gmail.com',
       });
       const participant = Participant.create({
+        id,
         name,
         mailAddress,
       });

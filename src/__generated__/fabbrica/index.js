@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.defineTeamOnPairFactory = exports.definePairFactory = exports.defineTeamFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
+exports.defineParticipantOnRoleFactory = exports.defineRoleFactory = exports.defineParticipantAuthFactory = exports.defineParticipantOnPairFactory = exports.defineParticipantOnTeamFactory = exports.defineTeamOnPairFactory = exports.definePairFactory = exports.defineTeamFactory = exports.defineParticipantOnTaskFactory = exports.defineTaskStatusFactory = exports.defineTaskFactory = exports.defineParticipantMailAddressFactory = exports.defineParticipantOnEnrollmentStatusFactory = exports.defineEnrollmentStatusFactory = exports.defineParticipantFactory = exports.resetScalarFieldValueGenerator = exports.registerScalarFieldValueGenerator = exports.resetSequence = exports.initialize = void 0;
 const internal_1 = require("@quramy/prisma-fabbrica/lib/internal");
 var internal_2 = require("@quramy/prisma-fabbrica/lib/internal");
 Object.defineProperty(exports, "initialize", { enumerable: true, get: function () { return internal_2.initialize; } });
@@ -29,6 +29,14 @@ const modelFieldDefinitions = [{
                 name: "ParticipantOnTeam",
                 type: "ParticipantOnTeam",
                 relationName: "ParticipantToParticipantOnTeam"
+            }, {
+                name: "ParticipantAuth",
+                type: "ParticipantAuth",
+                relationName: "ParticipantToParticipantAuth"
+            }, {
+                name: "ParticipantOnRole",
+                type: "ParticipantOnRole",
+                relationName: "ParticipantToParticipantOnRole"
             }]
     }, {
         name: "EnrollmentStatus",
@@ -138,6 +146,31 @@ const modelFieldDefinitions = [{
                 name: "Pair",
                 type: "Pair",
                 relationName: "PairToParticipantOnPair"
+            }]
+    }, {
+        name: "ParticipantAuth",
+        fields: [{
+                name: "Participant",
+                type: "Participant",
+                relationName: "ParticipantToParticipantAuth"
+            }]
+    }, {
+        name: "Role",
+        fields: [{
+                name: "ParticipantOnRole",
+                type: "ParticipantOnRole",
+                relationName: "ParticipantOnRoleToRole"
+            }]
+    }, {
+        name: "ParticipantOnRole",
+        fields: [{
+                name: "Participant",
+                type: "Participant",
+                relationName: "ParticipantToParticipantOnRole"
+            }, {
+                name: "role",
+                type: "Role",
+                relationName: "ParticipantOnRoleToRole"
             }]
     }];
 function autoGenerateParticipantScalarsOrEnums({ seq }) {
@@ -732,3 +765,151 @@ function defineParticipantOnPairFactory(options) {
     return defineParticipantOnPairFactoryInternal(options);
 }
 exports.defineParticipantOnPairFactory = defineParticipantOnPairFactory;
+function isParticipantAuthParticipantFactory(x) {
+    return x?._factoryFor === "Participant";
+}
+function autoGenerateParticipantAuthScalarsOrEnums({ seq }) {
+    return {
+        passwordHash: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "ParticipantAuth", fieldName: "passwordHash", isId: false, isUnique: false, seq })
+    };
+}
+function defineParticipantAuthFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("ParticipantAuth", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateParticipantAuthScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            Participant: isParticipantAuthParticipantFactory(defaultData.Participant) ? {
+                create: await defaultData.Participant.build()
+            } : defaultData.Participant
+        };
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().participantAuth.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "ParticipantAuth",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineParticipantAuthFactory(options) {
+    return defineParticipantAuthFactoryInternal(options);
+}
+exports.defineParticipantAuthFactory = defineParticipantAuthFactory;
+function autoGenerateRoleScalarsOrEnums({ seq }) {
+    return {
+        id: (0, internal_1.getScalarFieldValueGenerator)().Int({ modelName: "Role", fieldName: "id", isId: true, isUnique: false, seq }),
+        name: (0, internal_1.getScalarFieldValueGenerator)().String({ modelName: "Role", fieldName: "name", isId: false, isUnique: false, seq })
+    };
+}
+function defineRoleFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("Role", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateRoleScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {};
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().role.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "Role",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineRoleFactory(options = {}) {
+    return defineRoleFactoryInternal(options);
+}
+exports.defineRoleFactory = defineRoleFactory;
+function isParticipantOnRoleParticipantFactory(x) {
+    return x?._factoryFor === "Participant";
+}
+function isParticipantOnRoleroleFactory(x) {
+    return x?._factoryFor === "Role";
+}
+function autoGenerateParticipantOnRoleScalarsOrEnums({ seq }) {
+    return {};
+}
+function defineParticipantOnRoleFactoryInternal({ defaultData: defaultDataResolver }) {
+    const seqKey = {};
+    const getSeq = () => (0, internal_1.getSequenceCounter)(seqKey);
+    const screen = (0, internal_1.createScreener)("ParticipantOnRole", modelFieldDefinitions);
+    const build = async (inputData = {}) => {
+        const seq = getSeq();
+        const requiredScalarData = autoGenerateParticipantOnRoleScalarsOrEnums({ seq });
+        const resolveValue = (0, internal_1.normalizeResolver)(defaultDataResolver ?? {});
+        const defaultData = await resolveValue({ seq });
+        const defaultAssociations = {
+            Participant: isParticipantOnRoleParticipantFactory(defaultData.Participant) ? {
+                create: await defaultData.Participant.build()
+            } : defaultData.Participant,
+            role: isParticipantOnRoleroleFactory(defaultData.role) ? {
+                create: await defaultData.role.build()
+            } : defaultData.role
+        };
+        const data = { ...requiredScalarData, ...defaultData, ...defaultAssociations, ...inputData };
+        return data;
+    };
+    const buildList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => build(data)));
+    const pickForConnect = (inputData) => ({
+        id: inputData.id
+    });
+    const create = async (inputData = {}) => {
+        const data = await build(inputData).then(screen);
+        return await (0, internal_1.getClient)().participantOnRole.create({ data });
+    };
+    const createList = (inputData) => Promise.all((0, internal_1.normalizeList)(inputData).map(data => create(data)));
+    const createForConnect = (inputData = {}) => create(inputData).then(pickForConnect);
+    return {
+        _factoryFor: "ParticipantOnRole",
+        build,
+        buildList,
+        buildCreateInput: build,
+        pickForConnect,
+        create,
+        createList,
+        createForConnect,
+    };
+}
+function defineParticipantOnRoleFactory(options) {
+    return defineParticipantOnRoleFactoryInternal(options);
+}
+exports.defineParticipantOnRoleFactory = defineParticipantOnRoleFactory;

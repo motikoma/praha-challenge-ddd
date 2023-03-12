@@ -10,6 +10,9 @@ import type { Pair } from "@prisma/client";
 import type { TeamOnPair } from "@prisma/client";
 import type { ParticipantOnTeam } from "@prisma/client";
 import type { ParticipantOnPair } from "@prisma/client";
+import type { ParticipantAuth } from "@prisma/client";
+import type { Role } from "@prisma/client";
+import type { ParticipantOnRole } from "@prisma/client";
 import { Prisma } from "@prisma/client";
 import { Resolver } from "@quramy/prisma-fabbrica/lib/internal";
 export { initialize, resetSequence, registerScalarFieldValueGenerator, resetScalarFieldValueGenerator } from "@quramy/prisma-fabbrica/lib/internal";
@@ -26,11 +29,13 @@ type ParticipantFactoryDefineInput = {
     ParticipantOnTask?: Prisma.ParticipantOnTaskCreateNestedManyWithoutParticipantInput;
     ParticipantOnPair?: Prisma.ParticipantOnPairCreateNestedManyWithoutParticipantInput;
     ParticipantOnTeam?: Prisma.ParticipantOnTeamCreateNestedManyWithoutParticipantInput;
+    ParticipantAuth?: Prisma.ParticipantAuthCreateNestedManyWithoutParticipantInput;
+    ParticipantOnRole?: Prisma.ParticipantOnRoleCreateNestedManyWithoutParticipantInput;
 };
 type ParticipantFactoryDefineOptions = {
     defaultData?: Resolver<ParticipantFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantFactoryInterface {
+export interface ParticipantFactoryInterface {
     readonly _factoryFor: "Participant";
     build(inputData?: Partial<Prisma.ParticipantCreateInput>): PromiseLike<Prisma.ParticipantCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantCreateInput>): PromiseLike<Prisma.ParticipantCreateInput>;
@@ -49,7 +54,7 @@ type EnrollmentStatusFactoryDefineInput = {
 type EnrollmentStatusFactoryDefineOptions = {
     defaultData?: Resolver<EnrollmentStatusFactoryDefineInput, BuildDataOptions>;
 };
-interface EnrollmentStatusFactoryInterface {
+export interface EnrollmentStatusFactoryInterface {
     readonly _factoryFor: "EnrollmentStatus";
     build(inputData?: Partial<Prisma.EnrollmentStatusCreateInput>): PromiseLike<Prisma.EnrollmentStatusCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.EnrollmentStatusCreateInput>): PromiseLike<Prisma.EnrollmentStatusCreateInput>;
@@ -75,7 +80,7 @@ type ParticipantOnEnrollmentStatusFactoryDefineInput = {
 type ParticipantOnEnrollmentStatusFactoryDefineOptions = {
     defaultData: Resolver<ParticipantOnEnrollmentStatusFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantOnEnrollmentStatusFactoryInterface {
+export interface ParticipantOnEnrollmentStatusFactoryInterface {
     readonly _factoryFor: "ParticipantOnEnrollmentStatus";
     build(inputData?: Partial<Prisma.ParticipantOnEnrollmentStatusCreateInput>): PromiseLike<Prisma.ParticipantOnEnrollmentStatusCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnEnrollmentStatusCreateInput>): PromiseLike<Prisma.ParticipantOnEnrollmentStatusCreateInput>;
@@ -97,7 +102,7 @@ type ParticipantMailAddressFactoryDefineInput = {
 type ParticipantMailAddressFactoryDefineOptions = {
     defaultData: Resolver<ParticipantMailAddressFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantMailAddressFactoryInterface {
+export interface ParticipantMailAddressFactoryInterface {
     readonly _factoryFor: "ParticipantMailAddress";
     build(inputData?: Partial<Prisma.ParticipantMailAddressCreateInput>): PromiseLike<Prisma.ParticipantMailAddressCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantMailAddressCreateInput>): PromiseLike<Prisma.ParticipantMailAddressCreateInput>;
@@ -116,7 +121,7 @@ type TaskFactoryDefineInput = {
 type TaskFactoryDefineOptions = {
     defaultData?: Resolver<TaskFactoryDefineInput, BuildDataOptions>;
 };
-interface TaskFactoryInterface {
+export interface TaskFactoryInterface {
     readonly _factoryFor: "Task";
     build(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Prisma.TaskCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.TaskCreateInput>): PromiseLike<Prisma.TaskCreateInput>;
@@ -135,7 +140,7 @@ type TaskStatusFactoryDefineInput = {
 type TaskStatusFactoryDefineOptions = {
     defaultData?: Resolver<TaskStatusFactoryDefineInput, BuildDataOptions>;
 };
-interface TaskStatusFactoryInterface {
+export interface TaskStatusFactoryInterface {
     readonly _factoryFor: "TaskStatus";
     build(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<Prisma.TaskStatusCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.TaskStatusCreateInput>): PromiseLike<Prisma.TaskStatusCreateInput>;
@@ -166,7 +171,7 @@ type ParticipantOnTaskFactoryDefineInput = {
 type ParticipantOnTaskFactoryDefineOptions = {
     defaultData: Resolver<ParticipantOnTaskFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantOnTaskFactoryInterface {
+export interface ParticipantOnTaskFactoryInterface {
     readonly _factoryFor: "ParticipantOnTask";
     build(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Prisma.ParticipantOnTaskCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnTaskCreateInput>): PromiseLike<Prisma.ParticipantOnTaskCreateInput>;
@@ -186,7 +191,7 @@ type TeamFactoryDefineInput = {
 type TeamFactoryDefineOptions = {
     defaultData?: Resolver<TeamFactoryDefineInput, BuildDataOptions>;
 };
-interface TeamFactoryInterface {
+export interface TeamFactoryInterface {
     readonly _factoryFor: "Team";
     build(inputData?: Partial<Prisma.TeamCreateInput>): PromiseLike<Prisma.TeamCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.TeamCreateInput>): PromiseLike<Prisma.TeamCreateInput>;
@@ -206,7 +211,7 @@ type PairFactoryDefineInput = {
 type PairFactoryDefineOptions = {
     defaultData?: Resolver<PairFactoryDefineInput, BuildDataOptions>;
 };
-interface PairFactoryInterface {
+export interface PairFactoryInterface {
     readonly _factoryFor: "Pair";
     build(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.PairCreateInput>): PromiseLike<Prisma.PairCreateInput>;
@@ -232,7 +237,7 @@ type TeamOnPairFactoryDefineInput = {
 type TeamOnPairFactoryDefineOptions = {
     defaultData: Resolver<TeamOnPairFactoryDefineInput, BuildDataOptions>;
 };
-interface TeamOnPairFactoryInterface {
+export interface TeamOnPairFactoryInterface {
     readonly _factoryFor: "TeamOnPair";
     build(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<Prisma.TeamOnPairCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.TeamOnPairCreateInput>): PromiseLike<Prisma.TeamOnPairCreateInput>;
@@ -258,7 +263,7 @@ type ParticipantOnTeamFactoryDefineInput = {
 type ParticipantOnTeamFactoryDefineOptions = {
     defaultData: Resolver<ParticipantOnTeamFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantOnTeamFactoryInterface {
+export interface ParticipantOnTeamFactoryInterface {
     readonly _factoryFor: "ParticipantOnTeam";
     build(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Prisma.ParticipantOnTeamCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnTeamCreateInput>): PromiseLike<Prisma.ParticipantOnTeamCreateInput>;
@@ -284,7 +289,7 @@ type ParticipantOnPairFactoryDefineInput = {
 type ParticipantOnPairFactoryDefineOptions = {
     defaultData: Resolver<ParticipantOnPairFactoryDefineInput, BuildDataOptions>;
 };
-interface ParticipantOnPairFactoryInterface {
+export interface ParticipantOnPairFactoryInterface {
     readonly _factoryFor: "ParticipantOnPair";
     build(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Prisma.ParticipantOnPairCreateInput>;
     buildCreateInput(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Prisma.ParticipantOnPairCreateInput>;
@@ -295,3 +300,70 @@ interface ParticipantOnPairFactoryInterface {
     createForConnect(inputData?: Partial<Prisma.ParticipantOnPairCreateInput>): PromiseLike<Pick<ParticipantOnPair, "participantId">>;
 }
 export declare function defineParticipantOnPairFactory(options: ParticipantOnPairFactoryDefineOptions): ParticipantOnPairFactoryInterface;
+type ParticipantAuthParticipantFactory = {
+    _factoryFor: "Participant";
+    build: () => PromiseLike<Prisma.ParticipantCreateNestedOneWithoutParticipantAuthInput["create"]>;
+};
+type ParticipantAuthFactoryDefineInput = {
+    Participant: ParticipantAuthParticipantFactory | Prisma.ParticipantCreateNestedOneWithoutParticipantAuthInput;
+    passwordHash?: string;
+};
+type ParticipantAuthFactoryDefineOptions = {
+    defaultData: Resolver<ParticipantAuthFactoryDefineInput, BuildDataOptions>;
+};
+export interface ParticipantAuthFactoryInterface {
+    readonly _factoryFor: "ParticipantAuth";
+    build(inputData?: Partial<Prisma.ParticipantAuthCreateInput>): PromiseLike<Prisma.ParticipantAuthCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.ParticipantAuthCreateInput>): PromiseLike<Prisma.ParticipantAuthCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.ParticipantAuthCreateInput>[]): PromiseLike<Prisma.ParticipantAuthCreateInput[]>;
+    pickForConnect(inputData: ParticipantAuth): Pick<ParticipantAuth, "id">;
+    create(inputData?: Partial<Prisma.ParticipantAuthCreateInput>): PromiseLike<ParticipantAuth>;
+    createList(inputData: number | readonly Partial<Prisma.ParticipantAuthCreateInput>[]): PromiseLike<ParticipantAuth[]>;
+    createForConnect(inputData?: Partial<Prisma.ParticipantAuthCreateInput>): PromiseLike<Pick<ParticipantAuth, "id">>;
+}
+export declare function defineParticipantAuthFactory(options: ParticipantAuthFactoryDefineOptions): ParticipantAuthFactoryInterface;
+type RoleFactoryDefineInput = {
+    id?: number;
+    name?: string;
+    ParticipantOnRole?: Prisma.ParticipantOnRoleCreateNestedManyWithoutRoleInput;
+};
+type RoleFactoryDefineOptions = {
+    defaultData?: Resolver<RoleFactoryDefineInput, BuildDataOptions>;
+};
+export interface RoleFactoryInterface {
+    readonly _factoryFor: "Role";
+    build(inputData?: Partial<Prisma.RoleCreateInput>): PromiseLike<Prisma.RoleCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.RoleCreateInput>): PromiseLike<Prisma.RoleCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.RoleCreateInput>[]): PromiseLike<Prisma.RoleCreateInput[]>;
+    pickForConnect(inputData: Role): Pick<Role, "id">;
+    create(inputData?: Partial<Prisma.RoleCreateInput>): PromiseLike<Role>;
+    createList(inputData: number | readonly Partial<Prisma.RoleCreateInput>[]): PromiseLike<Role[]>;
+    createForConnect(inputData?: Partial<Prisma.RoleCreateInput>): PromiseLike<Pick<Role, "id">>;
+}
+export declare function defineRoleFactory(options?: RoleFactoryDefineOptions): RoleFactoryInterface;
+type ParticipantOnRoleParticipantFactory = {
+    _factoryFor: "Participant";
+    build: () => PromiseLike<Prisma.ParticipantCreateNestedOneWithoutParticipantOnRoleInput["create"]>;
+};
+type ParticipantOnRoleroleFactory = {
+    _factoryFor: "Role";
+    build: () => PromiseLike<Prisma.RoleCreateNestedOneWithoutParticipantOnRoleInput["create"]>;
+};
+type ParticipantOnRoleFactoryDefineInput = {
+    Participant: ParticipantOnRoleParticipantFactory | Prisma.ParticipantCreateNestedOneWithoutParticipantOnRoleInput;
+    role: ParticipantOnRoleroleFactory | Prisma.RoleCreateNestedOneWithoutParticipantOnRoleInput;
+};
+type ParticipantOnRoleFactoryDefineOptions = {
+    defaultData: Resolver<ParticipantOnRoleFactoryDefineInput, BuildDataOptions>;
+};
+export interface ParticipantOnRoleFactoryInterface {
+    readonly _factoryFor: "ParticipantOnRole";
+    build(inputData?: Partial<Prisma.ParticipantOnRoleCreateInput>): PromiseLike<Prisma.ParticipantOnRoleCreateInput>;
+    buildCreateInput(inputData?: Partial<Prisma.ParticipantOnRoleCreateInput>): PromiseLike<Prisma.ParticipantOnRoleCreateInput>;
+    buildList(inputData: number | readonly Partial<Prisma.ParticipantOnRoleCreateInput>[]): PromiseLike<Prisma.ParticipantOnRoleCreateInput[]>;
+    pickForConnect(inputData: ParticipantOnRole): Pick<ParticipantOnRole, "id">;
+    create(inputData?: Partial<Prisma.ParticipantOnRoleCreateInput>): PromiseLike<ParticipantOnRole>;
+    createList(inputData: number | readonly Partial<Prisma.ParticipantOnRoleCreateInput>[]): PromiseLike<ParticipantOnRole[]>;
+    createForConnect(inputData?: Partial<Prisma.ParticipantOnRoleCreateInput>): PromiseLike<Pick<ParticipantOnRole, "id">>;
+}
+export declare function defineParticipantOnRoleFactory(options: ParticipantOnRoleFactoryDefineOptions): ParticipantOnRoleFactoryInterface;

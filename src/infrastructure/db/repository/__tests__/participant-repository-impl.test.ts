@@ -54,6 +54,7 @@ describe('ParticipantRepository', () => {
       mailAddress: 'hoge@gmail.com',
     });
     const participant = Participant.create({
+      id: UniqueID.reconstruct('1'),
       name,
       mailAddress,
     });
@@ -71,6 +72,7 @@ describe('ParticipantRepository', () => {
       mailAddress: 'hoge@gmail.com',
     });
     const participant = Participant.create({
+      id: UniqueID.reconstruct('1'),
       name,
       mailAddress,
     });
@@ -83,6 +85,7 @@ describe('ParticipantRepository', () => {
       mailAddress: 'hoge2@gmail.com',
     });
     const participant2 = Participant.create({
+      id: UniqueID.reconstruct('2'),
       name: name2,
       mailAddress: mailAddress2,
     });

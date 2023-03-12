@@ -1,12 +1,12 @@
-import { ParticipantName } from './participant-name';
-import { Entity } from '../../shared/entity';
-import { MailAddress } from './mail-address';
-import { UniqueID } from 'src/domain/shared/uniqueId';
-import { EnrollmentStatus, ENROLLMENT_STATUS } from './enrollment-status';
 import { DomainException } from 'src/domain/shared/domain-exception';
+import { UniqueID } from 'src/domain/shared/uniqueId';
+import { Entity } from '../../shared/entity';
+import { EnrollmentStatus, ENROLLMENT_STATUS } from './enrollment-status';
+import { MailAddress } from './mail-address';
+import { ParticipantName } from './participant-name';
 
 type Props = {
-  id?: UniqueID;
+  id: UniqueID;
   values: ReadonlyValues;
 };
 type ReadonlyProps = Readonly<Props>;
@@ -19,6 +19,7 @@ type Values = {
 type ReadonlyValues = Readonly<Values>;
 
 type CreateValues = {
+  id: UniqueID;
   name: ParticipantName;
   mailAddress: MailAddress;
 };
@@ -29,9 +30,9 @@ export class Participant extends Entity<ReadonlyProps> {
     super(props);
   }
 
-  static create({ name, mailAddress }: ReadonlyCreateValues): Participant {
+  static create({ id, name, mailAddress }: ReadonlyCreateValues): Participant {
     const props = {
-      id: UniqueID.create(),
+      id,
       values: {
         name,
         mailAddress,

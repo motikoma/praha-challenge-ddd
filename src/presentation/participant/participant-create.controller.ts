@@ -1,6 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { CreateParticipantUseCase } from 'src/application/participant/create-participant.usecase';
 class RequestBody {
   @IsNotEmpty()
@@ -15,6 +21,12 @@ class RequestBody {
   @IsString()
   @IsEmail()
   readonly mailAddress!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(5)
+  @MaxLength(8)
+  readonly password!: string;
 }
 
 class ResponseBody {
