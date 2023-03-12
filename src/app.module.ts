@@ -6,8 +6,9 @@ import { SignInUseCase } from './application/signIn/sign-in.usecase';
 import { constantTokens } from './constants';
 import { ParticipantAuthRepository } from './infrastructure/db/repository/participant-auth-repository-impl';
 import { ParticipantRepository } from './infrastructure/db/repository/participant-repository-impl';
-import { JwtAuthGuard } from './presentation/auth/jwt-auth.guard';
-import { JwtStrategy } from './presentation/auth/jwt-strategy';
+import { JwtAuthGuard } from './presentation/authentication/jwt-auth.guard';
+import { JwtStrategy } from './presentation/authentication/jwt-strategy';
+import { RolesGuard } from './presentation/authorization/roles.guard';
 import { ParticipantCreateController } from './presentation/participant/participant-create.controller';
 import { ParticipantListController } from './presentation/participant/participant-list.controller';
 import { ParticipantUpdateEnrollmentStatusController } from './presentation/participant/participant-update-enrollment-status.controller';
@@ -39,6 +40,7 @@ import { PrismaService } from './prisma.service';
     PrismaService,
     JwtStrategy,
     JwtAuthGuard,
+    RolesGuard,
     SignInUseCase,
 
     // TODO: 他のユースケースやリポジトリもここでDIする

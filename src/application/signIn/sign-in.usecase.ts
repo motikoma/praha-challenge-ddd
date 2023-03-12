@@ -51,7 +51,7 @@ export class SignInUseCase {
     if (isPassewordMatch) {
       const payload = {
         id: participant.id.id,
-        roles: participantAuth.values.roles,
+        roles: participantAuth.values.roles.map((role) => role.role),
       };
       const accessToken = await this.jwtService.sign(payload);
       return new SignInDto(accessToken);

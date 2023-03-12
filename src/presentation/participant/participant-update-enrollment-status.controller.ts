@@ -6,11 +6,16 @@ import { UpdateParticipantEnrollmentStatusUseCase } from 'src/application/partic
 import { UpdatePairRemoveParticipantUseCase } from 'src/application/team/pair/update-pair-remove-participant';
 import { RemoveParticipantUseCase } from 'src/application/team/participant/remove-participant-usecase';
 import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-service/update-participant-for-enrolled-domain-service';
+import { ParticipantAuthHashed } from 'src/domain/entity/auth/participant-auth-hashed';
+import { ROLE } from 'src/domain/entity/auth/role';
 import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
 import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
-import { JwtAuthGuard } from 'src/presentation/auth/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/presentation/authentication/jwt-auth.guard';
 import { PrismaService } from 'src/prisma.service';
+import { GetParticipantAuth } from '../authentication/get-participant-auth.decorator';
+import { Role } from '../authorization/role.decorator';
+import { RolesGuard } from '../authorization/roles.guard';
 
 class RequestBody {
   @IsNotEmpty()
@@ -36,10 +41,12 @@ export class ParticipantUpdateEnrollmentStatusController {
 
   // TODO: EnrollmentStatusの種類ごとに分割する
   @Put('/:id/updateEnrollmentStatus')
-  @UseGuards(JwtAuthGuard)
+  @Role(ROLE.USER)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateParticipant(
     @Param('id') id: string,
     @Body() req: RequestBody,
+    @GetParticipantAuth() participantAuthHashed: ParticipantAuthHashed,
   ): Promise<ResponseBody> {
     const teamRepository = new TeamRepository(this.prismaService);
     const participantRepository = new ParticipantRepository(this.prismaService);
