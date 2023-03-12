@@ -1,5 +1,4 @@
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const taskData: Prisma.TaskCreateInput[] = [
   {
@@ -16,7 +15,7 @@ const taskData: Prisma.TaskCreateInput[] = [
   },
 ];
 
-const prisma = new PrismaService();
+const prisma = new PrismaClient();
 
 export const taskSeedCreate = async () => {
   for (const d of taskData) {

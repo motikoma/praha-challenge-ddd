@@ -1,11 +1,12 @@
-import { PrismaService } from 'src/prisma.service';
+import { PrismaClient } from '@prisma/client';
 import { enrollmentStatusSeedCreate } from './enrollmentStatus';
 import { pairSeedCreate } from './pair';
+import { roleSeedCreate } from './role';
 import { taskSeedCreate } from './task';
 import { taskStatusDataCreate } from './taskStatus';
 import { teamSeedCreate } from './team';
 
-const prisma = new PrismaService();
+const prisma = new PrismaClient();
 
 async function main() {
   console.log(`Start seeding ...`);
@@ -15,6 +16,7 @@ async function main() {
   await enrollmentStatusSeedCreate();
   await taskSeedCreate();
   await taskStatusDataCreate();
+  await roleSeedCreate();
 
   console.log(`Seeding finished.`);
 }

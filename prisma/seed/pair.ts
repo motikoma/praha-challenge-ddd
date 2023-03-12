@@ -1,5 +1,4 @@
-import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { Prisma, PrismaClient } from '@prisma/client';
 
 const pairData: Prisma.PairCreateInput[] = [
   {
@@ -20,7 +19,7 @@ const pairData: Prisma.PairCreateInput[] = [
   },
 ];
 
-const prisma = new PrismaService();
+const prisma = new PrismaClient();
 
 export const pairSeedCreate = async () => {
   for (const d of pairData) {
