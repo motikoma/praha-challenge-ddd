@@ -53,7 +53,7 @@ export class SignInUseCase {
         id: participant.id.id,
         roles: participantAuth.values.roles,
       };
-      const accessToken = this.jwtService.sign(payload);
+      const accessToken = await this.jwtService.sign(payload);
       return new SignInDto(accessToken);
     }
     throw new ApplicationException(

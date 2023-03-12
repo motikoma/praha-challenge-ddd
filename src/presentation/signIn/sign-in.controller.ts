@@ -32,7 +32,7 @@ export class SignInController {
   constructor(private readonly signInUseCase: SignInUseCase) {}
 
   @Post()
-  async createParticipant(@Body() req: RequestBody): Promise<ResponseBody> {
+  async signIn(@Body() req: RequestBody): Promise<ResponseBody> {
     const result = await this.signInUseCase.do(req);
 
     const response = new ResponseBody(result.accessToken);

@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Put } from '@nestjs/common';
+import { Body, Controller, Param, Put, UseGuards } from '@nestjs/common';
 import { ParticipantRepository } from 'src/infrastructure/db/repository/participant-repository-impl';
 
 import { IsNotEmpty, IsNumber } from 'class-validator';
@@ -9,6 +9,7 @@ import { UpdateParticipantForEnrolledDomainService } from 'src/domain/domain-ser
 import { CheckAssignedPairService } from 'src/infrastructure/db/domain-service/check-assigned-pair-service-impl';
 import { CheckAssignedTeamService } from 'src/infrastructure/db/domain-service/check-assigned-team-service-impl';
 import { TeamRepository } from 'src/infrastructure/db/repository/team-repository-impl';
+import { JwtAuthGuard } from 'src/presentation/auth/jwt-auth.guard';
 import { PrismaService } from 'src/prisma.service';
 
 class RequestBody {
@@ -35,6 +36,7 @@ export class ParticipantUpdateEnrollmentStatusController {
 
   // TODO: EnrollmentStatusの種類ごとに分割する
   @Put('/:id/updateEnrollmentStatus')
+  @UseGuards(JwtAuthGuard)
   async updateParticipant(
     @Param('id') id: string,
     @Body() req: RequestBody,

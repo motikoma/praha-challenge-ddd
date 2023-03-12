@@ -10,6 +10,7 @@ import { Participant } from 'src/domain/entity/participant/participant';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { ApplicationException } from '../shared/application-exception';
 
 type Param = {
   readonly enrollmentStatus: number;
@@ -78,7 +79,8 @@ export class UpdateParticipantEnrollmentStatusUseCase {
        */
       // 休会中の参加者が復帰した（在籍ステータス「在籍中」に切り替わった）際に所属するチームとペアは、最も参加人数が少ないチームの中で、最も参加人数が少ないペアから自動的に選ばれる
       const teams = await this.teamRepository.list();
-      if ((teams.length = 0)) throw new Error('チームが存在しません');
+      if (teams.length === 0)
+        throw new ApplicationException('チームが存在しません');
 
       // teamsの中で最も参加人数が少ないチームを抽出する
       // 参加人数が同じの場合はランダムに選択する
@@ -87,6 +89,8 @@ export class UpdateParticipantEnrollmentStatusUseCase {
           ? prev
           : current;
       });
+      if (minTeam.pairs.length === 0)
+        throw new ApplicationException('ペアが存在しません');
 
       // 参加人数が最も少ないチームの中で最も参加人数が少ないペアを抽出する
       const minPair = minTeam.pairs.reduce((prev, current) => {
