@@ -13,6 +13,8 @@
     "migrate:dev:createOnly": "dotenv -e .local.env -- prisma migrate dev --create-only",
     "migrate:dev:reset": "dotenv -e .local.env -- prisma migrate reset",
     "migrate:test:reset": "dotenv -e .test.env -- prisma migrate reset",
+    "db:seed:dev": "dotenv -e .local.env -- prisma db seed",
+    "db:seed:test": "dotenv -e .test.env -- prisma db seed",
     "model-generate": "prisma generate",
     "start:dev": "dotenv -e .local.env -- nest start --watch",
     "start:debug": "dotenv -e .local.env -- nest start --debug --watch",
