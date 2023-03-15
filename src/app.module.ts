@@ -13,10 +13,12 @@ import { ParticipantCreateController } from './presentation/participant/particip
 import { ParticipantListController } from './presentation/participant/participant-list.controller';
 import { ParticipantUpdateEnrollmentStatusController } from './presentation/participant/participant-update-enrollment-status.controller';
 import { SignInController } from './presentation/signIn/sign-in.controller';
+import { SignOutController } from './presentation/signout/sign-out.controller';
 import { TaskCreateController } from './presentation/task/task-create.controller';
 import { TaskListController } from './presentation/task/task-list.controller';
 import { TaskUpdateController } from './presentation/task/task-update.controller';
 import { PrismaService } from './prisma.service';
+
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -29,6 +31,7 @@ import { PrismaService } from './prisma.service';
   ],
   controllers: [
     SignInController,
+    SignOutController,
     ParticipantCreateController,
     ParticipantListController,
     ParticipantUpdateEnrollmentStatusController,
