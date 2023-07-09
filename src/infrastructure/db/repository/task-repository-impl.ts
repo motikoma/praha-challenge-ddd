@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Task } from 'src/domain/entity/task/task';
 import { ITaskRepository } from 'src/domain/entity/task/task-repository';
 import { TaskStatus } from 'src/domain/entity/task/task-status';
-import { UniqueID } from 'src/domain/shared/uniqueID';
+import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
 
