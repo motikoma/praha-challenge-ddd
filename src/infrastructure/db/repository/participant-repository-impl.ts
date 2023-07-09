@@ -4,7 +4,7 @@ import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { Participant } from 'src/domain/entity/participant/participant';
 import { ParticipantName } from 'src/domain/entity/participant/participant-name';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
-import { UniqueID } from 'src/domain/shared/uniqueID';
+import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
 
