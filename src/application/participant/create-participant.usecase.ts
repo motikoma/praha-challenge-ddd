@@ -71,10 +71,22 @@ export class CreateParticipantUseCase {
 
     // MEMO: リポジトリを跨いだトランザクションの実装例
     // TODO: このやり方ではロールバックされないので新しく独自のRepositoryを作成する必要がある
-    await this.prisma.$transaction(async (prisma) => {
-      await this.participantRepository.create(participant);
-      await this.participantAuthRepository.create(participantAuthInfo);
-    });
+    // await this.prisma.$transaction(async (prisma) => {
+    //   await this.participantRepository.create(participant);
+    //   await this.participantAuthRepository.create(participantAuthInfo);
+    // });
+
+    // 下記のやり方だとPrismaが用意したレコード型を返さないので型エラーになる
+    // TODO: ユースケース層でレコード型からドメインオブジェクトに変換することを受け入れるしかない
+    // const createParticipant = await this.participantRepository.create(
+    //   participant,
+    // );
+    // const createParticipantAuthInfo =
+    //   await this.participantAuthRepository.create(participantAuthInfo);
+    // await this.prisma.$transaction([
+    //   createParticipant,
+    //   createParticipantAuthInfo,
+    // ]);
 
     const createdParticipant =
       await this.participantRepository.getWithParticipantId(participant.id);

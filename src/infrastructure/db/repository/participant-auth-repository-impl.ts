@@ -6,6 +6,7 @@ import { IParticipantAuthRepository } from 'src/domain/entity/auth/participant-a
 import { Role } from 'src/domain/entity/auth/role';
 import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { UniqueID } from 'src/domain/shared/uniqueId';
+import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -19,61 +20,71 @@ export class ParticipantAuthRepository implements IParticipantAuthRepository {
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password.password, salt);
 
-    await this.prisma.participantAuth.create({
-      data: {
-        id: id,
-        passwordHash: passwordHash,
-      },
-    });
+    try {
+      await this.prisma.participantAuth.create({
+        data: {
+          id: id,
+          passwordHash: passwordHash,
+        },
+      });
 
-    await this.prisma.participantOnRole.create({
-      data: {
-        participantId: id,
-        roleId: roles[0].role,
-      },
-    });
+      await this.prisma.participantOnRole.create({
+        data: {
+          participantId: id,
+          roleId: roles[0].role,
+        },
+      });
 
-    return UniqueID.reconstruct(id);
+      return UniqueID.reconstruct(id);
+    } catch (error: any) {
+      throw new InfraException(error.message);
+    }
   }
 
   async getWithMailAddress(
     mailAddress: MailAddress,
   ): Promise<ParticipantAuthHashed | null> {
-    const participantAuth = await this.prisma.participantAuth.findFirst({
-      where: {
-        Participant: {
-          ParticipantMailAddress: {
-            some: {
-              mailAddress: mailAddress.mailAddress,
+    try {
+      const participantAuth = await this.prisma.participantAuth.findFirst({
+        where: {
+          Participant: {
+            ParticipantMailAddress: {
+              some: {
+                mailAddress: mailAddress.mailAddress,
+              },
             },
           },
         },
-      },
-      include: {
-        Participant: {
-          include: {
-            ParticipantOnRole: true,
+        include: {
+          Participant: {
+            include: {
+              ParticipantOnRole: true,
+            },
           },
         },
-      },
-    });
+      });
 
-    if (!participantAuth) {
-      return null;
+      if (!participantAuth) {
+        return null;
+      }
+
+      const roles = participantAuth.Participant.ParticipantOnRole.map(
+        (role) => {
+          return Role.reconstruct({ role: role.roleId });
+        },
+      );
+
+      const participantAuthHashed = ParticipantAuthHashed.create({
+        id: UniqueID.reconstruct(participantAuth.id),
+        values: {
+          passwordHashed: participantAuth.passwordHash,
+          roles,
+        },
+      });
+
+      return participantAuthHashed;
+    } catch (error: any) {
+      throw new InfraException(error.message);
     }
-
-    const roles = participantAuth.Participant.ParticipantOnRole.map((role) => {
-      return Role.reconstruct({ role: role.roleId });
-    });
-
-    const participantAuthHashed = ParticipantAuthHashed.create({
-      id: UniqueID.reconstruct(participantAuth.id),
-      values: {
-        passwordHashed: participantAuth.passwordHash,
-        roles,
-      },
-    });
-
-    return participantAuthHashed;
   }
 }
