@@ -17,7 +17,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly participantAuthRepository: IParticipantAuthRepository,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Beararトークンを使う場合
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req) => {
+          let jwt = null;
+          if (req && req.cookies) {
+            jwt = req.cookies['accessToken'];
+          }
+          return jwt;
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: process.env.SECRET_KEY,
     });

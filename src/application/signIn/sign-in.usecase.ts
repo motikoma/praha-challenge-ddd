@@ -53,7 +53,11 @@ export class SignInUseCase {
         id: participant.id.id,
         roles: participantAuth.values.roles.map((role) => role.role),
       };
-      const accessToken = await this.jwtService.sign(payload);
+      const secret = process.env.SECRET_KEY;
+      const accessToken = await this.jwtService.signAsync(payload, {
+        expiresIn: '5m',
+        secret: secret,
+      });
       return new SignInDto(accessToken);
     }
     throw new ApplicationException(
