@@ -4,7 +4,7 @@ import { PairName } from 'src/domain/entity/pair/pair-name';
 import { Team } from 'src/domain/entity/team/team';
 import { TeamName } from 'src/domain/entity/team/team-name';
 import { ITeamRepository } from 'src/domain/entity/team/team-repository';
-import { UniqueID } from 'src/domain/shared/uniqueID';
+import { UniqueID } from 'src/domain/shared/uniqueId';
 import { InfraException } from 'src/infrastructure/infra-exception';
 import { PrismaService } from 'src/prisma.service';
 
