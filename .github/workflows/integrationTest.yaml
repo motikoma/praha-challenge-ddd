@@ -26,8 +26,5 @@ jobs:
       - name: Run migrations
         run: npm run migrate:test:reset
 
-      - name: Seed the database
-        run: npm run db:seed:test
-
       - name: Run test
         run: npm run test
