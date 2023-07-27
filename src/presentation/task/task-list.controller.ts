@@ -1,10 +1,10 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { ListTasksUseCase } from 'src/application/task/list-tasks.usecase';
 import { ListTasksQueryService } from 'src/infrastructure/db/query-service/list-tasks-query-service-impl';
 import { PrismaService } from 'src/prisma.service';
 
-class RequestBody {
+class QueryParam {
   @IsNotEmpty()
   @IsString()
   readonly ownerId!: string;
@@ -30,10 +30,10 @@ export class TaskListController {
   constructor(private readonly prismaService: PrismaService) {}
 
   @Get()
-  async listTasks(@Body() req: RequestBody): Promise<ResponseBody> {
+  async listTasks(@Query() query: QueryParam): Promise<ResponseBody> {
     const queryService = new ListTasksQueryService(this.prismaService);
     const usecase = new ListTasksUseCase(queryService);
-    const result = await usecase.do(req);
+    const result = await usecase.do(query);
 
     const response = new ResponseBody(
       result.map((task) => {
