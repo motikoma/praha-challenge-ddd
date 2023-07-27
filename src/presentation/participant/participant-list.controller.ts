@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Type } from 'class-transformer';
 import {
   IsArray,
@@ -61,7 +61,7 @@ class Participant {
 export class ParticipantListController {
   constructor(private readonly prismaService: PrismaService) {}
 
-  @Get()
+  @Post()
   async listParticipants(@Body() req: RequestBody): Promise<ResponseBody> {
     const queryService = new ListParticipantsQueryService(this.prismaService);
     const usecase = new ListParticipantsUseCase(queryService);
