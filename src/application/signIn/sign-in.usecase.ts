@@ -4,7 +4,7 @@ import { IParticipantAuthRepository } from 'src/domain/entity/auth/participant-a
 import { MailAddress } from 'src/domain/entity/participant/mail-address';
 import { IParticipantRepository } from 'src/domain/entity/participant/participant-repository';
 
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { constantTokens } from 'src/constants';
 import { ApplicationException } from '../shared/application-exception';
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { ParticipantAuth } from 'src/domain/entity/auth/participant-auth';
 import { ParticipantAuthHashed } from 'src/domain/entity/auth/participant-auth-hashed';
 import { IParticipantAuthRepository } from 'src/domain/entity/auth/participant-auth-repository';
