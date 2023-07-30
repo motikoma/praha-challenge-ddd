@@ -1,0 +1,6 @@
+// TODO: 不要な内容を記載する
+# /node_modules
+# .local.env
+# .test.env
+# /dist
+# /.github

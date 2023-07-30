@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  app:
+    image: praha-challenge-ddd
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./prisma:/app/prisma
+    environment:
+      DATABASE_URL: file:/app/prisma/dev.db
+      SECRET_KEY: 'dummy_password'

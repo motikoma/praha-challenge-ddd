@@ -18,3 +18,13 @@ https://github.com/prisma/prisma-examples/tree/latest/typescript/rest-nestjs
 SECRET_KEY="dummy_password"
 DATABASE_URL="file:./dev.db"
 ```
+
+# docker
+
+```
+docker build -t praha-challenge-ddd .
+```
+
+```
+docker run -p 8000:3000 -e SECRET_KEY="dummy_password" -e DATABASE_URL="file:./dev.db" praha-challenge-ddd
+```
